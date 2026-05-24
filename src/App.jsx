@@ -1347,8 +1347,8 @@ function InstallScreen({ lang, onContinue }) {
   const android = isAndroid();
 
   const steps = ios ? [
-    { icon: "1️⃣", text: "Tap the Share button at the bottom of your browser", detail: "It looks like a box with an arrow pointing up ↑" },
-    { icon: "2️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu" },
+    { icon: "1️⃣", text: "Tap the Share icon  ⎙  in your browser toolbar", detail: "It looks like a box with an arrow pointing upward — usually at the top or bottom of Safari" },
+    { icon: "2️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu to find it" },
     { icon: "3️⃣", text: "Tap \"Add\" in the top right corner", detail: "Wami will appear as an icon on your home screen" },
     { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue" },
   ] : [
