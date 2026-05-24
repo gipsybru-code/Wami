@@ -1347,7 +1347,7 @@ function InstallScreen({ lang, onContinue }) {
   const android = isAndroid();
 
   const steps = ios ? [
-    { icon: "1️⃣", text: "Tap the Share icon  ⎙  in your browser toolbar", detail: "It looks like a box with an arrow pointing upward — usually at the top or bottom of Safari" },
+    { icon: "1️⃣", text: "Tap the Share icon in your browser toolbar", detail: "A square with an arrow pointing upward — usually at the top or bottom of Safari" },
     { icon: "2️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu to find it" },
     { icon: "3️⃣", text: "Tap \"Add\" in the top right corner", detail: "Wami will appear as an icon on your home screen" },
     { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue" },
@@ -1396,9 +1396,15 @@ function InstallScreen({ lang, onContinue }) {
         {/* Visual hint for iOS */}
         {ios && (
           <div className="fade-up" style={{ animationDelay: "0.2s", background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 16, padding: "14px 16px", marginBottom: 24, textAlign: "center" }}>
-            <div style={{ fontSize: 28, marginBottom: 6 }}>⬆️</div>
+            <div style={{ marginBottom: 8 }}>
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="1" width="34" height="34" rx="8" stroke="#F2A74B" strokeWidth="2"/>
+                <path d="M18 22V10M18 10L13 15M18 10L23 15" stroke="#F2A74B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M11 20V26H25V20" stroke="#F2A74B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
             <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
-              Look for the <strong>Share button</strong> at the bottom of Safari — it's the square with an arrow pointing up.
+              Look for this <strong>Share icon</strong> in your Safari toolbar — it's a square with an arrow pointing up. Tap it, then choose <strong>Add to Home Screen.</strong>
             </div>
           </div>
         )}
