@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { supabase } from './lib/supabase.js';
 
 // ─── FONTS & STYLES ───────────────────────────────────────────────────────────
 const fontLink = document.createElement("link");
@@ -963,10 +964,17 @@ function SignUpScreen({ lang, onComplete }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!email.includes("@")) { setError("Please enter a valid email."); return; }
     if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
-    onComplete();
+    setError("");
+    try {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) { setError(error.message); return; }
+      onComplete();
+    } catch (e) {
+      setError("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -1198,7 +1206,7 @@ function ExploreScreen({ lang, profile }) {
 }
 
 // ─── SCREEN: PROFILE ──────────────────────────────────────────────────────────
-function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, isTrial }) {
+function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, isTrial, onSignOut }) {
   const t = i18n[lang] || i18n.en;
   const freqObj = t.freqs?.find(f => f.id === profile?.freq);
   const dayNames = t.dayNames || [];
@@ -1259,6 +1267,10 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
         </PrimaryBtn>
         <button onClick={onManageSubscription} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "14px", background: "white", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 14, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.amber, boxShadow: T.shadowSm }}>
           ✨ {t.manageSubscription}
+        </button>
+
+        <button onClick={onSignOut} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", padding: "14px", marginTop: 10, background: "none", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 13, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", color: T.muted }}>
+          Sign out
         </button>
       </div>
     </div>
@@ -1411,6 +1423,26 @@ export default function App() {
   const [activeNav, setActiveNav] = useState("home");
   const [showWelcome, setShowWelcome] = useState(false);
   const [isTrial, setIsTrial] = useState(true);
+  const [user, setUser] = useState(null);
+
+  // Check for existing session on app load
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        setScreen("main");
+      }
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+        setScreen("landing");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const t = i18n[lang] || i18n.en;
 
@@ -1432,7 +1464,25 @@ export default function App() {
         <InstallScreen lang={lang} onContinue={() => setScreen("onboarding")} />
       )}
       {screen === "onboarding" && (
-        <OnboardingScreen lang={lang} onComplete={data => { setProfile(data); setScreen("signup"); }} />
+        <OnboardingScreen lang={lang} onComplete={async (data) => {
+          setProfile(data);
+          // Save profile to Supabase if logged in
+          if (user) {
+            await supabase.from('profiles').upsert({
+              id: user.id,
+              email: user.email,
+              age_group: data.age,
+              kids: data.kids,
+              work_types: data.workTypes,
+              focuses: data.focuses,
+              frequency: data.freq,
+              active_days: data.days,
+              language: lang,
+              updated_at: new Date().toISOString(),
+            });
+          }
+          setScreen("signup");
+        }} />
       )}
       {screen === "signup" && (
         <SignUpScreen lang={lang} onComplete={() => { setScreen("main"); setShowWelcome(true); }} />
@@ -1448,7 +1498,19 @@ export default function App() {
             )}
             {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
             {activeNav === "profile" && (
-              <ProfileScreen lang={lang} setLang={setLang} profile={profile} isTrial={isTrial} onEdit={() => setScreen("onboarding")} onManageSubscription={() => setScreen("paywall")} />
+              <ProfileScreen
+                lang={lang}
+                setLang={setLang}
+                profile={profile}
+                isTrial={isTrial}
+                onEdit={() => setScreen("onboarding")}
+                onManageSubscription={() => setScreen("paywall")}
+                onSignOut={async () => {
+                  await supabase.auth.signOut();
+                  setProfile(null);
+                  setScreen("landing");
+                }}
+              />
             )}
           </div>
           <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
