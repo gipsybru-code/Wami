@@ -793,27 +793,6 @@ function LandingScreen({ lang, setLang, onStart }) {
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #FFE8A0 20%, #D4EDF8 70%, #C0E4F5 100%)" }}>
       <div style={{ position: "fixed", inset: 0, background: "linear-gradient(180deg, #FFF3D0 0%, #FFE8A0 20%, #D4EDF8 70%, #C0E4F5 100%)", zIndex: 0 }} />
       <div style={{ position: "relative", zIndex: 1, maxWidth: 420, margin: "0 auto", padding: "20px 20px 48px" }}>
-        {/* Install banner */}
-        <div style={{
-          background: "rgba(255,255,255,0.7)",
-          backdropFilter: "blur(8px)",
-          borderRadius: 12,
-          padding: "10px 14px",
-          marginBottom: 12,
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          boxShadow: T.shadowSm,
-          border: `1px solid rgba(242,167,75,0.2)`,
-        }}>
-          <span style={{ fontSize: 16 }}>📲</span>
-          <div style={{ fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
-            <span style={{ fontWeight: 600, color: T.text }}>Install as app: </span>
-            iPhone: tap <span style={{ fontWeight: 600 }}>Share →</span> <span style={{ fontWeight: 600 }}>Add to Home Screen.</span>{" "}
-            Android: tap <span style={{ fontWeight: 600 }}>⋮ → Add to Home Screen.</span>
-          </div>
-        </div>
-
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
           <LangPicker lang={lang} onSelect={setLang} />
         </div>
@@ -1347,15 +1326,16 @@ function InstallScreen({ lang, onContinue }) {
   const android = isAndroid();
 
   const steps = ios ? [
-    { icon: "1️⃣", text: "Tap the Share icon in your browser toolbar", detail: "A square with an arrow pointing upward — usually at the top or bottom of Safari" },
-    { icon: "2️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu to find it" },
-    { icon: "3️⃣", text: "Tap \"Add\" in the top right corner", detail: "Wami will appear as an icon on your home screen" },
-    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue" },
+    { icon: "1️⃣", text: "Open wami.me in Safari", detail: "⚠️ Must use Safari — Chrome and other browsers on iPhone do not support installation" },
+    { icon: "2️⃣", text: "Tap the Share button in Safari", detail: "It looks like this 👇 — at the bottom or top of your screen" },
+    { icon: "3️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu to find it" },
+    { icon: "4️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an icon on your home screen" },
+    { icon: "5️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below" },
   ] : [
-    { icon: "1️⃣", text: "Tap the menu button ⋮ in your browser", detail: "Top right corner of Chrome" },
+    { icon: "1️⃣", text: "Tap the menu button ⋮ in Chrome", detail: "Top right corner of your browser" },
     { icon: "2️⃣", text: "Tap \"Add to Home screen\"", detail: "Or \"Install app\" if you see that option" },
     { icon: "3️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an app on your home screen" },
-    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue" },
+    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below" },
   ];
 
   return (
