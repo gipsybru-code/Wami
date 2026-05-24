@@ -1375,16 +1375,17 @@ function InstallScreen({ lang, onContinue }) {
 
         {/* Visual hint for iOS */}
         {ios && (
-          <div className="fade-up" style={{ animationDelay: "0.2s", background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 16, padding: "14px 16px", marginBottom: 24, textAlign: "center" }}>
-            <div style={{ marginBottom: 8 }}>
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="1" y="1" width="34" height="34" rx="8" stroke="#F2A74B" strokeWidth="2"/>
-                <path d="M18 22V10M18 10L13 15M18 10L23 15" stroke="#F2A74B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M11 20V26H25V20" stroke="#F2A74B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+          <div className="fade-up" style={{ animationDelay: "0.2s", background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 16, padding: "16px", marginBottom: 24, textAlign: "center" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: "'Nunito', sans-serif", marginBottom: 12 }}>
+              The Share button looks like this:
             </div>
-            <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
-              Look for this <strong>Share icon</strong> in your Safari toolbar — it's a square with an arrow pointing up. Tap it, then choose <strong>Add to Home Screen.</strong>
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ margin: "0 auto 12px", display: "block" }}>
+              <rect x="1" y="1" width="42" height="42" rx="10" stroke="#F2A74B" strokeWidth="2" fill="rgba(242,167,75,0.1)"/>
+              <path d="M22 26V14M22 14L16 20M22 14L28 20" stroke="#F2A74B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M13 28V32H31V28" stroke="#F2A74B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <div style={{ fontSize: 12, color: "#D04000", fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+              ⚠️ You must use Safari — other browsers on iPhone do not support installation.
             </div>
           </div>
         )}
