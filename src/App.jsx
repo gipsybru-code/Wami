@@ -116,6 +116,7 @@ const i18n = {
   en: {
     tagline: "Grow Kindly.", sub: "Small prompts for meaningful change and wellbeing.",
     hero1: "You don't need motivation.", hero2: "You need an interruption.",
+    goodAfternoon: "Good afternoon 🌤️", goodEvening: "Good evening 🌙",
     desc: "Wami sends gentle, specific prompts through your day — helping you move, breathe, focus, connect and grow. Choose your focus areas, your rhythm, and let Wami handle the rest.",
     focus12: "12 focus areas", focusDesc: "Stress · Energy · Focus · Movement · Eating · Relationships · Sleep · Calm · Digital · Joy · Confidence · Creativity",
     frequency: "3 frequency levels", freqDesc: "Light (2×/week) · Steady (1×/day) · Present (3×/day)",
@@ -159,10 +160,219 @@ const i18n = {
       { id:"confidence",    icon:"🦋",  label:"Feel more confident",  desc:"Trust yourself a little more" },
       { id:"creativity",    icon:"🎨",  label:"More creativity",      desc:"Make, imagine, express" },
     ],
+    monthly:  { label: "Monthly",  period: "/month", price: "€3.99", badge: "" },
+    annual:   { label: "Annual",   period: "/year",  price: "€19",   badge: "Best value" },
+    lifetime: { label: "Lifetime", period: "once",   price: "€59",   badge: "Forever" },
+  },
+
+  it: {
+    tagline: "Cresci con gentilezza.", sub: "Piccoli spunti per un cambiamento significativo e il benessere.",
+    hero1: "Non hai bisogno di motivazione.", hero2: "Hai bisogno di un'interruzione.",
+    goodAfternoon: "Buon pomeriggio 🌤️", goodEvening: "Buonasera 🌙",
+    desc: "Wami invia suggerimenti gentili e specifici durante la tua giornata — per aiutarti a muoverti, respirare, concentrarti, connetterti e crescere.",
+    focus12: "12 aree di focus", focusDesc: "Stress · Energia · Focus · Movimento · Alimentazione · Relazioni · Sonno · Calma · Digitale · Gioia · Fiducia · Creatività",
+    frequency: "3 livelli di frequenza", freqDesc: "Leggero (2×/settimana) · Regolare (1×/giorno) · Presente (3×/giorno)",
+    trial: "Inizia gratis — 14 giorni", signin: "Hai già un account? Accedi",
+    onboardTitle: "Personalizzalo", onboardSub: "Alcune scelte rapide per rendere i tuoi suggerimenti personali.",
+    ageLabel: "Come ti vedi?", kidsLabel: "Bambini", workTypeLabel: "Tipo di lavoro",
+    focusLabel: "Di cosa vorresti di più?", focusSub: "Scegli fino a 5 aree di focus.",
+    freqLabel: "Con quale frequenza vorresti un suggerimento?", daysLabel: "Quali giorni?", letsgo: "Iniziamo →",
+    signupTitle: "Il tuo profilo è pronto.", signupSub: "Crea il tuo account per salvarlo e iniziare.",
+    emailPlaceholder: "La tua email", passwordPlaceholder: "Scegli una password", createAccount: "Crea account",
+    paywallTitle: "Sblocca l'esperienza completa.", paywallSub: "686 suggerimenti in 12 aree di focus. Nuovi ogni giorno.",
+    unlockBtn: "Sblocca tutti i suggerimenti", restore: "Ripristina acquisto", terms: "Termini · Privacy",
+    homeGreeting: "Buongiorno 🌅", todayPrompt: "Il tuo suggerimento", nextPrompt: "Prossimo suggerimento",
+    tunein: "Prima del prossimo suggerimento — fai un respiro e nota come ti senti.",
+    explore: "Esplora", profile: "Profilo", home: "Home",
+    exploreTitle: "12 Aree di Focus", exploreSub: "Tocca un'area per saperne di più.",
+    profileTitle: "Il tuo Wami", profileWorking: "Wami sta lavorando per te in silenzio.",
+    editPrefs: "Modifica preferenze", yourFocus: "Le tue aree di focus", yourFreq: "Frequenza",
+    yourDays: "Giorni attivi", language: "Lingua", subscription: "Abbonamento",
+    manageSubscription: "Gestisci abbonamento",
+    ages: ["Giovane", "Adulto", "Senior"],
+    kids: ["Nessun figlio", "Bambini piccoli", "Adolescenti", "Figli grandi"],
+    workTypes: ["Ufficio", "Fisicamente impegnativo", "Altro"],
+    freqs: [
+      { id: "light",   label: "Leggero",  desc: "2 suggerimenti a settimana", interval: 240 },
+      { id: "steady",  label: "Regolare", desc: "1 suggerimento al giorno",   interval: 120 },
+      { id: "present", label: "Presente", desc: "3 suggerimenti al giorno",   interval: 60  },
+    ],
+    dayNames: ["L","M","M","G","V","S","D"],
+    focusAreas: [
+      { id:"stress",        icon:"🌬️", label:"Meno stress",           desc:"Respira, rilasciati, trova equilibrio" },
+      { id:"energy",        icon:"⚡",  label:"Più energia",           desc:"Svegliati dall'interno" },
+      { id:"focus",         icon:"🎯",  label:"Migliore focus",        desc:"Trova il tuo filo e seguilo" },
+      { id:"movement",      icon:"🏃",  label:"Muoviti di più",        desc:"Piccoli inviti a muoversi" },
+      { id:"eating",        icon:"🥑",  label:"Mangia meglio",         desc:"Un rapporto più gentile con il cibo" },
+      { id:"relationships", icon:"🤝",  label:"Relazioni migliori",    desc:"Piccoli gesti che avvicinano" },
+      { id:"sleep",         icon:"🌙",  label:"Dormi meglio",          desc:"Riposo più profondo e ristoratore" },
+      { id:"calm",          icon:"🌊",  label:"Calma e presenza",      desc:"Rallenta, nota, arriva" },
+      { id:"digital",       icon:"📵",  label:"Equilibrio digitale",   desc:"Riprendi la tua attenzione" },
+      { id:"joy",           icon:"✨",  label:"Gioia e spirito",       desc:"Meraviglia, bellezza, significato" },
+      { id:"confidence",    icon:"🦋",  label:"Più fiducia in te",     desc:"Fidati di te stesso un po' di più" },
+      { id:"creativity",    icon:"🎨",  label:"Più creatività",        desc:"Crea, immagina, esprimi" },
+    ],
+    monthly:  { label: "Mensile",  period: "/mese",          price: "€3,99", badge: "" },
+    annual:   { label: "Annuale",  period: "/anno",          price: "€19",   badge: "Miglior offerta" },
+    lifetime: { label: "A vita",   period: "pagamento unico", price: "€59",  badge: "Per sempre" },
+  },
+
+  es: {
+    tagline: "Crece con amabilidad.", sub: "Pequeños recordatorios para un cambio significativo y bienestar.",
+    hero1: "No necesitas motivación.", hero2: "Necesitas una interrupción.",
+    goodAfternoon: "Buenas tardes 🌤️", goodEvening: "Buenas noches 🌙",
+    desc: "Wami envía recordatorios gentiles y específicos a lo largo del día — ayudándote a moverte, respirar, concentrarte, conectar y crecer.",
+    focus12: "12 áreas de enfoque", focusDesc: "Estrés · Energía · Enfoque · Movimiento · Alimentación · Relaciones · Sueño · Calma · Digital · Alegría · Confianza · Creatividad",
+    frequency: "3 niveles de frecuencia", freqDesc: "Suave (2×/semana) · Regular (1×/día) · Presente (3×/día)",
+    trial: "Empieza gratis — 14 días", signin: "¿Ya tienes cuenta? Inicia sesión",
+    onboardTitle: "Hazlo tuyo", onboardSub: "Unas pocas elecciones para que tus recordatorios sean personales.",
+    ageLabel: "¿Cómo te ves?", kidsLabel: "Hijos", workTypeLabel: "Tipo de trabajo",
+    focusLabel: "¿Qué te gustaría tener más?", focusSub: "Elige hasta 5 áreas de enfoque.",
+    freqLabel: "¿Con qué frecuencia quieres un recordatorio?", daysLabel: "¿Qué días?", letsgo: "¡Vamos! →",
+    signupTitle: "Tu perfil está listo.", signupSub: "Crea tu cuenta para guardarlo y empezar.",
+    emailPlaceholder: "Tu email", passwordPlaceholder: "Elige una contraseña", createAccount: "Crear cuenta",
+    paywallTitle: "Desbloquea la experiencia completa.", paywallSub: "686 recordatorios en 12 áreas de enfoque. Nuevos cada día.",
+    unlockBtn: "Desbloquear todos", restore: "Restaurar compra", terms: "Términos · Privacidad",
+    homeGreeting: "Buenos días 🌅", todayPrompt: "Tu recordatorio", nextPrompt: "Próximo recordatorio",
+    tunein: "Antes del próximo recordatorio — respira hondo y nota cómo te sientes.",
+    explore: "Explorar", profile: "Perfil", home: "Inicio",
+    exploreTitle: "12 Áreas de Enfoque", exploreSub: "Toca cualquier área para saber más.",
+    profileTitle: "Tu Wami", profileWorking: "Wami está trabajando silenciosamente para ti.",
+    editPrefs: "Editar preferencias", yourFocus: "Tus áreas de enfoque", yourFreq: "Frecuencia",
+    yourDays: "Días activos", language: "Idioma", subscription: "Suscripción",
+    manageSubscription: "Gestionar suscripción",
+    ages: ["Joven", "Adulto", "Senior"],
+    kids: ["Sin hijos", "Hijos pequeños", "Adolescentes", "Hijos adultos"],
+    workTypes: ["Oficina", "Físicamente exigente", "Otro"],
+    freqs: [
+      { id: "light",   label: "Suave",    desc: "2 recordatorios por semana", interval: 240 },
+      { id: "steady",  label: "Regular",  desc: "1 recordatorio por día",     interval: 120 },
+      { id: "present", label: "Presente", desc: "3 recordatorios por día",    interval: 60  },
+    ],
+    dayNames: ["L","M","X","J","V","S","D"],
+    focusAreas: [
+      { id:"stress",        icon:"🌬️", label:"Menos estrés",          desc:"Respira, suelta, encuentra equilibrio" },
+      { id:"energy",        icon:"⚡",  label:"Más energía",           desc:"Despierta desde adentro" },
+      { id:"focus",         icon:"🎯",  label:"Mejor enfoque",         desc:"Encuentra tu hilo y síguelo" },
+      { id:"movement",      icon:"🏃",  label:"Muévete más",           desc:"Pequeñas invitaciones a moverse" },
+      { id:"eating",        icon:"🥑",  label:"Comer mejor",           desc:"Una relación más gentil con la comida" },
+      { id:"relationships", icon:"🤝",  label:"Mejores relaciones",    desc:"Pequeños gestos que acercan" },
+      { id:"sleep",         icon:"🌙",  label:"Dormir mejor",          desc:"Descanso más profundo" },
+      { id:"calm",          icon:"🌊",  label:"Calma y presencia",     desc:"Desacelera, nota, llega" },
+      { id:"digital",       icon:"📵",  label:"Equilibrio digital",    desc:"Recupera tu atención" },
+      { id:"joy",           icon:"✨",  label:"Alegría y espíritu",    desc:"Asombro, belleza, significado" },
+      { id:"confidence",    icon:"🦋",  label:"Más confianza",         desc:"Confía en ti mismo un poco más" },
+      { id:"creativity",    icon:"🎨",  label:"Más creatividad",       desc:"Crea, imagina, expresa" },
+    ],
+    monthly:  { label: "Mensual",     period: "/mes",       price: "€3,99", badge: "" },
+    annual:   { label: "Anual",       period: "/año",       price: "€19",   badge: "Mejor oferta" },
+    lifetime: { label: "De por vida", period: "pago único", price: "€59",   badge: "Para siempre" },
+  },
+
+  pt: {
+    tagline: "Cresça com gentileza.", sub: "Pequenos lembretes para mudanças significativas e bem-estar.",
+    hero1: "Você não precisa de motivação.", hero2: "Você precisa de uma interrupção.",
+    goodAfternoon: "Boa tarde 🌤️", goodEvening: "Boa noite 🌙",
+    desc: "Wami envia lembretes gentis e específicos ao longo do dia — ajudando você a se mover, respirar, focar, conectar e crescer.",
+    focus12: "12 áreas de foco", focusDesc: "Estresse · Energia · Foco · Movimento · Alimentação · Relacionamentos · Sono · Calma · Digital · Alegria · Confiança · Criatividade",
+    frequency: "3 níveis de frequência", freqDesc: "Leve (2×/semana) · Regular (1×/dia) · Presente (3×/dia)",
+    trial: "Comece grátis — 14 dias", signin: "Já tem conta? Entre",
+    onboardTitle: "Personalize", onboardSub: "Algumas escolhas rápidas para tornar seus lembretes pessoais.",
+    ageLabel: "Como você se vê?", kidsLabel: "Filhos", workTypeLabel: "Tipo de trabalho",
+    focusLabel: "O que você gostaria de ter mais?", focusSub: "Escolha até 5 áreas de foco.",
+    freqLabel: "Com que frequência quer um lembrete?", daysLabel: "Quais dias?", letsgo: "Vamos lá →",
+    signupTitle: "Seu perfil está pronto.", signupSub: "Crie sua conta para salvar e começar.",
+    emailPlaceholder: "Seu email", passwordPlaceholder: "Escolha uma senha", createAccount: "Criar conta",
+    paywallTitle: "Desbloqueie a experiência completa.", paywallSub: "686 lembretes em 12 áreas de foco. Novos todo dia.",
+    unlockBtn: "Desbloquear todos", restore: "Restaurar compra", terms: "Termos · Privacidade",
+    homeGreeting: "Bom dia 🌅", todayPrompt: "Seu lembrete", nextPrompt: "Próximo lembrete",
+    tunein: "Antes do próximo lembrete — respire fundo e note como você se sente.",
+    explore: "Explorar", profile: "Perfil", home: "Início",
+    exploreTitle: "12 Áreas de Foco", exploreSub: "Toque em qualquer área para saber mais.",
+    profileTitle: "Seu Wami", profileWorking: "Wami está trabalhando silenciosamente para você.",
+    editPrefs: "Editar preferências", yourFocus: "Suas áreas de foco", yourFreq: "Frequência",
+    yourDays: "Dias ativos", language: "Idioma", subscription: "Assinatura",
+    manageSubscription: "Gerenciar assinatura",
+    ages: ["Jovem", "Adulto", "Senior"],
+    kids: ["Sem filhos", "Filhos pequenos", "Adolescentes", "Filhos adultos"],
+    workTypes: ["Escritório", "Fisicamente exigente", "Outro"],
+    freqs: [
+      { id: "light",   label: "Leve",     desc: "2 lembretes por semana",  interval: 240 },
+      { id: "steady",  label: "Regular",  desc: "1 lembrete por dia",      interval: 120 },
+      { id: "present", label: "Presente", desc: "3 lembretes por dia",     interval: 60  },
+    ],
+    dayNames: ["S","T","Q","Q","S","S","D"],
+    focusAreas: [
+      { id:"stress",        icon:"🌬️", label:"Menos estresse",        desc:"Respire, solte, encontre equilíbrio" },
+      { id:"energy",        icon:"⚡",  label:"Mais energia",          desc:"Desperte por dentro" },
+      { id:"focus",         icon:"🎯",  label:"Melhor foco",           desc:"Encontre seu fio e siga" },
+      { id:"movement",      icon:"🏃",  label:"Mova-se mais",          desc:"Pequenos convites para se mover" },
+      { id:"eating",        icon:"🥑",  label:"Comer melhor",          desc:"Uma relação mais gentil com a comida" },
+      { id:"relationships", icon:"🤝",  label:"Melhores relacionamentos", desc:"Pequenos gestos que aproximam" },
+      { id:"sleep",         icon:"🌙",  label:"Dormir melhor",         desc:"Descanso mais profundo" },
+      { id:"calm",          icon:"🌊",  label:"Calma e presença",      desc:"Desacelere, perceba, chegue" },
+      { id:"digital",       icon:"📵",  label:"Equilíbrio digital",    desc:"Recupere sua atenção" },
+      { id:"joy",           icon:"✨",  label:"Alegria e espírito",    desc:"Maravilha, beleza, significado" },
+      { id:"confidence",    icon:"🦋",  label:"Mais confiança",        desc:"Confie em si mesmo um pouco mais" },
+      { id:"creativity",    icon:"🎨",  label:"Mais criatividade",     desc:"Crie, imagine, expresse" },
+    ],
+    monthly:  { label: "Mensal",    period: "/mês",   price: "R$21,90", badge: "" },
+    annual:   { label: "Anual",     period: "/ano",   price: "R$104",   badge: "Melhor oferta" },
+    lifetime: { label: "Vitalício", period: "único",  price: "R$319",   badge: "Para sempre" },
+  },
+
+  fr: {
+    tagline: "Grandissez avec bienveillance.", sub: "De petites suggestions pour un changement significatif et le bien-être.",
+    hero1: "Vous n'avez pas besoin de motivation.", hero2: "Vous avez besoin d'une interruption.",
+    goodAfternoon: "Bon après-midi 🌤️", goodEvening: "Bonsoir 🌙",
+    desc: "Wami vous envoie des suggestions douces et spécifiques tout au long de la journée — pour bouger, respirer, vous concentrer, vous connecter et grandir.",
+    focus12: "12 domaines de focus", focusDesc: "Stress · Énergie · Focus · Mouvement · Alimentation · Relations · Sommeil · Calme · Digital · Joie · Confiance · Créativité",
+    frequency: "3 niveaux de fréquence", freqDesc: "Léger (2×/semaine) · Régulier (1×/jour) · Présent (3×/jour)",
+    trial: "Commencez gratuitement — 14 jours", signin: "Déjà un compte ? Connectez-vous",
+    onboardTitle: "Personnalisez", onboardSub: "Quelques choix rapides pour que vos suggestions soient personnelles.",
+    ageLabel: "Comment vous voyez-vous ?", kidsLabel: "Enfants", workTypeLabel: "Type de travail",
+    focusLabel: "Que souhaiteriez-vous avoir davantage ?", focusSub: "Choisissez jusqu'à 5 domaines.",
+    freqLabel: "À quelle fréquence souhaitez-vous une suggestion ?", daysLabel: "Quels jours ?", letsgo: "C'est parti →",
+    signupTitle: "Votre profil est prêt.", signupSub: "Créez votre compte pour le sauvegarder et commencer.",
+    emailPlaceholder: "Votre email", passwordPlaceholder: "Choisissez un mot de passe", createAccount: "Créer un compte",
+    paywallTitle: "Débloquez l'expérience complète.", paywallSub: "686 suggestions dans 12 domaines. Nouvelles chaque jour.",
+    unlockBtn: "Débloquer toutes les suggestions", restore: "Restaurer l'achat", terms: "Conditions · Confidentialité",
+    homeGreeting: "Bonjour 🌅", todayPrompt: "Votre suggestion", nextPrompt: "Prochaine suggestion",
+    tunein: "Avant votre prochaine suggestion — respirez profondément et remarquez comment vous vous sentez.",
+    explore: "Explorer", profile: "Profil", home: "Accueil",
+    exploreTitle: "12 Domaines de Focus", exploreSub: "Appuyez sur un domaine pour en savoir plus.",
+    profileTitle: "Votre Wami", profileWorking: "Wami travaille silencieusement pour vous.",
+    editPrefs: "Modifier les préférences", yourFocus: "Vos domaines de focus", yourFreq: "Fréquence",
+    yourDays: "Jours actifs", language: "Langue", subscription: "Abonnement",
+    manageSubscription: "Gérer l'abonnement",
+    ages: ["Jeune", "Adulte", "Senior"],
+    kids: ["Sans enfants", "Petits enfants", "Adolescents", "Grands enfants"],
+    workTypes: ["Bureau", "Physiquement exigeant", "Autre"],
+    freqs: [
+      { id: "light",   label: "Léger",    desc: "2 suggestions par semaine", interval: 240 },
+      { id: "steady",  label: "Régulier", desc: "1 suggestion par jour",     interval: 120 },
+      { id: "present", label: "Présent",  desc: "3 suggestions par jour",    interval: 60  },
+    ],
+    dayNames: ["L","M","M","J","V","S","D"],
+    focusAreas: [
+      { id:"stress",        icon:"🌬️", label:"Moins de stress",        desc:"Respirez, relâchez, trouvez l'équilibre" },
+      { id:"energy",        icon:"⚡",  label:"Plus d'énergie",         desc:"Réveillez-vous de l'intérieur" },
+      { id:"focus",         icon:"🎯",  label:"Meilleur focus",         desc:"Trouvez votre fil et suivez-le" },
+      { id:"movement",      icon:"🏃",  label:"Bougez plus",            desc:"Petites invitations à bouger" },
+      { id:"eating",        icon:"🥑",  label:"Mieux manger",           desc:"Une relation plus douce avec la nourriture" },
+      { id:"relationships", icon:"🤝",  label:"Meilleures relations",   desc:"Petits gestes qui rapprochent" },
+      { id:"sleep",         icon:"🌙",  label:"Mieux dormir",           desc:"Un repos plus profond" },
+      { id:"calm",          icon:"🌊",  label:"Calme et présence",      desc:"Ralentissez, remarquez, arrivez" },
+      { id:"digital",       icon:"📵",  label:"Équilibre numérique",    desc:"Récupérez votre attention" },
+      { id:"joy",           icon:"✨",  label:"Joie et esprit",         desc:"Émerveillement, beauté, sens" },
+      { id:"confidence",    icon:"🦋",  label:"Plus de confiance",      desc:"Faites-vous confiance un peu plus" },
+      { id:"creativity",    icon:"🎨",  label:"Plus de créativité",     desc:"Créez, imaginez, exprimez" },
+    ],
+    monthly:  { label: "Mensuel",  period: "/mois",          price: "3,99 €", badge: "" },
+    annual:   { label: "Annuel",   period: "/an",            price: "19 €",   badge: "Meilleure offre" },
+    lifetime: { label: "À vie",    period: "paiement unique", price: "59 €",  badge: "Pour toujours" },
   },
 };
-["it","pt","es","fr"].forEach(l => { i18n[l] = { ...i18n.en }; });
-
 // ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
 function WamiLogo({ size = 38 }) {
   return <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: size, fontWeight: 800, color: T.amber, letterSpacing: "-1px", lineHeight: 1, textShadow: "0 2px 8px rgba(242,167,75,0.25)" }}>wami</div>;
@@ -490,7 +700,7 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
   const [notifStatus, setNotifStatus] = useState("default");
 
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? t.homeGreeting : hour < 17 ? "Good afternoon 🌤️" : "Good evening 🌙";
+  const greeting = hour < 12 ? t.homeGreeting : hour < 17 ? t.goodAfternoon : t.goodEvening;
 
   const nextTrialPrompt = () => {
     if (trialIdx >= trialPool.length - 1) return;
@@ -744,13 +954,19 @@ function PaywallScreen({ lang, onContinue }) {
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [lang, setLang] = useState(detectLang);
+  const [lang, setLang] = useState(
+    () => localStorage.getItem("wami_lang") || detectLang()
+  );
   const [screen, setScreen] = useState("landing");
   const [profile, setProfile] = useState(null);
   const [activeNav, setActiveNav] = useState("home");
   const [showWelcome, setShowWelcome] = useState(false);
   const [isTrial, setIsTrial] = useState(true);
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("wami_lang", lang);
+  }, [lang]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
