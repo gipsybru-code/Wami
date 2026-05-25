@@ -848,7 +848,7 @@ function LandingScreen({ lang, setLang, onStart }) {
 }
 
 // ─── SCREEN: ONBOARDING ───────────────────────────────────────────────────────
-function OnboardingScreen({ lang, onComplete }) {
+function OnboardingScreen({ lang, setLang, onComplete }) {
   const t = i18n[lang] || i18n.en;
   const [age, setAge] = useState(null);
   const [kids, setKids] = useState(null);
@@ -876,10 +876,7 @@ function OnboardingScreen({ lang, onComplete }) {
       <div style={{ maxWidth: 420, margin: "0 auto", padding: "24px 20px 48px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <WamiLogo />
-          <LangPicker lang={lang} onSelect={() => {}} />
-        </div>
-        <div className="fade-up">
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>{t.onboardTitle}</div>
+          <LangPicker lang={lang} onSelect={setLang} />
           <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 24, lineHeight: 1.5 }}>{t.onboardSub}</div>
 
           <Card style={{ marginBottom: 16 }}>
@@ -994,7 +991,7 @@ function SignUpScreen({ lang, onComplete }) {
 }
 
 // ─── SCREEN: HOME ─────────────────────────────────────────────────────────────
-function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
+function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
   const t = i18n[lang] || i18n.en;
 
   // Build focus-aware trial pool once
@@ -1052,7 +1049,7 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
         <div style={{ position: "absolute", top: -30, right: -30, width: 140, height: 140, borderRadius: "50%", background: "radial-gradient(circle, rgba(242,167,75,0.2), transparent)" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, position: "relative" }}>
           <WamiLogo />
-          <LangPicker lang={lang} onSelect={() => {}} />
+          <LangPicker lang={lang} onSelect={setLang} />
         </div>
         <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 2 }}>{greeting}</div>
         <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
@@ -1234,7 +1231,15 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.language}</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {LANGUAGES.map(l => (
-              <button key={l.id} onClick={() => setLang(l.id)} style={{ background: lang === l.id ? T.primary : "#F0EBE0", color: lang === l.id ? "white" : T.text, borderRadius: 10, padding: "6px 12px", fontSize: 13, fontWeight: 700, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s" }}>
+              <button key={l.id} onClick={async () => {
+                setLang(l.id);
+                if (typeof supabase !== 'undefined') {
+                  const { data: { session } } = await supabase.auth.getSession();
+                  if (session?.user) {
+                    await supabase.from('profiles').update({ language: l.id }).eq('id', session.user.id);
+                  }
+                }
+              }} style={{ background: lang === l.id ? T.primary : "#F0EBE0", color: lang === l.id ? "white" : T.text, borderRadius: 10, padding: "6px 12px", fontSize: 13, fontWeight: 700, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s" }}>
                 {l.flag} {l.id.toUpperCase()}
               </button>
             ))}
@@ -1451,7 +1456,7 @@ export default function App() {
         <InstallScreen lang={lang} onContinue={() => setScreen("onboarding")} />
       )}
       {screen === "onboarding" && (
-        <OnboardingScreen lang={lang} onComplete={async (data) => {
+        <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
           setProfile(data);
           // Save profile to Supabase if logged in
           if (user) {
@@ -1481,7 +1486,7 @@ export default function App() {
         <>
           <div className="screen">
             {activeNav === "home" && (
-              <HomeScreen lang={lang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />
+              <HomeScreen lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />
             )}
             {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
             {activeNav === "profile" && (
