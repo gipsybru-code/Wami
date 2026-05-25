@@ -596,4 +596,206 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
           <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, fontStyle: "italic" }}>{t.tunein}</div>
         </div>
 
-        {profile?.focuses?.length > 0 &&
+        {profile?.focuses?.length > 0 && (
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 11, fontWeight: 700, color: T.muted, marginBottom: 10, letterSpacing: "0.5px", textTransform: "uppercase" }}>Your focus</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {profile.focuses.map(fid => {
+                const f = t.focusAreas.find(a => a.id === fid);
+                if (!f) return null;
+                return <div key={fid} style={{ background: "white", border: `1.5px solid ${T.border}`, borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.text, display: "flex", alignItems: "center", gap: 6, boxShadow: T.shadowSm }}>{f.icon} {f.label}</div>;
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── SCREEN: EXPLORE ──────────────────────────────────────────────────────────
+function ExploreScreen({ lang, profile }) {
+  const t = i18n[lang] || i18n.en;
+  const [selected, setSelected] = useState(null);
+  return (
+    <div style={{ paddingBottom: 80 }}>
+      <div style={{ padding: "28px 20px 20px" }}>
+        <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>{t.exploreTitle}</div>
+        <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 24 }}>{t.exploreSub}</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          {t.focusAreas.map(f => {
+            const isActive = profile?.focuses?.includes(f.id);
+            const isOpen = selected === f.id;
+            return (
+              <div key={f.id}>
+                <button onClick={() => setSelected(isOpen ? null : f.id)} style={{ width: "100%", background: isActive ? "rgba(242,167,75,0.1)" : "white", border: `2px solid ${isActive ? T.amber : T.border}`, borderRadius: 18, padding: "16px 14px", textAlign: "left", boxShadow: T.shadowSm, transition: "all 0.2s", position: "relative" }}>
+                  {isActive && <div style={{ position: "absolute", top: 8, right: 8, width: 16, height: 16, borderRadius: "50%", background: T.amber, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "white", fontWeight: 700 }}>✓</div>}
+                  <div style={{ fontSize: 26, marginBottom: 8 }}>{f.icon}</div>
+                  <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 13, fontWeight: 700, color: T.text, marginBottom: 4, lineHeight: 1.3 }}>{f.label}</div>
+                  <div style={{ fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.4 }}>{f.desc}</div>
+                </button>
+                {isOpen && <div style={{ background: "white", border: `1.5px solid ${T.border}`, borderRadius: "0 0 16px 16px", padding: "12px 14px", marginTop: -8, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>{f.desc}. {isActive ? "✓ Active in your profile." : "Add in your profile settings."}</div>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SCREEN: PROFILE ──────────────────────────────────────────────────────────
+function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, isTrial, onSignOut }) {
+  const t = i18n[lang] || i18n.en;
+  const freqObj = t.freqs?.find(f => f.id === profile?.freq);
+  const dayNames = t.dayNames || [];
+
+  const Row = ({ label, value }) => (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", borderBottom: `1px solid ${T.border}` }}>
+      <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.text }}>{value}</div>
+    </div>
+  );
+
+  return (
+    <div style={{ paddingBottom: 80 }}>
+      <div style={{ padding: "28px 20px 20px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text }}>{t.profileTitle}</div>
+          <SunOrb size={44} />
+        </div>
+        <div style={{ background: "linear-gradient(135deg, rgba(122,184,212,0.1), rgba(242,167,75,0.08))", border: `1.5px solid ${T.border}`, borderRadius: 16, padding: "14px 16px", marginBottom: 16, fontFamily: "'Nunito', sans-serif", fontSize: 14, fontStyle: "italic", fontWeight: 600, color: T.primary }}>
+          🌿 {t.profileWorking}
+        </div>
+        <Card style={{ marginBottom: 14 }}>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.yourFocus}</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {(profile?.focuses || []).map(fid => {
+              const f = t.focusAreas.find(a => a.id === fid);
+              if (!f) return null;
+              return <div key={fid} style={{ background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", color: T.text, display: "flex", alignItems: "center", gap: 6 }}>{f.icon} {f.label}</div>;
+            })}
+          </div>
+        </Card>
+        <Card style={{ marginBottom: 14 }}>
+          <Row label={t.yourFreq} value={freqObj?.label || "—"} />
+          <Row label={t.yourDays} value={(profile?.days || []).map(i => dayNames[i]).join(" · ") || "—"} />
+          <Row label={t.subscription} value={isTrial ? "Free trial" : "Active"} />
+        </Card>
+        <Card style={{ marginBottom: 16 }}>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.language}</div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {LANGUAGES.map(l => (
+              <button key={l.id} onClick={() => setLang(l.id)} style={{ background: lang === l.id ? T.primary : "#F0EBE0", color: lang === l.id ? "white" : T.text, borderRadius: 10, padding: "6px 12px", fontSize: 13, fontWeight: 700, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s" }}>
+                {l.flag} {l.id.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </Card>
+        <PrimaryBtn onClick={onEdit} style={{ background: `linear-gradient(135deg, ${T.primary}, #5aa0bc)`, boxShadow: "0 4px 20px rgba(122,184,212,0.4)", marginBottom: 10 }}>{t.editPrefs}</PrimaryBtn>
+        <button onClick={onManageSubscription} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "14px", background: "white", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 14, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.amber, boxShadow: T.shadowSm }}>✨ {t.manageSubscription}</button>
+        <button onClick={onSignOut} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", padding: "14px", marginTop: 10, background: "none", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 13, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", color: T.muted }}>Sign out</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── SCREEN: PAYWALL ──────────────────────────────────────────────────────────
+function PaywallScreen({ lang, onContinue }) {
+  const t = i18n[lang] || i18n.en;
+  const [plan, setPlan] = useState("annual");
+  const plans = [{ id:"monthly",...t.monthly },{ id:"annual",...t.annual },{ id:"lifetime",...t.lifetime }];
+  return (
+    <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
+      <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }} className="fade-up">
+          <SunOrb size={70} style={{ margin: "0 auto 20px" }} />
+          <div style={{ display: "inline-block", fontSize: 11, fontWeight: 700, color: T.primary, background: "rgba(122,184,212,0.15)", borderRadius: 20, padding: "4px 14px", letterSpacing: "1px", textTransform: "uppercase", marginBottom: 14 }}>Free trial active</div>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 8, lineHeight: 1.25 }}>{t.paywallTitle}</div>
+          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.55 }}>{t.paywallSub}</div>
+        </div>
+        <div className="fade-up" style={{ animationDelay: "0.1s", marginBottom: 20 }}>
+          {plans.map(p => (
+            <button key={p.id} onClick={() => setPlan(p.id)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: plan === p.id ? "rgba(122,184,212,0.1)" : "white", border: `2px solid ${plan === p.id ? T.primary : T.border}`, borderRadius: 16, padding: "16px", marginBottom: 10, boxShadow: plan === p.id ? T.shadowSm : "none", transition: "all 0.2s" }}>
+              <div style={{ textAlign: "left" }}>
+                <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 15, fontWeight: 700, color: T.text }}>{p.label}</div>
+                <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{p.period}</div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {p.badge ? <Pill color={T.amber}>{p.badge}</Pill> : null}
+                <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>{p.price}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+        <div className="fade-up" style={{ animationDelay: "0.2s" }}>
+          <PrimaryBtn onClick={onContinue}>{t.unlockBtn}</PrimaryBtn>
+          <div style={{ height: 1, background: T.border, margin: "20px 0" }} />
+          <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
+            <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.restore}</button>
+            <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
+          </div>
+          <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 14, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center" }}>← Back</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── APP ──────────────────────────────────────────────────────────────────────
+export default function App() {
+  const [lang, setLang] = useState(detectLang);
+  const [screen, setScreen] = useState("landing");
+  const [profile, setProfile] = useState(null);
+  const [activeNav, setActiveNav] = useState("home");
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [isTrial, setIsTrial] = useState(true);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) { setUser(session.user); setScreen("main"); }
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) { setUser(session.user); } else { setUser(null); setScreen("landing"); }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const t = i18n[lang] || i18n.en;
+  const handleStart = () => needsInstall() ? setScreen("install") : setScreen("onboarding");
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
+      {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} />}
+      {screen === "install" && <InstallScreen onContinue={() => setScreen("onboarding")} />}
+      {screen === "onboarding" && (
+        <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
+          setProfile(data);
+          if (user) {
+            await supabase.from('profiles').upsert({ id: user.id, email: user.email, age_group: data.age, kids: data.kids, work_types: data.workTypes, focuses: data.focuses, frequency: data.freq, active_days: data.days, language: lang, updated_at: new Date().toISOString() });
+          }
+          setScreen("signup");
+        }} />
+      )}
+      {screen === "signup" && <SignUpScreen lang={lang} onComplete={() => { setScreen("main"); setShowWelcome(true); }} />}
+      {screen === "paywall" && <PaywallScreen lang={lang} onContinue={() => { setIsTrial(false); setScreen("main"); setActiveNav("home"); }} />}
+      {screen === "main" && (
+        <>
+          <div className="screen">
+            {activeNav === "home" && <HomeScreen lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />}
+            {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
+            {activeNav === "profile" && (
+              <ProfileScreen lang={lang} setLang={setLang} profile={profile} isTrial={isTrial}
+                onEdit={() => setScreen("onboarding")}
+                onManageSubscription={() => setScreen("paywall")}
+                onSignOut={async () => { await supabase.auth.signOut(); setProfile(null); setScreen("landing"); }}
+              />
+            )}
+          </div>
+          <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
+        </>
+      )}
+    </div>
+  );
+}
