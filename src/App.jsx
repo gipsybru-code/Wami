@@ -559,7 +559,6 @@ const BONUS_PROMPTS = {
 function getPrompt(profile, focuses, shownIds = []) {
   const pool = [];
 
-  // Determine profile tags
   const tags = [];
   if (profile?.kids === 1) tags.push("small_kids");
   if (profile?.kids === 2) tags.push("teens");
@@ -568,7 +567,6 @@ function getPrompt(profile, focuses, shownIds = []) {
   if (profile?.age === 0) tags.push("young");
   if (profile?.age === 2) tags.push("senior");
 
-  // Build pool from focus areas
   const activeFocuses = focuses?.length > 0 ? focuses : Object.keys(MAIN_PROMPTS);
   activeFocuses.forEach(f => {
     if (MAIN_PROMPTS[f]) {
@@ -576,21 +574,18 @@ function getPrompt(profile, focuses, shownIds = []) {
         pool.push({ id: `main_${f}_${i}`, text: p, weight: 1 });
       });
     }
-    // Add bonus prompts for matching tags
     tags.forEach(tag => {
       if (BONUS_PROMPTS[tag]?.[f]) {
         BONUS_PROMPTS[tag][f].forEach((p, i) => {
-          pool.push({ id: `bonus_${tag}_${f}_${i}`, text: p, weight: 3 }); // weighted higher
+          pool.push({ id: `bonus_${tag}_${f}_${i}`, text: p, weight: 3 });
         });
       }
     });
   });
 
-  // Filter out recently shown
   const fresh = pool.filter(p => !shownIds.includes(p.id));
-  const source = fresh.length > 0 ? fresh : pool; // fallback if all shown
+  const source = fresh.length > 0 ? fresh : pool;
 
-  // Weighted random selection
   const totalWeight = source.reduce((s, p) => s + p.weight, 0);
   let rand = Math.random() * totalWeight;
   for (const p of source) {
@@ -614,7 +609,7 @@ function detectLang() {
   return ["en","it","pt","es","fr"].includes(nav) ? nav : "en";
 }
 
-// ─── I18N (English only shown for brevity — same structure for all) ───────────
+// ─── I18N ─────────────────────────────────────────────────────────────────────
 const i18n = {
   en: {
     tagline: "Grow Kindly.",
@@ -696,10 +691,337 @@ const i18n = {
       { id:"confidence",    icon:"🦋",  label:"Feel more confident",    desc:"Trust yourself a little more" },
       { id:"creativity",    icon:"🎨",  label:"More creativity",        desc:"Make, imagine, express" },
     ],
+    signOut: "Sign out",
+  },
+  it: {
+    tagline: "Cresci con gentilezza.",
+    sub: "Piccoli suggerimenti per un cambiamento significativo.",
+    hero1: "Non hai bisogno di motivazione.",
+    hero2: "Hai bisogno di un'interruzione.",
+    desc: "Wami ti invia suggerimenti gentili durante la giornata — per muoverti, respirare, concentrarti, connetterti e crescere. Scegli le tue aree di focus, il tuo ritmo, e lascia fare a Wami.",
+    focus12: "12 aree di focus",
+    focusDesc: "Stress · Energia · Focus · Movimento · Alimentazione · Relazioni · Sonno · Calma · Digitale · Gioia · Fiducia · Creatività",
+    frequency: "3 livelli di frequenza",
+    freqDesc: "Leggero (2×/sett.) · Costante (1×/giorno) · Presente (3×/giorno)",
+    trial: "Inizia gratis — 14 giorni",
+    signin: "Hai già un account? Accedi",
+    onboardTitle: "Personalizzalo",
+    onboardSub: "Poche scelte rapide per rendere i tuoi suggerimenti personali.",
+    ageLabel: "Come ti vedi?",
+    kidsLabel: "Figli",
+    workTypeLabel: "Tipo di lavoro",
+    focusLabel: "Cosa vorresti di più?",
+    focusSub: "Scegli fino a 5 aree di focus.",
+    freqLabel: "Quanto spesso vuoi un suggerimento?",
+    daysLabel: "Quali giorni?",
+    letsgo: "Iniziamo →",
+    signupTitle: "Il tuo profilo è pronto.",
+    signupSub: "Crea il tuo account per salvarlo e iniziare a esplorare.",
+    emailPlaceholder: "La tua email",
+    passwordPlaceholder: "Scegli una password",
+    createAccount: "Crea account",
+    alreadyAccount: "Hai già un account? Accedi",
+    paywallTitle: "Sblocca l'esperienza completa.",
+    paywallSub: "686 suggerimenti in 12 aree di focus. Nuovi ogni giorno.",
+    trialBadge: "Prova gratuita attiva",
+    monthly:  { label: "Mensile",   price: "€3.99", period: "/mese",  badge: "" },
+    annual:   { label: "Annuale",   price: "€19",   period: "/anno",  badge: "Miglior valore" },
+    lifetime: { label: "A vita",    price: "€59",   period: "una volta", badge: "Per sempre" },
+    unlockBtn: "Sblocca tutti i suggerimenti",
+    restore: "Ripristina acquisto",
+    terms: "Termini · Privacy",
+    homeGreeting: "Buongiorno 🌅",
+    todayPrompt: "Suggerimento di oggi",
+    trialPrompt: "Suggerimento di prova",
+    nextPrompt: "Prossimo suggerimento",
+    tunein: "Prima del prossimo suggerimento — fai un respiro e nota come ti senti adesso.",
+    explore: "Esplora",
+    profile: "Profilo",
+    home: "Home",
+    exploreTitle: "12 Aree di Focus",
+    exploreSub: "Tocca un'area per saperne di più.",
+    profileTitle: "Il tuo Wami",
+    profileWorking: "Wami sta lavorando silenziosamente per te.",
+    editPrefs: "Modifica preferenze",
+    yourFocus: "Le tue aree di focus",
+    yourFreq: "Frequenza",
+    yourDays: "Giorni attivi",
+    language: "Lingua",
+    subscription: "Abbonamento",
+    trialActive: "Prova gratuita attiva",
+    manageSubscription: "Gestisci abbonamento",
+    ages: ["Giovane", "Adulto", "Senior"],
+    kids: ["Senza figli", "Figli piccoli", "Adolescenti", "Figli grandi"],
+    workTypes: ["Ufficio", "Lavoro fisico", "Altro"],
+    freqs: [
+      { id: "light",   label: "Leggero",  desc: "2 suggerimenti a settimana", interval: 240 },
+      { id: "steady",  label: "Costante", desc: "1 suggerimento al giorno",   interval: 120 },
+      { id: "present", label: "Presente", desc: "3 suggerimenti al giorno",   interval: 60  },
+    ],
+    dayNames: ["L","M","M","G","V","S","D"],
+    focusAreas: [
+      { id:"stress",        icon:"🌬️", label:"Meno stress",              desc:"Respira, lascia andare, trova equilibrio" },
+      { id:"energy",        icon:"⚡",  label:"Più energia",              desc:"Risvegliati dall'interno" },
+      { id:"focus",         icon:"🎯",  label:"Più concentrazione",       desc:"Trova il tuo filo e seguilo" },
+      { id:"movement",      icon:"🏃",  label:"Muoviti di più",           desc:"Piccoli inviti a muoversi" },
+      { id:"eating",        icon:"🥑",  label:"Mangia meglio",            desc:"Un rapporto più gentile col cibo" },
+      { id:"relationships", icon:"🤝",  label:"Relazioni migliori",       desc:"Piccoli gesti che avvicinano" },
+      { id:"sleep",         icon:"🌙",  label:"Dormi meglio",             desc:"Un riposo più profondo e rigenerante" },
+      { id:"calm",          icon:"🌊",  label:"Più calma e presenza",     desc:"Rallenta, nota, arriva" },
+      { id:"digital",       icon:"📵",  label:"Equilibrio digitale",      desc:"Riprendi la tua attenzione" },
+      { id:"joy",           icon:"✨",  label:"Nutri gioia e spirito",    desc:"Meraviglia, bellezza, significato" },
+      { id:"confidence",    icon:"🦋",  label:"Più fiducia in te",        desc:"Fidati un po' di più di te stesso" },
+      { id:"creativity",    icon:"🎨",  label:"Più creatività",           desc:"Crea, immagina, esprimi" },
+    ],
+    signOut: "Esci",
+  },
+  pt: {
+    tagline: "Cresça com gentileza.",
+    sub: "Pequenos estímulos para mudanças significativas.",
+    hero1: "Você não precisa de motivação.",
+    hero2: "Você precisa de uma pausa.",
+    desc: "O Wami envia estímulos gentis ao longo do seu dia — para te ajudar a se mover, respirar, focar, conectar e crescer. Escolha suas áreas de foco, seu ritmo, e deixe o Wami cuidar do resto.",
+    focus12: "12 áreas de foco",
+    focusDesc: "Estresse · Energia · Foco · Movimento · Alimentação · Relacionamentos · Sono · Calma · Digital · Alegria · Confiança · Criatividade",
+    frequency: "3 níveis de frequência",
+    freqDesc: "Leve (2×/sem.) · Regular (1×/dia) · Presente (3×/dia)",
+    trial: "Comece grátis — 14 dias",
+    signin: "Já tem uma conta? Entre",
+    onboardTitle: "Personalize",
+    onboardSub: "Algumas escolhas rápidas para deixar seus estímulos pessoais.",
+    ageLabel: "Como você se vê?",
+    kidsLabel: "Filhos",
+    workTypeLabel: "Tipo de trabalho",
+    focusLabel: "O que você gostaria de ter mais?",
+    focusSub: "Escolha até 5 áreas de foco.",
+    freqLabel: "Com que frequência quer um estímulo?",
+    daysLabel: "Quais dias?",
+    letsgo: "Vamos lá →",
+    signupTitle: "Seu perfil está pronto.",
+    signupSub: "Crie sua conta para salvar e começar a explorar.",
+    emailPlaceholder: "Seu e-mail",
+    passwordPlaceholder: "Escolha uma senha",
+    createAccount: "Criar conta",
+    alreadyAccount: "Já tem uma conta? Entre",
+    paywallTitle: "Desbloqueie a experiência completa.",
+    paywallSub: "686 estímulos em 12 áreas de foco. Novos todos os dias.",
+    trialBadge: "Teste gratuito ativo",
+    monthly:  { label: "Mensal",    price: "€3.99", period: "/mês",   badge: "" },
+    annual:   { label: "Anual",     price: "€19",   period: "/ano",   badge: "Melhor valor" },
+    lifetime: { label: "Vitalício", price: "€59",   period: "único",  badge: "Para sempre" },
+    unlockBtn: "Desbloquear todos os estímulos",
+    restore: "Restaurar compra",
+    terms: "Termos · Privacidade",
+    homeGreeting: "Bom dia 🌅",
+    todayPrompt: "Estímulo de hoje",
+    trialPrompt: "Estímulo de teste",
+    nextPrompt: "Próximo estímulo",
+    tunein: "Antes do próximo estímulo — respire fundo e perceba como você está agora.",
+    explore: "Explorar",
+    profile: "Perfil",
+    home: "Início",
+    exploreTitle: "12 Áreas de Foco",
+    exploreSub: "Toque em qualquer área para saber mais.",
+    profileTitle: "Seu Wami",
+    profileWorking: "O Wami está trabalhando silenciosamente por você.",
+    editPrefs: "Editar preferências",
+    yourFocus: "Suas áreas de foco",
+    yourFreq: "Frequência",
+    yourDays: "Dias ativos",
+    language: "Idioma",
+    subscription: "Assinatura",
+    trialActive: "Teste gratuito ativo",
+    manageSubscription: "Gerenciar assinatura",
+    ages: ["Jovem", "Adulto", "Sênior"],
+    kids: ["Sem filhos", "Filhos pequenos", "Adolescentes", "Filhos adultos"],
+    workTypes: ["Escritório", "Trabalho físico", "Outro"],
+    freqs: [
+      { id: "light",   label: "Leve",     desc: "2 estímulos por semana", interval: 240 },
+      { id: "steady",  label: "Regular",  desc: "1 estímulo por dia",     interval: 120 },
+      { id: "present", label: "Presente", desc: "3 estímulos por dia",    interval: 60  },
+    ],
+    dayNames: ["S","T","Q","Q","S","S","D"],
+    focusAreas: [
+      { id:"stress",        icon:"🌬️", label:"Menos estresse",          desc:"Respire, solte, encontre equilíbrio" },
+      { id:"energy",        icon:"⚡",  label:"Mais energia",            desc:"Desperte por dentro" },
+      { id:"focus",         icon:"🎯",  label:"Mais foco",               desc:"Encontre seu fio e siga-o" },
+      { id:"movement",      icon:"🏃",  label:"Mover-se mais",           desc:"Pequenos convites para se mexer" },
+      { id:"eating",        icon:"🥑",  label:"Comer melhor",            desc:"Uma relação mais gentil com a comida" },
+      { id:"relationships", icon:"🤝",  label:"Melhores relações",       desc:"Pequenos gestos que aproximam" },
+      { id:"sleep",         icon:"🌙",  label:"Dormir melhor",           desc:"Descanso mais profundo e restaurador" },
+      { id:"calm",          icon:"🌊",  label:"Mais calma e presença",   desc:"Desacelere, perceba, chegue" },
+      { id:"digital",       icon:"📵",  label:"Equilíbrio digital",      desc:"Recupere sua atenção" },
+      { id:"joy",           icon:"✨",  label:"Nutrir alegria",          desc:"Maravilha, beleza, significado" },
+      { id:"confidence",    icon:"🦋",  label:"Mais confiança",          desc:"Confie um pouco mais em si mesmo" },
+      { id:"creativity",    icon:"🎨",  label:"Mais criatividade",       desc:"Crie, imagine, expresse" },
+    ],
+    signOut: "Sair",
+  },
+  es: {
+    tagline: "Crece con amabilidad.",
+    sub: "Pequeños estímulos para cambios significativos.",
+    hero1: "No necesitas motivación.",
+    hero2: "Necesitas una interrupción.",
+    desc: "Wami te envía estímulos gentiles durante el día — para ayudarte a moverte, respirar, concentrarte, conectarte y crecer. Elige tus áreas de enfoque, tu ritmo, y deja que Wami haga el resto.",
+    focus12: "12 áreas de enfoque",
+    focusDesc: "Estrés · Energía · Enfoque · Movimiento · Alimentación · Relaciones · Sueño · Calma · Digital · Alegría · Confianza · Creatividad",
+    frequency: "3 niveles de frecuencia",
+    freqDesc: "Ligero (2×/sem.) · Constante (1×/día) · Presente (3×/día)",
+    trial: "Empieza gratis — 14 días",
+    signin: "¿Ya tienes cuenta? Inicia sesión",
+    onboardTitle: "Personalízalo",
+    onboardSub: "Algunas elecciones rápidas para que tus estímulos sean personales.",
+    ageLabel: "¿Cómo te ves?",
+    kidsLabel: "Hijos",
+    workTypeLabel: "Tipo de trabajo",
+    focusLabel: "¿Qué te gustaría tener más?",
+    focusSub: "Elige hasta 5 áreas de enfoque.",
+    freqLabel: "¿Con qué frecuencia quieres un estímulo?",
+    daysLabel: "¿Qué días?",
+    letsgo: "¡Vamos! →",
+    signupTitle: "Tu perfil está listo.",
+    signupSub: "Crea tu cuenta para guardarlo y empezar a explorar.",
+    emailPlaceholder: "Tu correo",
+    passwordPlaceholder: "Elige una contraseña",
+    createAccount: "Crear cuenta",
+    alreadyAccount: "¿Ya tienes cuenta? Inicia sesión",
+    paywallTitle: "Desbloquea la experiencia completa.",
+    paywallSub: "686 estímulos en 12 áreas de enfoque. Nuevos cada día.",
+    trialBadge: "Prueba gratuita activa",
+    monthly:  { label: "Mensual",   price: "€3.99", period: "/mes",  badge: "" },
+    annual:   { label: "Anual",     price: "€19",   period: "/año",  badge: "Mejor valor" },
+    lifetime: { label: "De por vida", price: "€59", period: "único", badge: "Para siempre" },
+    unlockBtn: "Desbloquear todos los estímulos",
+    restore: "Restaurar compra",
+    terms: "Términos · Privacidad",
+    homeGreeting: "Buenos días 🌅",
+    todayPrompt: "Estímulo de hoy",
+    trialPrompt: "Estímulo de prueba",
+    nextPrompt: "Próximo estímulo",
+    tunein: "Antes del próximo estímulo — respira hondo y observa cómo te sientes ahora mismo.",
+    explore: "Explorar",
+    profile: "Perfil",
+    home: "Inicio",
+    exploreTitle: "12 Áreas de Enfoque",
+    exploreSub: "Toca cualquier área para saber más.",
+    profileTitle: "Tu Wami",
+    profileWorking: "Wami está trabajando silenciosamente para ti.",
+    editPrefs: "Editar preferencias",
+    yourFocus: "Tus áreas de enfoque",
+    yourFreq: "Frecuencia",
+    yourDays: "Días activos",
+    language: "Idioma",
+    subscription: "Suscripción",
+    trialActive: "Prueba gratuita activa",
+    manageSubscription: "Gestionar suscripción",
+    ages: ["Joven", "Adulto", "Mayor"],
+    kids: ["Sin hijos", "Hijos pequeños", "Adolescentes", "Hijos adultos"],
+    workTypes: ["Oficina", "Trabajo físico", "Otro"],
+    freqs: [
+      { id: "light",   label: "Ligero",   desc: "2 estímulos por semana", interval: 240 },
+      { id: "steady",  label: "Constante",desc: "1 estímulo por día",     interval: 120 },
+      { id: "present", label: "Presente", desc: "3 estímulos por día",    interval: 60  },
+    ],
+    dayNames: ["L","M","X","J","V","S","D"],
+    focusAreas: [
+      { id:"stress",        icon:"🌬️", label:"Menos estrés",             desc:"Respira, suelta, encuentra equilibrio" },
+      { id:"energy",        icon:"⚡",  label:"Más energía",              desc:"Despierta desde adentro" },
+      { id:"focus",         icon:"🎯",  label:"Mejor enfoque",            desc:"Encuentra tu hilo y síguelo" },
+      { id:"movement",      icon:"🏃",  label:"Muévete más",              desc:"Pequeñas invitaciones a moverse" },
+      { id:"eating",        icon:"🥑",  label:"Come mejor",              desc:"Una relación más amable con la comida" },
+      { id:"relationships", icon:"🤝",  label:"Mejores relaciones",       desc:"Pequeños gestos que acercan" },
+      { id:"sleep",         icon:"🌙",  label:"Duerme mejor",             desc:"Descanso más profundo y restaurador" },
+      { id:"calm",          icon:"🌊",  label:"Más calma y presencia",    desc:"Reduce la velocidad, nota, llega" },
+      { id:"digital",       icon:"📵",  label:"Equilibrio digital",       desc:"Recupera tu atención" },
+      { id:"joy",           icon:"✨",  label:"Nutre alegría y espíritu", desc:"Asombro, belleza, significado" },
+      { id:"confidence",    icon:"🦋",  label:"Más confianza",            desc:"Confía un poco más en ti mismo" },
+      { id:"creativity",    icon:"🎨",  label:"Más creatividad",          desc:"Crea, imagina, expresa" },
+    ],
+    signOut: "Cerrar sesión",
+  },
+  fr: {
+    tagline: "Grandis avec douceur.",
+    sub: "De petites impulsions pour un changement significatif.",
+    hero1: "Tu n'as pas besoin de motivation.",
+    hero2: "Tu as besoin d'une interruption.",
+    desc: "Wami t'envoie des suggestions douces tout au long de ta journée — pour t'aider à bouger, respirer, te concentrer, te connecter et grandir. Choisis tes domaines de focus, ton rythme, et laisse Wami faire le reste.",
+    focus12: "12 domaines de focus",
+    focusDesc: "Stress · Énergie · Focus · Mouvement · Alimentation · Relations · Sommeil · Calme · Numérique · Joie · Confiance · Créativité",
+    frequency: "3 niveaux de fréquence",
+    freqDesc: "Léger (2×/sem.) · Régulier (1×/jour) · Présent (3×/jour)",
+    trial: "Commence gratuitement — 14 jours",
+    signin: "Déjà un compte ? Se connecter",
+    onboardTitle: "Personnalise-le",
+    onboardSub: "Quelques choix rapides pour que tes suggestions soient personnelles.",
+    ageLabel: "Comment te vois-tu ?",
+    kidsLabel: "Enfants",
+    workTypeLabel: "Type de travail",
+    focusLabel: "Que voudrais-tu avoir plus ?",
+    focusSub: "Choisis jusqu'à 5 domaines de focus.",
+    freqLabel: "À quelle fréquence veux-tu une suggestion ?",
+    daysLabel: "Quels jours ?",
+    letsgo: "C'est parti →",
+    signupTitle: "Ton profil est prêt.",
+    signupSub: "Crée ton compte pour le sauvegarder et commencer à explorer.",
+    emailPlaceholder: "Ton e-mail",
+    passwordPlaceholder: "Choisis un mot de passe",
+    createAccount: "Créer un compte",
+    alreadyAccount: "Déjà un compte ? Se connecter",
+    paywallTitle: "Débloque l'expérience complète.",
+    paywallSub: "686 suggestions dans 12 domaines de focus. Nouvelles chaque jour.",
+    trialBadge: "Essai gratuit actif",
+    monthly:  { label: "Mensuel",   price: "€3.99", period: "/mois",  badge: "" },
+    annual:   { label: "Annuel",    price: "€19",   period: "/an",    badge: "Meilleure valeur" },
+    lifetime: { label: "À vie",     price: "€59",   period: "unique", badge: "Pour toujours" },
+    unlockBtn: "Débloquer toutes les suggestions",
+    restore: "Restaurer l'achat",
+    terms: "Conditions · Confidentialité",
+    homeGreeting: "Bonjour 🌅",
+    todayPrompt: "Suggestion du jour",
+    trialPrompt: "Suggestion d'essai",
+    nextPrompt: "Prochaine suggestion",
+    tunein: "Avant la prochaine suggestion — prends une grande respiration et remarque comment tu te sens maintenant.",
+    explore: "Explorer",
+    profile: "Profil",
+    home: "Accueil",
+    exploreTitle: "12 Domaines de Focus",
+    exploreSub: "Appuie sur un domaine pour en savoir plus.",
+    profileTitle: "Ton Wami",
+    profileWorking: "Wami travaille discrètement pour toi.",
+    editPrefs: "Modifier les préférences",
+    yourFocus: "Tes domaines de focus",
+    yourFreq: "Fréquence",
+    yourDays: "Jours actifs",
+    language: "Langue",
+    subscription: "Abonnement",
+    trialActive: "Essai gratuit actif",
+    manageSubscription: "Gérer l'abonnement",
+    ages: ["Jeune", "Adulte", "Senior"],
+    kids: ["Sans enfants", "Petits enfants", "Adolescents", "Enfants adultes"],
+    workTypes: ["Bureau", "Travail physique", "Autre"],
+    freqs: [
+      { id: "light",   label: "Léger",    desc: "2 suggestions par semaine", interval: 240 },
+      { id: "steady",  label: "Régulier", desc: "1 suggestion par jour",     interval: 120 },
+      { id: "present", label: "Présent",  desc: "3 suggestions par jour",    interval: 60  },
+    ],
+    dayNames: ["L","M","M","J","V","S","D"],
+    focusAreas: [
+      { id:"stress",        icon:"🌬️", label:"Moins de stress",           desc:"Respire, lâche prise, trouve l'équilibre" },
+      { id:"energy",        icon:"⚡",  label:"Plus d'énergie",            desc:"Réveille-toi de l'intérieur" },
+      { id:"focus",         icon:"🎯",  label:"Meilleure concentration",   desc:"Trouve ton fil et suis-le" },
+      { id:"movement",      icon:"🏃",  label:"Bouger plus",               desc:"De petites invitations à se mouvoir" },
+      { id:"eating",        icon:"🥑",  label:"Manger mieux",             desc:"Une relation plus douce avec la nourriture" },
+      { id:"relationships", icon:"🤝",  label:"Meilleures relations",      desc:"De petits gestes qui rapprochent" },
+      { id:"sleep",         icon:"🌙",  label:"Mieux dormir",              desc:"Un repos plus profond et restaurateur" },
+      { id:"calm",          icon:"🌊",  label:"Plus de calme et présence", desc:"Ralentis, remarque, arrive" },
+      { id:"digital",       icon:"📵",  label:"Équilibre numérique",       desc:"Récupère ton attention" },
+      { id:"joy",           icon:"✨",  label:"Nourrir joie et esprit",    desc:"Émerveillement, beauté, sens" },
+      { id:"confidence",    icon:"🦋",  label:"Plus de confiance",         desc:"Fais-toi un peu plus confiance" },
+      { id:"creativity",    icon:"🎨",  label:"Plus de créativité",        desc:"Crée, imagine, exprime" },
+    ],
+    signOut: "Se déconnecter",
   },
 };
-// Use English for all languages in this prototype
-["it","pt","es","fr"].forEach(l => { i18n[l] = { ...i18n.en }; });
 
 // ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
 function WamiLogo({ size = 38 }) {
@@ -865,7 +1187,8 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
 
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
-      <div style={{ maxWidth: 420, margin: "0 auto", padding: "24px 20px 48px" }}>
+      {/* FIX 3: explicit block/column layout wrapper to ensure cards stack vertically */}
+      <div style={{ maxWidth: 420, margin: "0 auto", padding: "24px 20px 48px", display: "flex", flexDirection: "column" }}>
 
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
@@ -873,12 +1196,12 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
           <LangPicker lang={lang} onSelect={setLang} />
         </div>
 
-        <div className="fade-up">
+        <div className="fade-up" style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>{t.onboardTitle}</div>
           <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 24, lineHeight: 1.5 }}>{t.onboardSub}</div>
 
           {/* Profile card */}
-          <Card style={{ marginBottom: 16 }}>
+          <Card style={{ marginBottom: 16, width: "100%" }}>
 
             {/* Age */}
             <div style={{ marginBottom: 20 }}>
@@ -907,7 +1230,7 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
           </Card>
 
           {/* Focus areas */}
-          <Card style={{ marginBottom: 16 }}>
+          <Card style={{ marginBottom: 16, width: "100%" }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 4 }}>{t.focusLabel}</div>
             <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 14 }}>{t.focusSub}</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -921,7 +1244,7 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
           </Card>
 
           {/* Frequency */}
-          <Card style={{ marginBottom: 16 }}>
+          <Card style={{ marginBottom: 16, width: "100%" }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 14 }}>{t.freqLabel}</div>
             {t.freqs.map(f => (
               <button key={f.id} onClick={() => setFreq(f.id)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: freq === f.id ? "rgba(122,184,212,0.1)" : "#F9F5EF", border: `2px solid ${freq === f.id ? T.primary : "transparent"}`, borderRadius: 14, padding: "14px 16px", marginBottom: 8, transition: "all 0.2s" }}>
@@ -935,7 +1258,7 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
           </Card>
 
           {/* Days */}
-          <Card style={{ marginBottom: 28 }}>
+          <Card style={{ marginBottom: 28, width: "100%" }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 14 }}>{t.daysLabel}</div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               {t.dayNames.map((d, i) => (
@@ -1012,7 +1335,6 @@ function SignUpScreen({ lang, onComplete }) {
 function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
   const t = i18n[lang] || i18n.en;
 
-  // Build focus-aware trial pool once
   const trialPool = useState(() => getTrialPrompts(profile?.focuses))[0];
   const [trialIdx, setTrialIdx] = useState(0);
 
@@ -1076,7 +1398,6 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
       </div>
 
       <div style={{ padding: "20px" }}>
-        {/* Welcome card */}
         {showWelcome && (
           <div className="fade-up" style={{ background: "linear-gradient(135deg, rgba(242,167,75,0.15), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "18px 20px", marginBottom: 16, position: "relative" }}>
             <button onClick={onDismissWelcome} style={{ position: "absolute", top: 12, right: 14, fontSize: 18, color: T.muted, fontWeight: 700 }}>×</button>
@@ -1088,7 +1409,6 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
           </div>
         )}
 
-        {/* Notification banner */}
         {notifStatus === "default" && (
           <button onClick={requestNotifications} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.4)`, borderRadius: 20, padding: "14px 18px", marginBottom: 12, textAlign: "left" }}>
             <div>
@@ -1104,7 +1424,6 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
           </div>
         )}
 
-        {/* Prompt card */}
         <Card style={{ marginBottom: 16, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, right: 0, width: 80, height: 80, background: "radial-gradient(circle, rgba(242,167,75,0.1), transparent)", borderRadius: "0 24px 0 80px" }} />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
@@ -1125,7 +1444,6 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
           </div>
         </Card>
 
-        {/* Trial unlock CTA */}
         {isTrial && (
           <button onClick={onUnlock} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(242,167,75,0.12), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "16px 20px", marginBottom: 16, textAlign: "left" }}>
             <div>
@@ -1136,13 +1454,11 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
           </button>
         )}
 
-        {/* Tune-in */}
         <div style={{ background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.3)`, borderRadius: 20, padding: "18px", marginBottom: 16 }}>
           <div style={{ fontSize: 18, marginBottom: 8 }}>🫧</div>
           <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, fontStyle: "italic" }}>{t.tunein}</div>
         </div>
 
-        {/* Focus chips */}
         {profile?.focuses?.length > 0 && (
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 11, fontWeight: 700, color: T.muted, marginBottom: 10, letterSpacing: "0.5px", textTransform: "uppercase" }}>Your focus</div>
@@ -1272,7 +1588,7 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
         </button>
 
         <button onClick={onSignOut} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", padding: "14px", marginTop: 10, background: "none", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 13, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", color: T.muted }}>
-          Sign out
+          {t.signOut || "Sign out"}
         </button>
       </div>
     </div>
@@ -1293,7 +1609,7 @@ function PaywallScreen({ lang, onContinue }) {
       <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }} className="fade-up">
           <SunOrb size={70} style={{ margin: "0 auto 20px" }} />
-          <div style={{ display: "inline-block", fontSize: 11, fontWeight: 700, color: T.primary, background: "rgba(122,184,212,0.15)", borderRadius: 20, padding: "4px 14px", letterSpacing: "1px", textTransform: "uppercase", marginBottom: 14 }}>Free trial active</div>
+          <div style={{ display: "inline-block", fontSize: 11, fontWeight: 700, color: T.primary, background: "rgba(122,184,212,0.15)", borderRadius: 20, padding: "4px 14px", letterSpacing: "1px", textTransform: "uppercase", marginBottom: 14 }}>{t.trialBadge}</div>
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 8, lineHeight: 1.25 }}>{t.paywallTitle}</div>
           <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.55 }}>{t.paywallSub}</div>
         </div>
@@ -1328,7 +1644,6 @@ function PaywallScreen({ lang, onContinue }) {
 }
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
-// ─── INSTALL DETECTION ───────────────────────────────────────────────────────
 function isIOS() {
   return /iphone|ipad|ipod/i.test(navigator.userAgent);
 }
@@ -1346,19 +1661,56 @@ function needsInstall() {
 // ─── SCREEN: INSTALL GUIDE ────────────────────────────────────────────────────
 function InstallScreen({ lang, onContinue }) {
   const ios = isIOS();
-  const android = isAndroid();
 
+  // FIX 2: Replace icon reference with clear text description; remove warning at bottom
   const steps = ios ? [
-    { icon: "1️⃣", text: "Open wami.me in Safari", detail: "⚠️ Must use Safari — Chrome and other browsers on iPhone do not support installation" },
-    { icon: "2️⃣", text: "Tap the Share button in Safari", detail: "It looks like this 👇 — at the bottom or top of your screen" },
-    { icon: "3️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu to find it" },
-    { icon: "4️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an icon on your home screen" },
-    { icon: "5️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below" },
+    {
+      icon: "1️⃣",
+      text: "Open wami.me in Safari",
+      detail: "⚠️ Must use Safari — Chrome and other browsers on iPhone do not support installation",
+    },
+    {
+      icon: "2️⃣",
+      text: "Tap the Share button",
+      // Replaced "It looks like this 👇" icon reference with a text description
+      detail: "Look for a square with an upward-pointing arrow ↑ — it appears in the Safari toolbar at the bottom or top of your screen",
+    },
+    {
+      icon: "3️⃣",
+      text: "Scroll down and tap \"Add to Home Screen\"",
+      detail: "You may need to scroll the share menu to find it",
+    },
+    {
+      icon: "4️⃣",
+      text: "Tap \"Add\" to confirm",
+      detail: "Wami will appear as an icon on your home screen",
+    },
+    {
+      icon: "5️⃣",
+      text: "Open Wami from your home screen",
+      detail: "Then come back here and tap Continue below",
+    },
   ] : [
-    { icon: "1️⃣", text: "Tap the menu button ⋮ in Chrome", detail: "Top right corner of your browser" },
-    { icon: "2️⃣", text: "Tap \"Add to Home screen\"", detail: "Or \"Install app\" if you see that option" },
-    { icon: "3️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an app on your home screen" },
-    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below" },
+    {
+      icon: "1️⃣",
+      text: "Tap the menu button ⋮ in Chrome",
+      detail: "Top right corner of your browser",
+    },
+    {
+      icon: "2️⃣",
+      text: "Tap \"Add to Home screen\"",
+      detail: "Or \"Install app\" if you see that option",
+    },
+    {
+      icon: "3️⃣",
+      text: "Tap \"Add\" to confirm",
+      detail: "Wami will appear as an app on your home screen",
+    },
+    {
+      icon: "4️⃣",
+      text: "Open Wami from your home screen",
+      detail: "Then come back here and tap Continue below",
+    },
   ];
 
   return (
@@ -1396,24 +1748,29 @@ function InstallScreen({ lang, onContinue }) {
           ))}
         </div>
 
-        {/* Visual hint for iOS */}
+        {/* Visual hint for iOS — kept and improved */}
         {ios && (
           <div className="fade-up" style={{ animationDelay: "0.2s", background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 16, padding: "16px", marginBottom: 24, textAlign: "center" }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: "'Nunito', sans-serif", marginBottom: 8 }}>
-              The Share button is a square with an arrow pointing upward ↑
+            <div style={{ fontSize: 32, marginBottom: 8 }}>
+              {/* Text-based share button representation instead of an icon */}
+              <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, border: `2px solid ${T.amber}`, borderRadius: 8, fontSize: 18 }}>↑</span>
             </div>
-            <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
-              You'll find it in the Safari toolbar at the top or bottom of your screen.
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: "'Nunito', sans-serif", marginBottom: 6 }}>
+              This is the Safari Share button
+            </div>
+            <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
+              A square with an upward arrow — tap it to open the share menu, then choose "Add to Home Screen".
             </div>
           </div>
         )}
 
+        {/* FIX 2: Removed "Skip for now (notifications may not work)" warning button */}
         <div className="fade-up" style={{ animationDelay: "0.25s" }}>
           <PrimaryBtn onClick={onContinue}>
             I've installed Wami — Continue →
           </PrimaryBtn>
           <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 12, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center", padding: "8px" }}>
-            Skip for now (notifications may not work)
+            Continue without installing
           </button>
         </div>
       </div>
@@ -1430,7 +1787,6 @@ export default function App() {
   const [isTrial, setIsTrial] = useState(true);
   const [user, setUser] = useState(null);
 
-  // Check for existing session on app load
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -1452,7 +1808,6 @@ export default function App() {
   const t = i18n[lang] || i18n.en;
 
   const handleStart = () => {
-    // Show install guide for mobile users not yet in standalone mode
     if (needsInstall()) {
       setScreen("install");
     } else {
@@ -1460,18 +1815,29 @@ export default function App() {
     }
   };
 
+  // FIX 1: Wrap setLang to also persist in Supabase when user is logged in
+  const handleSetLang = async (newLang) => {
+    setLang(newLang);
+    if (user && typeof supabase !== 'undefined') {
+      try {
+        await supabase.from('profiles').update({ language: newLang }).eq('id', user.id);
+      } catch (e) {
+        // silent fail — UI already updated
+      }
+    }
+  };
+
   return (
     <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
       {screen === "landing" && (
-        <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} />
+        <LandingScreen lang={lang} setLang={handleSetLang} onStart={handleStart} />
       )}
       {screen === "install" && (
         <InstallScreen lang={lang} onContinue={() => setScreen("onboarding")} />
       )}
       {screen === "onboarding" && (
-        <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
+        <OnboardingScreen lang={lang} setLang={handleSetLang} onComplete={async (data) => {
           setProfile(data);
-          // Save profile to Supabase if logged in
           if (user) {
             await supabase.from('profiles').upsert({
               id: user.id,
@@ -1499,13 +1865,13 @@ export default function App() {
         <>
           <div className="screen">
             {activeNav === "home" && (
-              <HomeScreen lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />
+              <HomeScreen lang={lang} setLang={handleSetLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />
             )}
             {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
             {activeNav === "profile" && (
               <ProfileScreen
                 lang={lang}
-                setLang={setLang}
+                setLang={handleSetLang}
                 profile={profile}
                 isTrial={isTrial}
                 onEdit={() => setScreen("onboarding")}
