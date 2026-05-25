@@ -867,7 +867,7 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
     <div style={{ marginBottom: 22 }}>
       <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: sub ? 2 : 10 }}>{label}</div>
       {sub && <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 10 }}>{sub}</div>}
-      <div style={{ display: "flex", flexWrap: "wrap" }}>{children}</div>
+      <div>{children}</div>
     </div>
   );
 
@@ -881,27 +881,33 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
 
           <Card style={{ marginBottom: 16 }}>
             <Section label={t.ageLabel}>
-              {t.ages.map((a, i) => <SelectPill key={i} label={a} selected={age === i} onClick={() => setAge(i)} />)}
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.ages.map((a, i) => <SelectPill key={i} label={a} selected={age === i} onClick={() => setAge(i)} />)}
+              </div>
             </Section>
             <Section label={t.kidsLabel}>
-              {t.kids.map((k, i) => <SelectPill key={i} label={k} selected={kids === i} onClick={() => setKids(i)} />)}
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.kids.map((k, i) => <SelectPill key={i} label={k} selected={kids === i} onClick={() => setKids(i)} />)}
+              </div>
             </Section>
             <Section label={t.workTypeLabel}>
-              {t.workTypes.map((w, i) => <SelectPill key={i} label={w} selected={workTypes.includes(i)} onClick={() => toggleWorkType(i)} />)}
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.workTypes.map((w, i) => <SelectPill key={i} label={w} selected={workTypes.includes(i)} onClick={() => toggleWorkType(i)} />)}
+              </div>
             </Section>
           </Card>
 
           <Card style={{ marginBottom: 16 }}>
-            <Section label={t.focusLabel} sub={t.focusSub}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, width: "100%" }}>
-                {t.focusAreas.map(f => (
-                  <button key={f.id} onClick={() => toggleFocus(f.id)} style={{ background: focuses.includes(f.id) ? "rgba(242,167,75,0.12)" : "#F9F5EF", border: `2px solid ${focuses.includes(f.id) ? T.amber : "transparent"}`, borderRadius: 14, padding: "12px 10px", textAlign: "left", transition: "all 0.2s" }}>
-                    <div style={{ fontSize: 18, marginBottom: 4 }}>{f.icon}</div>
-                    <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, fontWeight: 700, color: T.text, lineHeight: 1.3 }}>{f.label}</div>
-                  </button>
-                ))}
-              </div>
-            </Section>
+            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 4 }}>{t.focusLabel}</div>
+            <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 14 }}>{t.focusSub}</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {t.focusAreas.map(f => (
+                <button key={f.id} onClick={() => toggleFocus(f.id)} style={{ background: focuses.includes(f.id) ? "rgba(242,167,75,0.12)" : "#F9F5EF", border: `2px solid ${focuses.includes(f.id) ? T.amber : "transparent"}`, borderRadius: 14, padding: "12px 10px", textAlign: "left", transition: "all 0.2s" }}>
+                  <div style={{ fontSize: 18, marginBottom: 4 }}>{f.icon}</div>
+                  <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, fontWeight: 700, color: T.text, lineHeight: 1.3 }}>{f.label}</div>
+                </button>
+              ))}
+            </div>
           </Card>
 
           <Card style={{ marginBottom: 16 }}>
@@ -1381,16 +1387,11 @@ function InstallScreen({ lang, onContinue }) {
         {/* Visual hint for iOS */}
         {ios && (
           <div className="fade-up" style={{ animationDelay: "0.2s", background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 16, padding: "16px", marginBottom: 24, textAlign: "center" }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: "'Nunito', sans-serif", marginBottom: 12 }}>
-              The Share button looks like this:
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: "'Nunito', sans-serif", marginBottom: 8 }}>
+              The Share button is a square with an arrow pointing upward ↑
             </div>
-            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ margin: "0 auto 12px", display: "block" }}>
-              <rect x="1" y="1" width="42" height="42" rx="10" stroke="#F2A74B" strokeWidth="2" fill="rgba(242,167,75,0.1)"/>
-              <path d="M22 26V14M22 14L16 20M22 14L28 20" stroke="#F2A74B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M13 28V32H31V28" stroke="#F2A74B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <div style={{ fontSize: 12, color: "#D04000", fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
-              ⚠️ You must use Safari — other browsers on iPhone do not support installation.
+            <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
+              You'll find it in the Safari toolbar at the top or bottom of your screen.
             </div>
           </div>
         )}
