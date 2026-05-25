@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from './lib/supabase.js';
 
-// ─── FONTS & STYLES ───────────────────────────────────────────────────────────
 const fontLink = document.createElement("link");
 fontLink.rel = "stylesheet";
 fontLink.href = "https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=DM+Sans:wght@300;400;500&display=swap";
@@ -23,543 +22,63 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ─── THEME ────────────────────────────────────────────────────────────────────
 const T = {
-  bg: "#FFF8F0",
-  card: "#FFFFFF",
-  primary: "#7AB8D4",
-  amber: "#F2A74B",
-  coral: "#F28B6E",
-  lavender: "#B8A9C9",
-  text: "#2D2D2D",
-  muted: "#8A9BAE",
-  border: "rgba(122,184,212,0.2)",
-  shadow: "0 4px 32px rgba(122,184,212,0.15), 0 1px 4px rgba(0,0,0,0.06)",
+  bg: "#FFF8F0", card: "#FFFFFF", primary: "#7AB8D4", amber: "#F2A74B",
+  coral: "#F28B6E", lavender: "#B8A9C9", text: "#2D2D2D", muted: "#8A9BAE",
+  border: "rgba(122,184,212,0.2)", shadow: "0 4px 32px rgba(122,184,212,0.15), 0 1px 4px rgba(0,0,0,0.06)",
   shadowSm: "0 2px 12px rgba(122,184,212,0.12)",
 };
 
-// ─── TRIAL PROMPTS (20 carefully chosen) ─────────────────────────────────────
 const TRIAL_PROMPTS = {
-  stress: [
-    "Sit somewhere with natural light for two minutes.",
-    "Relax your jaw while reading this.",
-    "Let 'good enough' exist once today.",
-    "Notice one thing that is already handled.",
-    "Make one corner of your space calmer.",
-    "Before the next thing, exhale fully once.",
-  ],
-  energy: [
-    "Open a window before reaching for more stimulation.",
-    "Stretch like you have just woken up.",
-    "Eat something with colour today.",
-    "Stand in daylight for one minute.",
-    "Roll your shoulders slowly ten times.",
-    "Check whether you need water before caffeine.",
-  ],
-  focus: [
-    "Let silence exist for two minutes.",
-    "Choose progress over perfect preparation.",
-    "Read one paragraph more slowly than usual.",
-    "Finish one tiny thing completely.",
-    "Remove one unnecessary decision from today.",
-    "Keep one promise to yourself before helping everyone else.",
-  ],
-  creativity: [
-    "Rearrange three objects differently.",
-    "Describe today using only textures.",
-    "Listen to a sound you normally tune out.",
-    "Draw a shape without planning it first.",
-    "Save one strange idea instead of dismissing it.",
-    "Notice a colour combination you like today.",
-    "Use your non-dominant hand for one small thing.",
-    "Imagine your current mood as weather.",
-    "Observe how people move rather than what they say.",
-  ],
-  eating: [
-    "Put one colourful ingredient on your plate.",
-    "Sit down fully while eating one meal.",
-    "Taste the first bite before multitasking.",
-    "Prepare something simple with care.",
-    "Let one meal happen without a screen nearby.",
-    "Hunger and stress can sound similar inside the body.",
-  ],
-  movement: [
-    "Stretch the part of your body that feels most ignored.",
-    "Walk during one phone call today.",
-    "Change levels: sit, stand, reach, bend.",
-    "Let movement wake you up gently.",
-    "Notice how your mood shifts after moving.",
-    "Stretch like you have just woken up.",
-  ],
-  digital: [
-    "Listen to one full song without checking anything else.",
-    "Let one conversation happen without glancing away.",
-    "Choose one offline activity that still feels comforting.",
-    "Rest your attention before asking more from it.",
-    "Your mind also needs uncluttered space.",
-    "A softer evening can begin with one less screen.",
-  ],
-  sleep: [
-    "Avoid solving life while lying in bed.",
-    "Lower stimulation before lowering your body into rest.",
-    "Breathe out longer than you breathe in once tonight.",
-    "Give yourself permission to rest before being fully exhausted.",
-    "Choose one calming sound for the evening.",
-    "Let darkness arrive a little earlier.",
-    "Rest is still valuable even when sleep is imperfect.",
-  ],
-  confidence: [
-    "Speak to yourself in a tone you would trust from someone else.",
-    "Remember one thing you handle better now than before.",
-    "Take up your full space while sitting or standing.",
-    "Confidence can be quiet.",
-    "Wear something that feels like yourself today.",
-    "Pause before apologizing automatically.",
-    "Let one opinion exist without overexplaining it.",
-  ],
-  relationships: [
-    "Listen long enough for someone to finish fully.",
-    "Send one message with no goal except warmth.",
-    "Ask one more curious question than usual.",
-    "Put your attention where your body is.",
-    "Appreciation can be small and still matter.",
-    "Pause before assuming tone through text.",
-    "Let one interaction be slower today.",
-  ],
-  joy: [
-    "Laugh fully if something is genuinely funny.",
-    "Let pleasure exist without productivity attached to it.",
-    "Open the window and notice the air for a moment.",
-    "Wear or use something that lifts your mood slightly.",
-    "Save one good moment instead of rushing past it.",
-    "Listen to music that changes your breathing.",
-  ],
-  calm: [
-    "Reflect on something that mattered this week.",
-    "You are allowed to evolve gradually.",
-    "Release one version of yourself you no longer need to protect.",
-    "Pay attention to what consistently gives you energy.",
-    "Small repeated actions quietly shape identity.",
-  ],
+  stress: ["Sit somewhere with natural light for two minutes.","Relax your jaw while reading this.","Let 'good enough' exist once today.","Notice one thing that is already handled.","Make one corner of your space calmer.","Before the next thing, exhale fully once."],
+  energy: ["Open a window before reaching for more stimulation.","Stretch like you have just woken up.","Eat something with colour today.","Stand in daylight for one minute.","Roll your shoulders slowly ten times.","Check whether you need water before caffeine."],
+  focus: ["Let silence exist for two minutes.","Choose progress over perfect preparation.","Read one paragraph more slowly than usual.","Finish one tiny thing completely.","Remove one unnecessary decision from today.","Keep one promise to yourself before helping everyone else."],
+  creativity: ["Rearrange three objects differently.","Describe today using only textures.","Listen to a sound you normally tune out.","Draw a shape without planning it first.","Save one strange idea instead of dismissing it.","Notice a colour combination you like today.","Use your non-dominant hand for one small thing.","Imagine your current mood as weather.","Observe how people move rather than what they say."],
+  eating: ["Put one colourful ingredient on your plate.","Sit down fully while eating one meal.","Taste the first bite before multitasking.","Prepare something simple with care.","Let one meal happen without a screen nearby.","Hunger and stress can sound similar inside the body."],
+  movement: ["Stretch the part of your body that feels most ignored.","Walk during one phone call today.","Change levels: sit, stand, reach, bend.","Let movement wake you up gently.","Notice how your mood shifts after moving.","Stretch like you have just woken up."],
+  digital: ["Listen to one full song without checking anything else.","Let one conversation happen without glancing away.","Choose one offline activity that still feels comforting.","Rest your attention before asking more from it.","Your mind also needs uncluttered space.","A softer evening can begin with one less screen."],
+  sleep: ["Avoid solving life while lying in bed.","Lower stimulation before lowering your body into rest.","Breathe out longer than you breathe in once tonight.","Give yourself permission to rest before being fully exhausted.","Choose one calming sound for the evening.","Let darkness arrive a little earlier.","Rest is still valuable even when sleep is imperfect."],
+  confidence: ["Speak to yourself in a tone you would trust from someone else.","Remember one thing you handle better now than before.","Take up your full space while sitting or standing.","Confidence can be quiet.","Wear something that feels like yourself today.","Pause before apologizing automatically.","Let one opinion exist without overexplaining it."],
+  relationships: ["Listen long enough for someone to finish fully.","Send one message with no goal except warmth.","Ask one more curious question than usual.","Put your attention where your body is.","Appreciation can be small and still matter.","Pause before assuming tone through text.","Let one interaction be slower today."],
+  joy: ["Laugh fully if something is genuinely funny.","Let pleasure exist without productivity attached to it.","Open the window and notice the air for a moment.","Wear or use something that lifts your mood slightly.","Save one good moment instead of rushing past it.","Listen to music that changes your breathing."],
+  calm: ["Reflect on something that mattered this week.","You are allowed to evolve gradually.","Release one version of yourself you no longer need to protect.","Pay attention to what consistently gives you energy.","Small repeated actions quietly shape identity."],
 };
 
 function getTrialPrompts(focuses) {
   const pool = [];
   const activeFocuses = focuses?.length > 0 ? focuses : Object.keys(TRIAL_PROMPTS);
   activeFocuses.forEach(f => {
-    if (TRIAL_PROMPTS[f]) {
-      TRIAL_PROMPTS[f].forEach((text, i) => {
-        pool.push({ id: `trial_${f}_${i}`, text, focus: f });
-      });
-    }
+    if (TRIAL_PROMPTS[f]) TRIAL_PROMPTS[f].forEach((text, i) => pool.push({ id: `trial_${f}_${i}`, text, focus: f }));
   });
   return pool;
 }
 
-// ─── MAIN PROMPT DATABASE ─────────────────────────────────────────────────────
 const MAIN_PROMPTS = {
-  stress: [
-    "Sit somewhere with natural light for two minutes.",
-    "Relax your jaw while reading this.",
-    "Let 'good enough' exist once today.",
-    "Notice one thing that is already handled.",
-    "Make one corner of your space calmer.",
-    "Before the next thing, exhale fully once.",
-    "Breathing out slowly for 6 seconds might calm your nervous system a little.",
-    "Three slow breaths right now — in through the nose, out through the mouth — could shift something.",
-    "Dropping your shoulders away from your ears might help more than you'd expect.",
-    "Unclenching your jaw and your hands at the same time could feel like a small release.",
-    "Close your eyes for 10 seconds. Just that.",
-    "Roll your shoulders back slowly, three times.",
-    "Stand up, walk to a different room, and come back. That's it.",
-    "Get up and go to the window. Look outside for a moment.",
-    "Notice if you're making an effort with your face. Let it go.",
-    "Whatever is feeling urgent right now — it might be important, but it probably isn't an emergency.",
-    "One thing at a time. Just the next one thing.",
-    "You don't have to solve everything today. Just today.",
-    "Good enough is sometimes exactly enough.",
-    "Notice five things you can see right now. Just look at them.",
-    "What does the air feel like on your skin right now? Just notice.",
-    "Find one sound around you and follow it for 30 seconds.",
-    "Let go of any thinking for a moment. Your mind will wander. Let it pass.",
-    "Notice a calm sound nearby. If there isn't one, find it in your mind — waves, wind, rain.",
-    "Find the feeling of sun warming your face. Let it spread.",
-    "Remember the voice of someone you love. Let it play in your mind for a moment.",
-    "Think of a song you love. How does it start? Let it run.",
-    "You don't have to be calm. You just have to get through the next hour.",
-    "Think of one thing you did well today — anything at all. Let yourself notice it.",
-    "Writing down one worry tonight and closing the notebook could help your mind let go.",
-    "The day is done. You made it through. That's enough.",
-    "Allowing tomorrow to be tomorrow might be the kindest thing you do for yourself tonight.",
-    "If there is a solution, why stress? And if there is no solution — why stress?",
-    "How important will any of this be in 10 years? Let that question breathe for a moment.",
-    "Sometimes slower is faster.",
-    "Walk slower. Eat slower. Speak slower. The process is the point.",
-    "Notice where your body is storing worry right now. Breathe slowly toward that place. Let it go.",
-    "What do I need more of right now: rest, silence, movement, or connection?",
-    "Can you breathe without trying to fix everything? Just for this one breath.",
-    "Repeat slowly: I choose peace. I release what I cannot control. One breath at a time. I am here now.",
-  ],
-  energy: [
-    "Open a window before reaching for more stimulation.",
-    "Stretch like you have just woken up.",
-    "Eat something with colour today.",
-    "Stand in daylight for one minute.",
-    "Roll your shoulders slowly ten times.",
-    "Check whether you need water before caffeine.",
-    "A few deep breaths right now could shift your energy more than you'd expect.",
-    "Splash cold water on your face. 5 seconds. Notice the difference.",
-    "Stand up and stretch your arms above your head for 10 seconds.",
-    "Walk to a different room and back. Just to move.",
-    "Step outside for 2 minutes, even briefly. Natural light resets your energy.",
-    "Eat something small if you haven't in a few hours. Your body might just be waiting.",
-    "Put on one song that tends to lift you. Let it play fully.",
-    "Take a deep breath in, then open your mouth wide, stick your tongue all the way out and exhale with a 'haaaa.'",
-    "Find a spot where you can do 10 small jumps. Just 10.",
-    "Remember something funny that happened with a friend. Let yourself smile at it.",
-    "Think of a moment when you felt truly alive and well. Let your body remember that feeling.",
-    "Low energy is often your body asking for something simple — water, food, movement, or rest.",
-    "A slow hour doesn't mean a slow day.",
-    "Close your eyes for 60 seconds. Not to sleep — just to rest them completely.",
-    "Breathe in and imagine bringing energy in with the air. Breathe out and let the tiredness go.",
-    "Low energy in the evening is your body doing its job. Let it.",
-    "What would genuinely restore you tonight? Try to give yourself at least some of it.",
-    "Put on something comfortable the moment you get home. Let your body start unwinding early.",
-    "Try a foot bath — warm water, a few minutes, nothing else.",
-    "In winter especially, it's worth checking your vitamin D levels.",
-    "Sleep isn't just rest. It directly shapes your patience, your mood and your resilience tomorrow.",
-  ],
-  focus: [
-    "Let silence exist for two minutes.",
-    "Choose progress over perfect preparation.",
-    "Read one paragraph more slowly than usual.",
-    "Finish one tiny thing completely.",
-    "Remove one unnecessary decision from today.",
-    "Keep one promise to yourself before helping everyone else.",
-    "Write the next sentence. Just that one.",
-    "Set a timer for 25 minutes. Focus until it rings — then give yourself a real break.",
-    "Close every tab except one.",
-    "Write the three things you need to do today. Circle the one that matters most.",
-    "Put your phone face down and out of reach.",
-    "Clear the surface in front of you. Then start.",
-    "Write down what's blocking you. Look at it. Now pick the smallest piece you can move.",
-    "Open the document. Just open it.",
-    "Pick the easiest thing on your list and finish it completely.",
-    "Turn off notifications for the next 30 minutes.",
-    "Say out loud what you're about to do. Hearing it makes it real.",
-    "Your mind will wander. That's fine. Just notice it and bring it back.",
-    "Break your task into 3 parts. Break the first part into 2. Do the very first thing needed.",
-    "Get a paper and pen. Write down anything that distracts you as it comes. Handle it after.",
-    "Not everything on your list deserves equal energy. What actually matters today?",
-    "Finishing something small completely is worth more than starting five things.",
-    "Imperfect and done beats perfect and waiting.",
-    "Write down exactly where you left off today so tomorrow you can begin without searching.",
-    "Your unfinished tasks will wait. You've done enough today.",
-    "Name your one most important task for tomorrow. Write it down. Close the notebook.",
-  ],
-  movement: [
-    "Stretch the part of your body that feels most ignored.",
-    "Walk during one phone call today.",
-    "Change levels: sit, stand, reach, bend.",
-    "Let movement wake you up gently.",
-    "Notice how your mood shifts after moving.",
-    "Stretch like you have just woken up.",
-    "Find a reason to get up — water, a window, a stretch. Any reason works.",
-    "10 jumping jacks. Go.",
-    "Roll your shoulders back 5 times. Then forward 5 times.",
-    "Do 10 slow squats. Hold the last one for 5 seconds.",
-    "Skip instead of walk to wherever you're going next.",
-    "Dance for one song. Alone is fine. Actually especially alone.",
-    "Shake your whole body loose for 15 seconds.",
-    "Hip rolls. Slow circles, both directions. 10 each way.",
-    "Swim standing. Freestyle arms for 20 seconds, then breaststroke.",
-    "Standing, soften your knees and shake them gently.",
-    "Find a tennis ball and roll each foot slowly over it.",
-    "Cat and cow. On all fours, arch your back up slowly, then let it drop. Follow your breath.",
-    "Legs wide. Right hand reaches to left toe, come up with hands on hips. Left hand to right toe.",
-    "Gently nod yes, then shake no, then drop one ear to your shoulder. Finish with slow head rolls.",
-    "A slow walk after dinner — even just around the block — could change how you sleep.",
-    "Gentle stretching for 5 minutes before bed.",
-    "Lie on the floor with your legs up against the wall for 2 minutes.",
-  ],
-  eating: [
-    "Put one colourful ingredient on your plate.",
-    "Sit down fully while eating one meal.",
-    "Taste the first bite before multitasking.",
-    "Prepare something simple with care.",
-    "Let one meal happen without a screen nearby.",
-    "Hunger and stress can sound similar inside the body.",
-    "Drink a full glass of water before your next meal.",
-    "Have you eaten in the last 4 hours? Your body might be waiting.",
-    "Eat your next meal sitting down, without a screen. Just the food.",
-    "Notice what you're craving right now. Is it food — or something else?",
-    "Chew slower than usual for just one meal today.",
-    "What if today were a no-sugar day? Just today.",
-    "Remember extra virgin olive oil today — instead of any other oil or butter.",
-    "Did you remember your vegetables today?",
-    "Try not to eat while nervous, angry, or distracted. Land first. Then start.",
-    "When you feel almost full, stop. Leave a small corner of appetite.",
-    "Boiled rice, avocado and a boiled egg. Simple, nourishing, surprisingly good.",
-    "Thirsty? A large glass of fresh cold water might be exactly what you need.",
-    "Tonight, close the kitchen after dinner.",
-    "Before bed, a small chamomile or linden tea.",
-    "The soup of the poor: onion, garlic, potato, sweet potato, zucchini, water, olive oil, paprika. Blend it.",
-    "Eat like a king at breakfast, a prince at lunch, and a pauper at dinner. Just for today.",
-  ],
-  relationships: [
-    "Listen long enough for someone to finish fully.",
-    "Send one message with no goal except warmth.",
-    "Ask one more curious question than usual.",
-    "Put your attention where your body is.",
-    "Appreciation can be small and still matter.",
-    "Pause before assuming tone through text.",
-    "Let one interaction be slower today.",
-    "Text someone you haven't spoken to in a while. Just two words is enough — 'thinking of you.'",
-    "Put your phone away the next time someone is talking to you. Just listen.",
-    "Tell someone one specific thing you appreciate about them today.",
-    "Ask someone how they really are — and wait for the real answer.",
-    "Do something small for someone today without being asked.",
-    "Remember something funny that happened with a friend. Tell them.",
-    "Next time you disagree with someone, try starting with 'yes, and...' instead of 'yes, but...'",
-    "Before reacting, take one breath. Just one.",
-    "Use someone's name when you speak to them today.",
-    "Speak more slowly than usual in your next conversation.",
-    "Try saying less than you planned today. Leave space.",
-    "Before you send that message, wait 5 minutes. Then read it again as if you're receiving it.",
-    "Feel the urge to raise your voice? Try lowering it instead.",
-    "Before speaking, ask yourself: is it true? Is it necessary? Is it kind?",
-    "Zoom out. Is this worth your peace? Visualise your peace. Then decide.",
-    "Get down to eye level with your child for a few minutes.",
-    "Before bed, think of one person you're grateful to have in your life.",
-  ],
-  sleep: [
-    "Avoid solving life while lying in bed.",
-    "Lower stimulation before lowering your body into rest.",
-    "Breathe out longer than you breathe in once tonight.",
-    "Give yourself permission to rest before being fully exhausted.",
-    "Choose one calming sound for the evening.",
-    "Let darkness arrive a little earlier.",
-    "Rest is still valuable even when sleep is imperfect.",
-    "Dim the lights now. Your brain takes its cues from the light around you.",
-    "Put your phone in another room tonight. Just try it once.",
-    "Write down the three things you need to do tomorrow. Close the notebook. Done.",
-    "Have a warm shower or bath before bed tonight.",
-    "Stop eating at least two hours before bed if you can.",
-    "No screens for 30 minutes before bed tonight.",
-    "Tidy one small thing before bed. A clear space makes a quieter mind.",
-    "Lie down and feel the weight of your body against the mattress. Let yourself be held.",
-    "Lay on your back and tense your feet for 5 seconds, then release. Work slowly up your whole body.",
-    "Close your eyes. You're under warm blankets. Outside, rain falls softly. You have nowhere to be.",
-    "Imagine a place where you have always felt completely safe. Put yourself there now.",
-    "Write down any worries before you close your eyes. Get it out of your head and onto paper.",
-    "Sleep is a medicine. Free, natural, and more powerful than most things you could take.",
-    "The night brings wisdom. If something feels unsolvable, sleep on it.",
-    "Go to sleep early tonight. Nine hours will make you a completely different person tomorrow.",
-    "Try to avoid coffee after 1pm. Caffeine stays in your system longer than you think.",
-    "Have you tried magnesium supplements? Many people are deficient and it can make a real difference.",
-    "Tonight, let your phone sleep in another room. See how tomorrow morning feels.",
-  ],
-  calm: [
-    "Notice your breath right now without changing it.",
-    "Feel your feet on the floor. Let that bring you back.",
-    "Look for something beautiful in the room you're in.",
-    "What emotion is most present in you right now? Name it.",
-    "Notice if you are resisting anything right now. Just observe.",
-    "Notice if your mind is in the past or the future. Gently bring it back. Here. Now.",
-    "Ask yourself: what do I need more of — rest, silence, movement, or connection?",
-    "What would this moment feel like if you had nothing to worry about?",
-    "Stop. Wait. Think calmly. Where are you heading right now — and why?",
-    "What day is today? What time is it right now? What matters most in this moment?",
-    "Close your eyes and observe your breath. Notice how air enters your nostrils and fills your belly.",
-    "Repeat slowly: I choose peace. I release what I cannot control. One breath at a time.",
-    "Let your shoulders drop. Let your breath slow. Let this moment be enough.",
-    "The quieter you become, the more you can hear.",
-    "Find something in the room that is perfectly still. Watch it for 30 seconds.",
-    "Wash your hands slowly today. Feel the water temperature, the soap, the texture.",
-    "Walk barefoot for a few minutes. Feel the ground change beneath you.",
-    "Do one ordinary thing very slowly today.",
-    "What blessings have you been overlooking lately? Name even one.",
-    "What simple moment touched your heart today — however small?",
-    "What moments make you feel deeply alive?",
-    "Let stillness teach you something today. Sit with it.",
-    "This moment will not come again. It just needs to be lived.",
-    "Repeat slowly: I am enough. I have enough. I do enough.",
-    "What is the kindest thing you could do for yourself in the next 10 minutes?",
-  ],
-  digital: [
-    "Listen to one full song without checking anything else.",
-    "Let one conversation happen without glancing away.",
-    "Choose one offline activity that still feels comforting.",
-    "Rest your attention before asking more from it.",
-    "Your mind also needs uncluttered space.",
-    "A softer evening can begin with one less screen.",
-    "Notice how many times you've checked your phone in the last hour. Just notice.",
-    "Before you open any app, ask yourself: what am I actually looking for right now?",
-    "Leave your phone in another room for the next hour.",
-    "Turn off all notifications for the next 2 hours.",
-    "Is there something you're avoiding by scrolling right now?",
-    "Put your phone away during your next meal. Completely away.",
-    "Have you considered blue-light blocking glasses?",
-    "Check your environment: screen at eye level? Chair supporting your back?",
-    "Try voice notes today instead of typing. Your hands and eyes will get a real rest.",
-    "Feel the urge to google something? Write it down instead. If it still matters tomorrow, look it up.",
-    "Try a no-phone policy after 8pm on weekends.",
-    "Create a no-phone zone — the dining table, the bathroom, nature walks.",
-    "Don't let your phone steal moments with the people you love. Put it down. Be there.",
-    "What do you gain when you don't scroll? What things in real life deserve your attention?",
-    "Life happens outside of the phone. Step into it.",
-    "Take a 10-minute break from your screen and go hug a tree.",
-    "What would you do with an extra hour if screens didn't exist? Start with 15 minutes of that.",
-    "Notice how you feel after 20 minutes of scrolling. Then after 20 minutes outside.",
-    "Your attention is one of the most valuable things you own. What is it going toward right now?",
-  ],
-  joy: [
-    "Laugh fully if something is genuinely funny.",
-    "Let pleasure exist without productivity attached to it.",
-    "Open the window and notice the air for a moment.",
-    "Wear or use something that lifts your mood slightly.",
-    "Save one good moment instead of rushing past it.",
-    "Listen to music that changes your breathing.",
-    "Reflect on something that mattered this week.",
-    "You are allowed to evolve gradually.",
-    "Release one version of yourself you no longer need to protect.",
-    "Pay attention to what consistently gives you energy.",
-    "What reliably gives you 5% more aliveness? Notice what those things are.",
-    "Buy some colourful flowers and put them somewhere you'll see them often.",
-    "Try a 15-second hug today — with someone close. Count slowly. Feel the difference.",
-    "Physical activity increases dopamine. Try a 15-minute walk, noticing the colours of everything you pass.",
-    "Make an appointment with yourself this week. One hour, non-negotiable, just for you.",
-    "Is there a hobby you've always wanted to try? What's stopping you?",
-    "What if today were a no-sugar day? Just today.",
-    "Find a sunset today and watch it. The whole thing.",
-    "You are here today. You are alive. That alone is already extraordinary luck.",
-    "Yesterday is done. Tomorrow isn't here. Today will never come again.",
-    "Joy also comes from stopping — unapologetically — the things that don't bring you anything good.",
-    "Pink, yellow, red — why not? Wear a colour that makes you feel something.",
-    "Is it cold? Try a foot bath. Is it hot? Make a fresh juice with ice. Anticipate it. Then enjoy it slowly.",
-    "Everyone brings joy — some people when they arrive, and some when they leave.",
-    "Natural light is one of the simplest mood-lifters. Sit somewhere with sunlight on your face.",
-  ],
-  confidence: [
-    "Speak to yourself in a tone you would trust from someone else.",
-    "Remember one thing you handle better now than before.",
-    "Take up your full space while sitting or standing.",
-    "Confidence can be quiet.",
-    "Wear something that feels like yourself today.",
-    "Pause before apologizing automatically.",
-    "Let one opinion exist without overexplaining it.",
-    "Look at how many things you do well — at home, at work, in small ways every day.",
-    "When self-doubt appears, name it quietly. Feel your feet on the floor. Return to what you were doing.",
-    "Confidence usually follows action — not the other way around. Do it at 60% confidence.",
-    "Lift your chin gently. Relax your forehead, your jaw. Take a long slow exhale.",
-    "Someone else being brilliant does not make you less capable.",
-    "You cannot judge a fish by its ability to climb a tree.",
-    "Compare yourself only to who you were before.",
-    "Frantic energy reduces effectiveness. Real confidence is usually quieter.",
-    "Not everyone must approve of you. Accepting that creates enormous freedom.",
-    "When uncertainty strikes: what are three other possible interpretations?",
-    "How you are perceived today really won't matter in 10 years.",
-    "Socially confident people are often simply less afraid of awkward moments.",
-    "Slowing down communicates safety to your nervous system.",
-    "When in doubt: what would a self-respecting person do here? Not a perfect one.",
-    "Stop fearing mistakes, emotions, imperfection, awkwardness. From there, life opens up.",
-    "Instead of 'I'm nervous' — try 'my body is preparing for performance.'",
-    "Inhale slowly for 4 seconds. Exhale for 6 to 8. Long exhales calm your nervous system.",
-    "Enjoy the process. Plans change, people change their minds, mistakes happen. All of that is okay.",
-  ],
-  creativity: [
-    "Rearrange three objects differently.",
-    "Describe today using only textures.",
-    "Listen to a sound you normally tune out.",
-    "Draw a shape without planning it first.",
-    "Save one strange idea instead of dismissing it.",
-    "Notice a colour combination you like today.",
-    "Use your non-dominant hand for one small thing.",
-    "Imagine your current mood as weather.",
-    "Observe how people move rather than what they say.",
-    "The brain creates by recombining what it knows. Feed it varied material today.",
-    "Try combining two unrelated fields — jazz and architecture, biology and design.",
-    "Start a collection of anything that catches your eye.",
-    "Stop forcing ideas. Relax instead. Many insights arrive indirectly.",
-    "Keep an idea capture system — voice notes, a sketchbook, a phone note.",
-    "Creativity needs boredom. Protect some unstimulated time today.",
-    "Give yourself permission to make bad work. The willingness to create badly is essential.",
-    "Try a timed creative sprint — 20 minutes, one clear prompt, no editing allowed.",
-    "Try the 10 bad ideas method. Generate 10 mediocre ideas. Often idea 7 or 8 becomes interesting.",
-    "Take an unusual position and look at your surroundings differently.",
-    "Look at something from another perspective — the chair from a child's eye level.",
-    "Overcome the fear of the blank page. Pick a random word, shape, colour — and transform it.",
-    "A small finished work teaches more than a giant unfinished ambition.",
-    "Creativity is what happens when perception becomes alive enough to connect things others overlook.",
-    "Try the 'yes, and' principle. Instead of rejecting an idea, extend it first.",
-    "Separate generation from judgment. Generate wildly first. Edit strategically after.",
-  ],
+  stress: ["Sit somewhere with natural light for two minutes.","Relax your jaw while reading this.","Let 'good enough' exist once today.","Notice one thing that is already handled.","Make one corner of your space calmer.","Before the next thing, exhale fully once.","Breathing out slowly for 6 seconds might calm your nervous system a little.","Three slow breaths right now — in through the nose, out through the mouth — could shift something.","Dropping your shoulders away from your ears might help more than you'd expect.","Unclenching your jaw and your hands at the same time could feel like a small release.","Close your eyes for 10 seconds. Just that.","Roll your shoulders back slowly, three times.","Stand up, walk to a different room, and come back. That's it.","Get up and go to the window. Look outside for a moment.","Notice if you're making an effort with your face. Let it go.","Whatever is feeling urgent right now — it might be important, but it probably isn't an emergency.","One thing at a time. Just the next one thing.","You don't have to solve everything today. Just today.","Good enough is sometimes exactly enough.","Notice five things you can see right now. Just look at them.","What does the air feel like on your skin right now? Just notice.","Find one sound around you and follow it for 30 seconds.","Let go of any thinking for a moment. Your mind will wander. Let it pass.","Notice a calm sound nearby. If there isn't one, find it in your mind — waves, wind, rain.","Find the feeling of sun warming your face. Let it spread.","Remember the voice of someone you love. Let it play in your mind for a moment.","Think of a song you love. How does it start? Let it run.","You don't have to be calm. You just have to get through the next hour.","Think of one thing you did well today — anything at all. Let yourself notice it.","Writing down one worry tonight and closing the notebook could help your mind let go.","The day is done. You made it through. That's enough.","Allowing tomorrow to be tomorrow might be the kindest thing you do for yourself tonight.","If there is a solution, why stress? And if there is no solution — why stress?","How important will any of this be in 10 years? Let that question breathe for a moment.","Sometimes slower is faster.","Walk slower. Eat slower. Speak slower. The process is the point.","Notice where your body is storing worry right now. Breathe slowly toward that place. Let it go.","What do I need more of right now: rest, silence, movement, or connection?","Can you breathe without trying to fix everything? Just for this one breath.","Repeat slowly: I choose peace. I release what I cannot control. One breath at a time. I am here now."],
+  energy: ["Open a window before reaching for more stimulation.","Stretch like you have just woken up.","Eat something with colour today.","Stand in daylight for one minute.","Roll your shoulders slowly ten times.","Check whether you need water before caffeine.","A few deep breaths right now could shift your energy more than you'd expect.","Splash cold water on your face. 5 seconds. Notice the difference.","Stand up and stretch your arms above your head for 10 seconds.","Walk to a different room and back. Just to move.","Step outside for 2 minutes, even briefly. Natural light resets your energy.","Eat something small if you haven't in a few hours. Your body might just be waiting.","Put on one song that tends to lift you. Let it play fully.","Take a deep breath in, then open your mouth wide, stick your tongue all the way out and exhale with a 'haaaa.'","Find a spot where you can do 10 small jumps. Just 10.","Remember something funny that happened with a friend. Let yourself smile at it.","Think of a moment when you felt truly alive and well. Let your body remember that feeling.","Low energy is often your body asking for something simple — water, food, movement, or rest.","A slow hour doesn't mean a slow day.","Close your eyes for 60 seconds. Not to sleep — just to rest them completely.","Breathe in and imagine bringing energy in with the air. Breathe out and let the tiredness go.","Low energy in the evening is your body doing its job. Let it.","What would genuinely restore you tonight? Try to give yourself at least some of it.","Put on something comfortable the moment you get home. Let your body start unwinding early.","Try a foot bath — warm water, a few minutes, nothing else.","In winter especially, it's worth checking your vitamin D levels.","Sleep isn't just rest. It directly shapes your patience, your mood and your resilience tomorrow."],
+  focus: ["Let silence exist for two minutes.","Choose progress over perfect preparation.","Read one paragraph more slowly than usual.","Finish one tiny thing completely.","Remove one unnecessary decision from today.","Keep one promise to yourself before helping everyone else.","Write the next sentence. Just that one.","Set a timer for 25 minutes. Focus until it rings — then give yourself a real break.","Close every tab except one.","Write the three things you need to do today. Circle the one that matters most.","Put your phone face down and out of reach.","Clear the surface in front of you. Then start.","Write down what's blocking you. Look at it. Now pick the smallest piece you can move.","Open the document. Just open it.","Pick the easiest thing on your list and finish it completely.","Turn off notifications for the next 30 minutes.","Say out loud what you're about to do. Hearing it makes it real.","Your mind will wander. That's fine. Just notice it and bring it back.","Break your task into 3 parts. Break the first part into 2. Do the very first thing needed.","Get a paper and pen. Write down anything that distracts you as it comes. Handle it after.","Not everything on your list deserves equal energy. What actually matters today?","Finishing something small completely is worth more than starting five things.","Imperfect and done beats perfect and waiting.","Write down exactly where you left off today so tomorrow you can begin without searching.","Your unfinished tasks will wait. You've done enough today.","Name your one most important task for tomorrow. Write it down. Close the notebook."],
+  movement: ["Stretch the part of your body that feels most ignored.","Walk during one phone call today.","Change levels: sit, stand, reach, bend.","Let movement wake you up gently.","Notice how your mood shifts after moving.","Stretch like you have just woken up.","Find a reason to get up — water, a window, a stretch. Any reason works.","10 jumping jacks. Go.","Roll your shoulders back 5 times. Then forward 5 times.","Do 10 slow squats. Hold the last one for 5 seconds.","Skip instead of walk to wherever you're going next.","Dance for one song. Alone is fine. Actually especially alone.","Shake your whole body loose for 15 seconds.","Hip rolls. Slow circles, both directions. 10 each way.","Swim standing. Freestyle arms for 20 seconds, then breaststroke.","Standing, soften your knees and shake them gently.","Find a tennis ball and roll each foot slowly over it.","Cat and cow. On all fours, arch your back up slowly, then let it drop. Follow your breath.","Legs wide. Right hand reaches to left toe, come up with hands on hips. Left hand to right toe.","Gently nod yes, then shake no, then drop one ear to your shoulder. Finish with slow head rolls.","A slow walk after dinner — even just around the block — could change how you sleep.","Gentle stretching for 5 minutes before bed.","Lie on the floor with your legs up against the wall for 2 minutes."],
+  eating: ["Put one colourful ingredient on your plate.","Sit down fully while eating one meal.","Taste the first bite before multitasking.","Prepare something simple with care.","Let one meal happen without a screen nearby.","Hunger and stress can sound similar inside the body.","Drink a full glass of water before your next meal.","Have you eaten in the last 4 hours? Your body might be waiting.","Eat your next meal sitting down, without a screen. Just the food.","Notice what you're craving right now. Is it food — or something else?","Chew slower than usual for just one meal today.","What if today were a no-sugar day? Just today.","Remember extra virgin olive oil today — instead of any other oil or butter.","Did you remember your vegetables today?","Try not to eat while nervous, angry, or distracted. Land first. Then start.","When you feel almost full, stop. Leave a small corner of appetite.","Boiled rice, avocado and a boiled egg. Simple, nourishing, surprisingly good.","Thirsty? A large glass of fresh cold water might be exactly what you need.","Tonight, close the kitchen after dinner.","Before bed, a small chamomile or linden tea.","The soup of the poor: onion, garlic, potato, sweet potato, zucchini, water, olive oil, paprika. Blend it.","Eat like a king at breakfast, a prince at lunch, and a pauper at dinner. Just for today."],
+  relationships: ["Listen long enough for someone to finish fully.","Send one message with no goal except warmth.","Ask one more curious question than usual.","Put your attention where your body is.","Appreciation can be small and still matter.","Pause before assuming tone through text.","Let one interaction be slower today.","Text someone you haven't spoken to in a while. Just two words is enough — 'thinking of you.'","Put your phone away the next time someone is talking to you. Just listen.","Tell someone one specific thing you appreciate about them today.","Ask someone how they really are — and wait for the real answer.","Do something small for someone today without being asked.","Remember something funny that happened with a friend. Tell them.","Next time you disagree with someone, try starting with 'yes, and...' instead of 'yes, but...'","Before reacting, take one breath. Just one.","Use someone's name when you speak to them today.","Speak more slowly than usual in your next conversation.","Try saying less than you planned today. Leave space.","Before you send that message, wait 5 minutes. Then read it again as if you're receiving it.","Feel the urge to raise your voice? Try lowering it instead.","Before speaking, ask yourself: is it true? Is it necessary? Is it kind?","Zoom out. Is this worth your peace? Visualise your peace. Then decide.","Get down to eye level with your child for a few minutes.","Before bed, think of one person you're grateful to have in your life."],
+  sleep: ["Avoid solving life while lying in bed.","Lower stimulation before lowering your body into rest.","Breathe out longer than you breathe in once tonight.","Give yourself permission to rest before being fully exhausted.","Choose one calming sound for the evening.","Let darkness arrive a little earlier.","Rest is still valuable even when sleep is imperfect.","Dim the lights now. Your brain takes its cues from the light around you.","Put your phone in another room tonight. Just try it once.","Write down the three things you need to do tomorrow. Close the notebook. Done.","Have a warm shower or bath before bed tonight.","Stop eating at least two hours before bed if you can.","No screens for 30 minutes before bed tonight.","Tidy one small thing before bed. A clear space makes a quieter mind.","Lie down and feel the weight of your body against the mattress. Let yourself be held.","Lay on your back and tense your feet for 5 seconds, then release. Work slowly up your whole body.","Close your eyes. You're under warm blankets. Outside, rain falls softly. You have nowhere to be.","Imagine a place where you have always felt completely safe. Put yourself there now.","Write down any worries before you close your eyes. Get it out of your head and onto paper.","Sleep is a medicine. Free, natural, and more powerful than most things you could take.","The night brings wisdom. If something feels unsolvable, sleep on it.","Go to sleep early tonight. Nine hours will make you a completely different person tomorrow.","Try to avoid coffee after 1pm. Caffeine stays in your system longer than you think.","Have you tried magnesium supplements? Many people are deficient and it can make a real difference.","Tonight, let your phone sleep in another room. See how tomorrow morning feels."],
+  calm: ["Notice your breath right now without changing it.","Feel your feet on the floor. Let that bring you back.","Look for something beautiful in the room you're in.","What emotion is most present in you right now? Name it.","Notice if you are resisting anything right now. Just observe.","Notice if your mind is in the past or the future. Gently bring it back. Here. Now.","Ask yourself: what do I need more of — rest, silence, movement, or connection?","What would this moment feel like if you had nothing to worry about?","Stop. Wait. Think calmly. Where are you heading right now — and why?","What day is today? What time is it right now? What matters most in this moment?","Close your eyes and observe your breath. Notice how air enters your nostrils and fills your belly.","Repeat slowly: I choose peace. I release what I cannot control. One breath at a time.","Let your shoulders drop. Let your breath slow. Let this moment be enough.","The quieter you become, the more you can hear.","Find something in the room that is perfectly still. Watch it for 30 seconds.","Wash your hands slowly today. Feel the water temperature, the soap, the texture.","Walk barefoot for a few minutes. Feel the ground change beneath you.","Do one ordinary thing very slowly today.","What blessings have you been overlooking lately? Name even one.","What simple moment touched your heart today — however small?","What moments make you feel deeply alive?","Let stillness teach you something today. Sit with it.","This moment will not come again. It just needs to be lived.","Repeat slowly: I am enough. I have enough. I do enough.","What is the kindest thing you could do for yourself in the next 10 minutes?"],
+  digital: ["Listen to one full song without checking anything else.","Let one conversation happen without glancing away.","Choose one offline activity that still feels comforting.","Rest your attention before asking more from it.","Your mind also needs uncluttered space.","A softer evening can begin with one less screen.","Notice how many times you've checked your phone in the last hour. Just notice.","Before you open any app, ask yourself: what am I actually looking for right now?","Leave your phone in another room for the next hour.","Turn off all notifications for the next 2 hours.","Is there something you're avoiding by scrolling right now?","Put your phone away during your next meal. Completely away.","Have you considered blue-light blocking glasses?","Check your environment: screen at eye level? Chair supporting your back?","Try voice notes today instead of typing. Your hands and eyes will get a real rest.","Feel the urge to google something? Write it down instead. If it still matters tomorrow, look it up.","Try a no-phone policy after 8pm on weekends.","Create a no-phone zone — the dining table, the bathroom, nature walks.","Don't let your phone steal moments with the people you love. Put it down. Be there.","What do you gain when you don't scroll? What things in real life deserve your attention?","Life happens outside of the phone. Step into it.","Take a 10-minute break from your screen and go hug a tree.","What would you do with an extra hour if screens didn't exist? Start with 15 minutes of that.","Notice how you feel after 20 minutes of scrolling. Then after 20 minutes outside.","Your attention is one of the most valuable things you own. What is it going toward right now?"],
+  joy: ["Laugh fully if something is genuinely funny.","Let pleasure exist without productivity attached to it.","Open the window and notice the air for a moment.","Wear or use something that lifts your mood slightly.","Save one good moment instead of rushing past it.","Listen to music that changes your breathing.","Reflect on something that mattered this week.","You are allowed to evolve gradually.","Release one version of yourself you no longer need to protect.","Pay attention to what consistently gives you energy.","What reliably gives you 5% more aliveness? Notice what those things are.","Buy some colourful flowers and put them somewhere you'll see them often.","Try a 15-second hug today — with someone close. Count slowly. Feel the difference.","Physical activity increases dopamine. Try a 15-minute walk, noticing the colours of everything you pass.","Make an appointment with yourself this week. One hour, non-negotiable, just for you.","Is there a hobby you've always wanted to try? What's stopping you?","Find a sunset today and watch it. The whole thing.","You are here today. You are alive. That alone is already extraordinary luck.","Yesterday is done. Tomorrow isn't here. Today will never come again.","Joy also comes from stopping — unapologetically — the things that don't bring you anything good.","Pink, yellow, red — why not? Wear a colour that makes you feel something.","Everyone brings joy — some people when they arrive, and some when they leave.","Natural light is one of the simplest mood-lifters. Sit somewhere with sunlight on your face."],
+  confidence: ["Speak to yourself in a tone you would trust from someone else.","Remember one thing you handle better now than before.","Take up your full space while sitting or standing.","Confidence can be quiet.","Wear something that feels like yourself today.","Pause before apologizing automatically.","Let one opinion exist without overexplaining it.","Look at how many things you do well — at home, at work, in small ways every day.","When self-doubt appears, name it quietly. Feel your feet on the floor. Return to what you were doing.","Confidence usually follows action — not the other way around. Do it at 60% confidence.","Lift your chin gently. Relax your forehead, your jaw. Take a long slow exhale.","Someone else being brilliant does not make you less capable.","You cannot judge a fish by its ability to climb a tree.","Compare yourself only to who you were before.","Frantic energy reduces effectiveness. Real confidence is usually quieter.","Not everyone must approve of you. Accepting that creates enormous freedom.","When uncertainty strikes: what are three other possible interpretations?","How you are perceived today really won't matter in 10 years.","Socially confident people are often simply less afraid of awkward moments.","Slowing down communicates safety to your nervous system.","When in doubt: what would a self-respecting person do here? Not a perfect one.","Stop fearing mistakes, emotions, imperfection, awkwardness. From there, life opens up.","Instead of 'I'm nervous' — try 'my body is preparing for performance.'","Inhale slowly for 4 seconds. Exhale for 6 to 8. Long exhales calm your nervous system.","Enjoy the process. Plans change, people change their minds, mistakes happen. All of that is okay."],
+  creativity: ["Rearrange three objects differently.","Describe today using only textures.","Listen to a sound you normally tune out.","Draw a shape without planning it first.","Save one strange idea instead of dismissing it.","Notice a colour combination you like today.","Use your non-dominant hand for one small thing.","Imagine your current mood as weather.","Observe how people move rather than what they say.","The brain creates by recombining what it knows. Feed it varied material today.","Try combining two unrelated fields — jazz and architecture, biology and design.","Start a collection of anything that catches your eye.","Stop forcing ideas. Relax instead. Many insights arrive indirectly.","Keep an idea capture system — voice notes, a sketchbook, a phone note.","Creativity needs boredom. Protect some unstimulated time today.","Give yourself permission to make bad work. The willingness to create badly is essential.","Try a timed creative sprint — 20 minutes, one clear prompt, no editing allowed.","Try the 10 bad ideas method. Generate 10 mediocre ideas. Often idea 7 or 8 becomes interesting.","Take an unusual position and look at your surroundings differently.","Look at something from another perspective — the chair from a child's eye level.","Overcome the fear of the blank page. Pick a random word, shape, colour — and transform it.","A small finished work teaches more than a giant unfinished ambition.","Creativity is what happens when perception becomes alive enough to connect things others overlook.","Try the 'yes, and' principle. Instead of rejecting an idea, extend it first.","Separate generation from judgment. Generate wildly first. Edit strategically after."],
 };
 
-// ─── BONUS PROMPT POOLS ───────────────────────────────────────────────────────
 const BONUS_PROMPTS = {
-  small_kids: {
-    stress:       ["Lower your shoulders before answering the next tiny emergency."],
-    energy:       ["Drink a glass of water while the children are distracted for one minute."],
-    confidence:   ["Keeping small humans alive is already a lot."],
-    focus:        ["Choose one thing to finish. The rest can wait 10 minutes."],
-    relationships:["Give one fully present minute instead of multitasking."],
-    sleep:        ["Tonight, lower one expectation before bedtime."],
-    creativity:   ["Notice one funny thing your child said today."],
-    digital:      ["Try one child-related moment without reaching for your phone."],
-  },
-  teens: {
-    relationships:["Ask one curious question without trying to fix anything."],
-    stress:       ["Not every silence means disconnection."],
-    confidence:   ["Teenagers push boundaries more than they reveal affection."],
-    focus:        ["Pause before reacting immediately."],
-    energy:       ["Protect 10 minutes today that belong only to you."],
-    digital:      ["Let one conversation happen without competing with screens."],
-    calm:         ["Breathe before entering a difficult conversation."],
-  },
-  office: {
-    focus:        ["Close one unnecessary tab."],
-    energy:       ["Stand up before answering the next message."],
-    stress:       ["Unclench your jaw while reading emails."],
-    movement:     ["Roll your shoulders slowly before your next task."],
-    digital:      ["Take your lunch break away from your main screen."],
-    sleep:        ["Create a small end-of-work ritual before evening begins."],
-    creativity:   ["Solve one problem on paper instead of on-screen."],
-  },
-  physical_work: {
-    energy:       ["Pause for water before pushing through tiredness."],
-    stress:       ["Physical exhaustion can feel emotional too."],
-    movement:     ["Stretch the part of your body that worked hardest today."],
-    sleep:        ["Let recovery count as productivity tonight."],
-    confidence:   ["Your body does difficult work every day."],
-    focus:        ["Slow one repetitive movement slightly."],
-    calm:         ["Check whether you need rest, food or quiet before judging your mood."],
-  },
-  young: {
-    confidence:   ["You do not need your whole future figured out today."],
-    creativity:   ["Save one idea without judging whether it's useful."],
-    relationships:["Send one message that feels genuine instead of strategic."],
-    focus:        ["Pick one meaningful task before opening social media."],
-    stress:       ["Confusion can be part of growth."],
-    digital:      ["Leave one moment today undocumented."],
-    joy:          ["Notice what gives you energy instead of only what looks impressive."],
-  },
-  senior: {
-    movement:     ["Take a gentle stretch break before sitting again."],
-    relationships:["Reach out to someone whose voice you enjoy hearing."],
-    calm:         ["Pause to notice one comforting detail around you."],
-    confidence:   ["Your experience already carries wisdom."],
-    joy:          ["Recall one moment that still makes you smile."],
-    creativity:   ["Tell or write a small story from your past."],
-    stress:       ["Let today move at a human pace."],
-  },
+  small_kids: { stress:["Lower your shoulders before answering the next tiny emergency."], energy:["Drink a glass of water while the children are distracted for one minute."], confidence:["Keeping small humans alive is already a lot."], focus:["Choose one thing to finish. The rest can wait 10 minutes."], relationships:["Give one fully present minute instead of multitasking."], sleep:["Tonight, lower one expectation before bedtime."], creativity:["Notice one funny thing your child said today."], digital:["Try one child-related moment without reaching for your phone."] },
+  teens: { relationships:["Ask one curious question without trying to fix anything."], stress:["Not every silence means disconnection."], confidence:["Teenagers push boundaries more than they reveal affection."], focus:["Pause before reacting immediately."], energy:["Protect 10 minutes today that belong only to you."], digital:["Let one conversation happen without competing with screens."], calm:["Breathe before entering a difficult conversation."] },
+  office: { focus:["Close one unnecessary tab."], energy:["Stand up before answering the next message."], stress:["Unclench your jaw while reading emails."], movement:["Roll your shoulders slowly before your next task."], digital:["Take your lunch break away from your main screen."], sleep:["Create a small end-of-work ritual before evening begins."], creativity:["Solve one problem on paper instead of on-screen."] },
+  physical_work: { energy:["Pause for water before pushing through tiredness."], stress:["Physical exhaustion can feel emotional too."], movement:["Stretch the part of your body that worked hardest today."], sleep:["Let recovery count as productivity tonight."], confidence:["Your body does difficult work every day."], focus:["Slow one repetitive movement slightly."], calm:["Check whether you need rest, food or quiet before judging your mood."] },
+  young: { confidence:["You do not need your whole future figured out today."], creativity:["Save one idea without judging whether it's useful."], relationships:["Send one message that feels genuine instead of strategic."], focus:["Pick one meaningful task before opening social media."], stress:["Confusion can be part of growth."], digital:["Leave one moment today undocumented."], joy:["Notice what gives you energy instead of only what looks impressive."] },
+  senior: { movement:["Take a gentle stretch break before sitting again."], relationships:["Reach out to someone whose voice you enjoy hearing."], calm:["Pause to notice one comforting detail around you."], confidence:["Your experience already carries wisdom."], joy:["Recall one moment that still makes you smile."], creativity:["Tell or write a small story from your past."], stress:["Let today move at a human pace."] },
 };
 
-// ─── DELIVERY LOGIC ───────────────────────────────────────────────────────────
 function getPrompt(profile, focuses, shownIds = []) {
   const pool = [];
-
-  // Determine profile tags
   const tags = [];
   if (profile?.kids === 1) tags.push("small_kids");
   if (profile?.kids === 2) tags.push("teens");
@@ -567,40 +86,19 @@ function getPrompt(profile, focuses, shownIds = []) {
   if (profile?.workTypes?.includes(1)) tags.push("physical_work");
   if (profile?.age === 0) tags.push("young");
   if (profile?.age === 2) tags.push("senior");
-
-  // Build pool from focus areas
   const activeFocuses = focuses?.length > 0 ? focuses : Object.keys(MAIN_PROMPTS);
   activeFocuses.forEach(f => {
-    if (MAIN_PROMPTS[f]) {
-      MAIN_PROMPTS[f].forEach((p, i) => {
-        pool.push({ id: `main_${f}_${i}`, text: p, weight: 1 });
-      });
-    }
-    // Add bonus prompts for matching tags
-    tags.forEach(tag => {
-      if (BONUS_PROMPTS[tag]?.[f]) {
-        BONUS_PROMPTS[tag][f].forEach((p, i) => {
-          pool.push({ id: `bonus_${tag}_${f}_${i}`, text: p, weight: 3 }); // weighted higher
-        });
-      }
-    });
+    if (MAIN_PROMPTS[f]) MAIN_PROMPTS[f].forEach((p, i) => pool.push({ id: `main_${f}_${i}`, text: p, weight: 1 }));
+    tags.forEach(tag => { if (BONUS_PROMPTS[tag]?.[f]) BONUS_PROMPTS[tag][f].forEach((p, i) => pool.push({ id: `bonus_${tag}_${f}_${i}`, text: p, weight: 3 })); });
   });
-
-  // Filter out recently shown
   const fresh = pool.filter(p => !shownIds.includes(p.id));
-  const source = fresh.length > 0 ? fresh : pool; // fallback if all shown
-
-  // Weighted random selection
+  const source = fresh.length > 0 ? fresh : pool;
   const totalWeight = source.reduce((s, p) => s + p.weight, 0);
   let rand = Math.random() * totalWeight;
-  for (const p of source) {
-    rand -= p.weight;
-    if (rand <= 0) return p;
-  }
+  for (const p of source) { rand -= p.weight; if (rand <= 0) return p; }
   return source[source.length - 1];
 }
 
-// ─── LANGUAGES ────────────────────────────────────────────────────────────────
 const LANGUAGES = [
   { id: "en", flag: "🇺🇸", name: "English" },
   { id: "it", flag: "🇮🇹", name: "Italiano" },
@@ -614,64 +112,29 @@ function detectLang() {
   return ["en","it","pt","es","fr"].includes(nav) ? nav : "en";
 }
 
-// ─── I18N (English only shown for brevity — same structure for all) ───────────
 const i18n = {
   en: {
-    tagline: "Grow Kindly.",
-    sub: "Small prompts for meaningful change and wellbeing.",
-    hero1: "You don't need motivation.",
-    hero2: "You need an interruption.",
+    tagline: "Grow Kindly.", sub: "Small prompts for meaningful change and wellbeing.",
+    hero1: "You don't need motivation.", hero2: "You need an interruption.",
     desc: "Wami sends gentle, specific prompts through your day — helping you move, breathe, focus, connect and grow. Choose your focus areas, your rhythm, and let Wami handle the rest.",
-    focus12: "12 focus areas",
-    focusDesc: "Stress · Energy · Focus · Movement · Eating · Relationships · Sleep · Calm · Digital · Joy · Confidence · Creativity",
-    frequency: "3 frequency levels",
-    freqDesc: "Light (2×/week) · Steady (1×/day) · Present (3×/day)",
-    trial: "Start free — 14 days",
-    signin: "Already have an account? Sign in",
-    onboardTitle: "Make it yours",
-    onboardSub: "A few quick choices so your prompts feel personal.",
-    ageLabel: "How do you see yourself?",
-    kidsLabel: "Kids",
-    workTypeLabel: "Type of work",
-    focusLabel: "What would you like more of?",
-    focusSub: "Choose up to 5 focus areas.",
-    freqLabel: "How often would you like a nudge?",
-    daysLabel: "Which days?",
-    letsgo: "Let's go →",
-    signupTitle: "Your profile is ready.",
-    signupSub: "Create your account to save it and start exploring.",
-    emailPlaceholder: "Your email",
-    passwordPlaceholder: "Choose a password",
-    createAccount: "Create account",
-    alreadyAccount: "Already have an account? Sign in",
-    paywallTitle: "Unlock the full experience.",
-    paywallSub: "686 prompts across 12 focus areas. New every day.",
-    trialBadge: "Free trial active",
-    monthly:  { label: "Monthly",  price: "€3.99", period: "/month",  badge: "" },
-    annual:   { label: "Annual",   price: "€19",   period: "/year",   badge: "Best value" },
-    lifetime: { label: "Lifetime", price: "€59",   period: "once",    badge: "Forever" },
-    unlockBtn: "Unlock all prompts",
-    restore: "Restore purchase",
-    terms: "Terms · Privacy",
-    homeGreeting: "Good morning 🌅",
-    todayPrompt: "Today's nudge",
-    trialPrompt: "Free trial prompt",
-    nextPrompt: "Next prompt",
+    focus12: "12 focus areas", focusDesc: "Stress · Energy · Focus · Movement · Eating · Relationships · Sleep · Calm · Digital · Joy · Confidence · Creativity",
+    frequency: "3 frequency levels", freqDesc: "Light (2×/week) · Steady (1×/day) · Present (3×/day)",
+    trial: "Start free — 14 days", signin: "Already have an account? Sign in",
+    onboardTitle: "Make it yours", onboardSub: "A few quick choices so your prompts feel personal.",
+    ageLabel: "How do you see yourself?", kidsLabel: "Kids", workTypeLabel: "Type of work",
+    focusLabel: "What would you like more of?", focusSub: "Choose up to 5 focus areas.",
+    freqLabel: "How often would you like a nudge?", daysLabel: "Which days?", letsgo: "Let's go →",
+    signupTitle: "Your profile is ready.", signupSub: "Create your account to save it and start exploring.",
+    emailPlaceholder: "Your email", passwordPlaceholder: "Choose a password", createAccount: "Create account",
+    paywallTitle: "Unlock the full experience.", paywallSub: "686 prompts across 12 focus areas. New every day.",
+    unlockBtn: "Unlock all prompts", restore: "Restore purchase", terms: "Terms · Privacy",
+    homeGreeting: "Good morning 🌅", todayPrompt: "Today's nudge", nextPrompt: "Next prompt",
     tunein: "Before your next prompt — take one breath and notice how you feel right now.",
-    explore: "Explore",
-    profile: "Profile",
-    home: "Home",
-    exploreTitle: "12 Focus Areas",
-    exploreSub: "Tap any area to learn more.",
-    profileTitle: "Your Wami",
-    profileWorking: "Wami is quietly working for you.",
-    editPrefs: "Edit preferences",
-    yourFocus: "Your focus areas",
-    yourFreq: "Frequency",
-    yourDays: "Active days",
-    language: "Language",
-    subscription: "Subscription",
-    trialActive: "Free trial active",
+    explore: "Explore", profile: "Profile", home: "Home",
+    exploreTitle: "12 Focus Areas", exploreSub: "Tap any area to learn more.",
+    profileTitle: "Your Wami", profileWorking: "Wami is quietly working for you.",
+    editPrefs: "Edit preferences", yourFocus: "Your focus areas", yourFreq: "Frequency",
+    yourDays: "Active days", language: "Language", subscription: "Subscription",
     manageSubscription: "Manage subscription",
     ages: ["Young", "Adult", "Senior"],
     kids: ["No kids", "Small kids", "Teenagers", "Grown-up kids"],
@@ -683,31 +146,26 @@ const i18n = {
     ],
     dayNames: ["M","T","W","T","F","S","S"],
     focusAreas: [
-      { id:"stress",        icon:"🌬️", label:"Less stress",            desc:"Breathe, release, find footing" },
-      { id:"energy",        icon:"⚡",  label:"More energy",            desc:"Wake up from the inside" },
-      { id:"focus",         icon:"🎯",  label:"Better focus",           desc:"Find your thread and follow it" },
-      { id:"movement",      icon:"🏃",  label:"Move more",              desc:"Tiny invitations to move" },
-      { id:"eating",        icon:"🥑",  label:"Eat better",             desc:"A kinder relationship with food" },
-      { id:"relationships", icon:"🤝",  label:"Better relationships",   desc:"Small gestures that keep people close" },
-      { id:"sleep",         icon:"🌙",  label:"Sleep better",           desc:"Deeper, more restoring rest" },
-      { id:"calm",          icon:"🌊",  label:"More calm & presence",   desc:"Slow down, notice, arrive" },
-      { id:"digital",       icon:"📵",  label:"Digital balance",        desc:"Reclaim your attention" },
-      { id:"joy",           icon:"✨",  label:"Nourish joy & spirit",   desc:"Wonder, beauty, meaning" },
-      { id:"confidence",    icon:"🦋",  label:"Feel more confident",    desc:"Trust yourself a little more" },
-      { id:"creativity",    icon:"🎨",  label:"More creativity",        desc:"Make, imagine, express" },
+      { id:"stress",        icon:"🌬️", label:"Less stress",          desc:"Breathe, release, find footing" },
+      { id:"energy",        icon:"⚡",  label:"More energy",          desc:"Wake up from the inside" },
+      { id:"focus",         icon:"🎯",  label:"Better focus",         desc:"Find your thread and follow it" },
+      { id:"movement",      icon:"🏃",  label:"Move more",            desc:"Tiny invitations to move" },
+      { id:"eating",        icon:"🥑",  label:"Eat better",           desc:"A kinder relationship with food" },
+      { id:"relationships", icon:"🤝",  label:"Better relationships", desc:"Small gestures that keep people close" },
+      { id:"sleep",         icon:"🌙",  label:"Sleep better",         desc:"Deeper, more restoring rest" },
+      { id:"calm",          icon:"🌊",  label:"More calm & presence", desc:"Slow down, notice, arrive" },
+      { id:"digital",       icon:"📵",  label:"Digital balance",      desc:"Reclaim your attention" },
+      { id:"joy",           icon:"✨",  label:"Nourish joy & spirit", desc:"Wonder, beauty, meaning" },
+      { id:"confidence",    icon:"🦋",  label:"Feel more confident",  desc:"Trust yourself a little more" },
+      { id:"creativity",    icon:"🎨",  label:"More creativity",      desc:"Make, imagine, express" },
     ],
   },
 };
-// Use English for all languages in this prototype
 ["it","pt","es","fr"].forEach(l => { i18n[l] = { ...i18n.en }; });
 
 // ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
 function WamiLogo({ size = 38 }) {
-  return (
-    <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: size, fontWeight: 800, color: T.amber, letterSpacing: "-1px", lineHeight: 1, textShadow: "0 2px 8px rgba(242,167,75,0.25)" }}>
-      wami
-    </div>
-  );
+  return <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: size, fontWeight: 800, color: T.amber, letterSpacing: "-1px", lineHeight: 1, textShadow: "0 2px 8px rgba(242,167,75,0.25)" }}>wami</div>;
 }
 
 function WamiHero() {
@@ -720,21 +178,15 @@ function WamiHero() {
 }
 
 function SunOrb({ size = 80, style: s = {} }) {
-  return (
-    <div className="float" style={{ width: size, height: size, borderRadius: "50%", background: "radial-gradient(circle at 35% 30%, #FFE4A0, #F2A74B 60%, #F28B6E)", boxShadow: "0 8px 32px rgba(242,167,75,0.4)", flexShrink: 0, ...s }} />
-  );
+  return <div className="float" style={{ width: size, height: size, borderRadius: "50%", background: "radial-gradient(circle at 35% 30%, #FFE4A0, #F2A74B 60%, #F28B6E)", boxShadow: "0 8px 32px rgba(242,167,75,0.4)", flexShrink: 0, ...s }} />;
 }
 
 function Pill({ children, color = T.amber }) {
-  return (
-    <span style={{ display: "inline-block", fontSize: 10, fontWeight: 700, color: "white", background: color, borderRadius: 20, padding: "3px 10px", letterSpacing: "0.5px", textTransform: "uppercase" }}>{children}</span>
-  );
+  return <span style={{ display: "inline-block", fontSize: 10, fontWeight: 700, color: "white", background: color, borderRadius: 20, padding: "3px 10px", letterSpacing: "0.5px", textTransform: "uppercase" }}>{children}</span>;
 }
 
 function PrimaryBtn({ children, onClick, disabled, style: s = {} }) {
-  return (
-    <button onClick={onClick} disabled={disabled} style={{ background: disabled ? "#ccc" : `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 16, padding: "15px 24px", fontSize: 15, fontWeight: 700, fontFamily: "'Nunito', sans-serif", width: "100%", boxShadow: disabled ? "none" : "0 4px 20px rgba(242,167,75,0.4)", cursor: disabled ? "not-allowed" : "pointer", ...s }}>{children}</button>
-  );
+  return <button onClick={onClick} disabled={disabled} style={{ background: disabled ? "#ccc" : `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 16, padding: "15px 24px", fontSize: 15, fontWeight: 700, fontFamily: "'Nunito', sans-serif", width: "100%", boxShadow: disabled ? "none" : "0 4px 20px rgba(242,167,75,0.4)", cursor: disabled ? "not-allowed" : "pointer", ...s }}>{children}</button>;
 }
 
 function Card({ children, style: s = {} }) {
@@ -742,9 +194,7 @@ function Card({ children, style: s = {} }) {
 }
 
 function SelectPill({ label, selected, onClick }) {
-  return (
-    <button onClick={onClick} style={{ background: selected ? T.amber : "#F5F0E8", color: selected ? "white" : T.text, border: `2px solid ${selected ? T.amber : "transparent"}`, borderRadius: 12, padding: "8px 14px", fontSize: 13, fontWeight: 600, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s", marginBottom: 6, marginRight: 6 }}>{label}</button>
-  );
+  return <button onClick={onClick} style={{ background: selected ? T.amber : "#F5F0E8", color: selected ? "white" : T.text, border: `2px solid ${selected ? T.amber : "transparent"}`, borderRadius: 12, padding: "8px 14px", fontSize: 13, fontWeight: 600, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s", marginBottom: 6, marginRight: 6 }}>{label}</button>;
 }
 
 function LangPicker({ lang, onSelect }) {
@@ -769,11 +219,7 @@ function LangPicker({ lang, onSelect }) {
 }
 
 function BottomNav({ active, onNav, t }) {
-  const tabs = [
-    { id: "home",    icon: "🏠", label: t.home    },
-    { id: "explore", icon: "🔍", label: t.explore  },
-    { id: "profile", icon: "👤", label: t.profile  },
-  ];
+  const tabs = [{ id:"home", icon:"🏠", label:t.home }, { id:"explore", icon:"🔍", label:t.explore }, { id:"profile", icon:"👤", label:t.profile }];
   return (
     <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 420, background: "rgba(255,255,255,0.95)", backdropFilter: "blur(12px)", borderTop: `1px solid ${T.border}`, display: "flex", zIndex: 50 }}>
       {tabs.map(tab => (
@@ -796,17 +242,13 @@ function LandingScreen({ lang, setLang, onStart }) {
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
           <LangPicker lang={lang} onSelect={setLang} />
         </div>
-
         <div className="fade-up" style={{ textAlign: "center", marginBottom: 36 }}>
-          <div style={{ marginBottom: 20 }}>
-            <WamiHero />
-          </div>
+          <div style={{ marginBottom: 20 }}><WamiHero /></div>
           <SunOrb size={90} style={{ margin: "0 auto 28px" }} />
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 24, fontWeight: 700, color: "#4A4A4A", lineHeight: 1.2, marginBottom: 8 }}>{t.hero1}</div>
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 24, fontWeight: 700, color: "#888888", lineHeight: 1.2, marginBottom: 24 }}>{t.hero2}</div>
           <div style={{ fontSize: 15, fontWeight: 500, color: "#4A6070", lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif", marginBottom: 32 }}>{t.desc}</div>
         </div>
-
         <div className="fade-up" style={{ animationDelay: "0.1s", marginBottom: 28 }}>
           <Card style={{ marginBottom: 12 }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
@@ -827,7 +269,6 @@ function LandingScreen({ lang, setLang, onStart }) {
             </div>
           </Card>
         </div>
-
         <div className="fade-up" style={{ animationDelay: "0.15s", marginBottom: 28 }}>
           <div style={{ background: "linear-gradient(135deg, rgba(122,184,212,0.1), rgba(242,167,75,0.08))", border: `1.5px solid ${T.border}`, borderRadius: 20, padding: "20px" }}>
             <Pill color={T.primary}>Sample nudge</Pill>
@@ -836,7 +277,6 @@ function LandingScreen({ lang, setLang, onStart }) {
             </div>
           </div>
         </div>
-
         <div className="fade-up" style={{ animationDelay: "0.2s" }}>
           <PrimaryBtn onClick={onStart}>{t.trial}</PrimaryBtn>
           <button onClick={onStart} style={{ color: T.muted, fontSize: 13, fontWeight: 400, fontFamily: "'DM Sans', sans-serif", width: "100%", padding: "10px", marginTop: 8 }}>{t.signin}</button>
@@ -847,8 +287,68 @@ function LandingScreen({ lang, setLang, onStart }) {
   );
 }
 
+// ─── INSTALL DETECTION ────────────────────────────────────────────────────────
+function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+function isAndroid() { return /android/i.test(navigator.userAgent); }
+function isStandalone() { return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true; }
+function needsInstall() { return (isIOS() || isAndroid()) && !isStandalone(); }
+
+// ─── SCREEN: INSTALL GUIDE ────────────────────────────────────────────────────
+function InstallScreen({ onContinue }) {
+  const ios = isIOS();
+  const steps = ios ? [
+    { icon: "1️⃣", text: "Open wami.me in Safari", detail: "Important: you must use Safari. Chrome and other browsers on iPhone do not support installation." },
+    { icon: "2️⃣", text: "Tap the Share button", detail: "It is a square with an arrow pointing upward ↑. You will find it at the top or bottom of the Safari screen." },
+    { icon: "3️⃣", text: "Tap \"Add to Home Screen\"", detail: "Scroll the share menu until you find it, then tap it." },
+    { icon: "4️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an icon on your home screen." },
+    { icon: "5️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below." },
+  ] : [
+    { icon: "1️⃣", text: "Tap the menu button ⋮ in Chrome", detail: "Top right corner of your browser." },
+    { icon: "2️⃣", text: "Tap \"Add to Home screen\"", detail: "Or \"Install app\" if you see that option." },
+    { icon: "3️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an app on your home screen." },
+    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below." },
+  ];
+
+  return (
+    <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
+      <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
+        <div className="fade-up" style={{ textAlign: "center", marginBottom: 32 }}>
+          <WamiHero />
+          <SunOrb size={64} style={{ margin: "24px auto 24px" }} />
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 8, lineHeight: 1.3 }}>
+            Install Wami for the best experience
+          </div>
+          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+            Installing takes 30 seconds and enables nudge notifications throughout your day.
+          </div>
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+          <div style={{ background: ios ? "#1D1D1F" : "#4285F4", color: "white", borderRadius: 20, padding: "6px 16px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif" }}>
+            {ios ? "🍎 iPhone / iPad — Safari" : "🤖 Android — Chrome"}
+          </div>
+        </div>
+        <div style={{ marginBottom: 28 }}>
+          {steps.map((s, i) => (
+            <div key={i} style={{ background: "white", borderRadius: 16, padding: "16px", marginBottom: 10, display: "flex", alignItems: "flex-start", gap: 14, boxShadow: T.shadowSm }}>
+              <div style={{ fontSize: 22, flexShrink: 0 }}>{s.icon}</div>
+              <div>
+                <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 3 }}>{s.text}</div>
+                <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>{s.detail}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <PrimaryBtn onClick={onContinue}>I've installed Wami — Continue →</PrimaryBtn>
+        <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 12, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center", padding: "8px" }}>
+          Skip for now (notifications may not work)
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── SCREEN: ONBOARDING ───────────────────────────────────────────────────────
-function OnboardingScreen({ lang, onComplete }) {
+function OnboardingScreen({ lang, setLang, onComplete }) {
   const t = i18n[lang] || i18n.en;
   const [age, setAge] = useState(null);
   const [kids, setKids] = useState(null);
@@ -860,51 +360,53 @@ function OnboardingScreen({ lang, onComplete }) {
   const toggleWorkType = (i) => setWorkTypes(w => w.includes(i) ? w.filter(x => x !== i) : [...w, i]);
   const toggleFocus = (id) => setFocuses(f => f.includes(id) ? f.filter(x => x !== id) : f.length < 5 ? [...f, id] : f);
   const toggleDay = (i) => setDays(d => d.includes(i) ? d.filter(x => x !== i) : [...d, i]);
-
   const ready = focuses.length > 0 && days.length > 0;
-
-  const Section = ({ label, sub, children }) => (
-    <div style={{ marginBottom: 22 }}>
-      <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: sub ? 2 : 10 }}>{label}</div>
-      {sub && <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 10 }}>{sub}</div>}
-      <div style={{ display: "flex", flexWrap: "wrap" }}>{children}</div>
-    </div>
-  );
 
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
       <div style={{ maxWidth: 420, margin: "0 auto", padding: "24px 20px 48px" }}>
+
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <WamiLogo />
-          <LangPicker lang={lang} onSelect={() => {}} />
+          <LangPicker lang={lang} onSelect={setLang} />
         </div>
+
         <div className="fade-up">
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>{t.onboardTitle}</div>
           <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 24, lineHeight: 1.5 }}>{t.onboardSub}</div>
 
           <Card style={{ marginBottom: 16 }}>
-            <Section label={t.ageLabel}>
-              {t.ages.map((a, i) => <SelectPill key={i} label={a} selected={age === i} onClick={() => setAge(i)} />)}
-            </Section>
-            <Section label={t.kidsLabel}>
-              {t.kids.map((k, i) => <SelectPill key={i} label={k} selected={kids === i} onClick={() => setKids(i)} />)}
-            </Section>
-            <Section label={t.workTypeLabel}>
-              {t.workTypes.map((w, i) => <SelectPill key={i} label={w} selected={workTypes.includes(i)} onClick={() => toggleWorkType(i)} />)}
-            </Section>
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.ageLabel}</div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.ages.map((a, i) => <SelectPill key={i} label={a} selected={age === i} onClick={() => setAge(i)} />)}
+              </div>
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.kidsLabel}</div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.kids.map((k, i) => <SelectPill key={i} label={k} selected={kids === i} onClick={() => setKids(i)} />)}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.workTypeLabel}</div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.workTypes.map((w, i) => <SelectPill key={i} label={w} selected={workTypes.includes(i)} onClick={() => toggleWorkType(i)} />)}
+              </div>
+            </div>
           </Card>
 
           <Card style={{ marginBottom: 16 }}>
-            <Section label={t.focusLabel} sub={t.focusSub}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, width: "100%" }}>
-                {t.focusAreas.map(f => (
-                  <button key={f.id} onClick={() => toggleFocus(f.id)} style={{ background: focuses.includes(f.id) ? "rgba(242,167,75,0.12)" : "#F9F5EF", border: `2px solid ${focuses.includes(f.id) ? T.amber : "transparent"}`, borderRadius: 14, padding: "12px 10px", textAlign: "left", transition: "all 0.2s" }}>
-                    <div style={{ fontSize: 18, marginBottom: 4 }}>{f.icon}</div>
-                    <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, fontWeight: 700, color: T.text, lineHeight: 1.3 }}>{f.label}</div>
-                  </button>
-                ))}
-              </div>
-            </Section>
+            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 4 }}>{t.focusLabel}</div>
+            <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 14 }}>{t.focusSub}</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {t.focusAreas.map(f => (
+                <button key={f.id} onClick={() => toggleFocus(f.id)} style={{ background: focuses.includes(f.id) ? "rgba(242,167,75,0.12)" : "#F9F5EF", border: `2px solid ${focuses.includes(f.id) ? T.amber : "transparent"}`, borderRadius: 14, padding: "12px 10px", textAlign: "left", transition: "all 0.2s" }}>
+                  <div style={{ fontSize: 18, marginBottom: 4 }}>{f.icon}</div>
+                  <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, fontWeight: 700, color: T.text, lineHeight: 1.3 }}>{f.label}</div>
+                </button>
+              ))}
+            </div>
           </Card>
 
           <Card style={{ marginBottom: 16 }}>
@@ -951,9 +453,7 @@ function SignUpScreen({ lang, onComplete }) {
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) { setError(error.message); return; }
       onComplete();
-    } catch (e) {
-      setError("Something went wrong. Please try again.");
-    }
+    } catch (e) { setError("Something went wrong. Please try again."); }
   };
 
   return (
@@ -965,27 +465,13 @@ function SignUpScreen({ lang, onComplete }) {
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 20, fontWeight: 700, color: "#4A4A4A", marginBottom: 8 }}>{t.signupTitle}</div>
           <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>{t.signupSub}</div>
         </div>
-
         <div className="fade-up" style={{ animationDelay: "0.1s" }}>
-          <input
-            type="email"
-            placeholder={t.emailPlaceholder}
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }}
-          />
-          <input
-            type="password"
-            placeholder={t.passwordPlaceholder}
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }}
-          />
+          <input type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
+          <input type="password" placeholder={t.passwordPlaceholder} value={password} onChange={e => setPassword(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
           {error && <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
           <PrimaryBtn onClick={handleCreate}>{t.createAccount}</PrimaryBtn>
-
           <div style={{ textAlign: "center", marginTop: 20, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-            One account per email. 14-day free trial included.{"\n"}{t.terms}
+            One account per email. 14-day free trial included. {t.terms}
           </div>
         </div>
       </div>
@@ -994,27 +480,17 @@ function SignUpScreen({ lang, onComplete }) {
 }
 
 // ─── SCREEN: HOME ─────────────────────────────────────────────────────────────
-function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
+function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
   const t = i18n[lang] || i18n.en;
-
-  // Build focus-aware trial pool once
   const trialPool = useState(() => getTrialPrompts(profile?.focuses))[0];
   const [trialIdx, setTrialIdx] = useState(0);
-
   const [shownIds, setShownIds] = useState([]);
-  const [currentPrompt, setCurrentPrompt] = useState(() => {
-    if (!isTrial) {
-      const p = getPrompt(profile, profile?.focuses, []);
-      return p;
-    }
-    return null;
-  });
+  const [currentPrompt, setCurrentPrompt] = useState(() => !isTrial ? getPrompt(profile, profile?.focuses, []) : null);
   const [visible, setVisible] = useState(true);
   const [notifStatus, setNotifStatus] = useState("default");
 
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? t.homeGreeting :
-    hour < 17 ? "Good afternoon 🌤️" : "Good evening 🌙";
+  const greeting = hour < 12 ? t.homeGreeting : hour < 17 ? "Good afternoon 🌤️" : "Good evening 🌙";
 
   const nextTrialPrompt = () => {
     if (trialIdx >= trialPool.length - 1) return;
@@ -1037,9 +513,7 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
       if (!("Notification" in window)) { setNotifStatus("unsupported"); return; }
       const perm = await Notification.requestPermission();
       setNotifStatus(perm);
-      if (perm === "granted") {
-        try { new Notification("Wami 🌿", { body: "Gentle nudges are on their way. Grow kindly." }); } catch(e) {}
-      }
+      if (perm === "granted") { try { new Notification("Wami 🌿", { body: "Gentle nudges are on their way. Grow kindly." }); } catch(e) {} }
     } catch(e) { setNotifStatus("unsupported"); }
   };
 
@@ -1052,7 +526,7 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
         <div style={{ position: "absolute", top: -30, right: -30, width: 140, height: 140, borderRadius: "50%", background: "radial-gradient(circle, rgba(242,167,75,0.2), transparent)" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, position: "relative" }}>
           <WamiLogo />
-          <LangPicker lang={lang} onSelect={() => {}} />
+          <LangPicker lang={lang} onSelect={setLang} />
         </div>
         <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 2 }}>{greeting}</div>
         <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
@@ -1061,7 +535,6 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
       </div>
 
       <div style={{ padding: "20px" }}>
-        {/* Welcome card */}
         {showWelcome && (
           <div className="fade-up" style={{ background: "linear-gradient(135deg, rgba(242,167,75,0.15), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "18px 20px", marginBottom: 16, position: "relative" }}>
             <button onClick={onDismissWelcome} style={{ position: "absolute", top: 12, right: 14, fontSize: 18, color: T.muted, fontWeight: 700 }}>×</button>
@@ -1073,7 +546,6 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
           </div>
         )}
 
-        {/* Notification banner */}
         {notifStatus === "default" && (
           <button onClick={requestNotifications} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.4)`, borderRadius: 20, padding: "14px 18px", marginBottom: 12, textAlign: "left" }}>
             <div>
@@ -1089,7 +561,6 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
           </div>
         )}
 
-        {/* Prompt card */}
         <Card style={{ marginBottom: 16, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, right: 0, width: 80, height: 80, background: "radial-gradient(circle, rgba(242,167,75,0.1), transparent)", borderRadius: "0 24px 0 80px" }} />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
@@ -1110,7 +581,6 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
           </div>
         </Card>
 
-        {/* Trial unlock CTA */}
         {isTrial && (
           <button onClick={onUnlock} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(242,167,75,0.12), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "16px 20px", marginBottom: 16, textAlign: "left" }}>
             <div>
@@ -1121,388 +591,9 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
           </button>
         )}
 
-        {/* Tune-in */}
         <div style={{ background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.3)`, borderRadius: 20, padding: "18px", marginBottom: 16 }}>
           <div style={{ fontSize: 18, marginBottom: 8 }}>🫧</div>
           <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, fontStyle: "italic" }}>{t.tunein}</div>
         </div>
 
-        {/* Focus chips */}
-        {profile?.focuses?.length > 0 && (
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 11, fontWeight: 700, color: T.muted, marginBottom: 10, letterSpacing: "0.5px", textTransform: "uppercase" }}>Your focus</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {profile.focuses.map(fid => {
-                const f = t.focusAreas.find(a => a.id === fid);
-                if (!f) return null;
-                return (
-                  <div key={fid} style={{ background: "white", border: `1.5px solid ${T.border}`, borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.text, display: "flex", alignItems: "center", gap: 6, boxShadow: T.shadowSm }}>
-                    {f.icon} {f.label}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── SCREEN: EXPLORE ──────────────────────────────────────────────────────────
-function ExploreScreen({ lang, profile }) {
-  const t = i18n[lang] || i18n.en;
-  const [selected, setSelected] = useState(null);
-  return (
-    <div style={{ paddingBottom: 80 }}>
-      <div style={{ padding: "28px 20px 20px" }}>
-        <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>{t.exploreTitle}</div>
-        <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 24 }}>{t.exploreSub}</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          {t.focusAreas.map(f => {
-            const isActive = profile?.focuses?.includes(f.id);
-            const isOpen = selected === f.id;
-            return (
-              <div key={f.id}>
-                <button onClick={() => setSelected(isOpen ? null : f.id)} style={{ width: "100%", background: isActive ? "rgba(242,167,75,0.1)" : "white", border: `2px solid ${isActive ? T.amber : T.border}`, borderRadius: 18, padding: "16px 14px", textAlign: "left", boxShadow: T.shadowSm, transition: "all 0.2s", position: "relative" }}>
-                  {isActive && <div style={{ position: "absolute", top: 8, right: 8, width: 16, height: 16, borderRadius: "50%", background: T.amber, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "white", fontWeight: 700 }}>✓</div>}
-                  <div style={{ fontSize: 26, marginBottom: 8 }}>{f.icon}</div>
-                  <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 13, fontWeight: 700, color: T.text, marginBottom: 4, lineHeight: 1.3 }}>{f.label}</div>
-                  <div style={{ fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.4 }}>{f.desc}</div>
-                </button>
-                {isOpen && (
-                  <div style={{ background: "white", border: `1.5px solid ${T.border}`, borderRadius: "0 0 16px 16px", padding: "12px 14px", marginTop: -8, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-                    {f.desc}. {isActive ? "✓ Active in your profile." : "Add in your profile settings."}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── SCREEN: PROFILE ──────────────────────────────────────────────────────────
-function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, isTrial, onSignOut }) {
-  const t = i18n[lang] || i18n.en;
-  const freqObj = t.freqs?.find(f => f.id === profile?.freq);
-  const dayNames = t.dayNames || [];
-
-  const Row = ({ label, value }) => (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", borderBottom: `1px solid ${T.border}` }}>
-      <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{label}</div>
-      <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.text }}>{value}</div>
-    </div>
-  );
-
-  return (
-    <div style={{ paddingBottom: 80 }}>
-      <div style={{ padding: "28px 20px 20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text }}>{t.profileTitle}</div>
-          <SunOrb size={44} />
-        </div>
-
-        <div style={{ background: "linear-gradient(135deg, rgba(122,184,212,0.1), rgba(242,167,75,0.08))", border: `1.5px solid ${T.border}`, borderRadius: 16, padding: "14px 16px", marginBottom: 16, fontFamily: "'Nunito', sans-serif", fontSize: 14, fontStyle: "italic", fontWeight: 600, color: T.primary }}>
-          🌿 {t.profileWorking}
-        </div>
-
-        <Card style={{ marginBottom: 14 }}>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.yourFocus}</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {(profile?.focuses || []).map(fid => {
-              const f = t.focusAreas.find(a => a.id === fid);
-              if (!f) return null;
-              return (
-                <div key={fid} style={{ background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 12, padding: "6px 12px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", color: T.text, display: "flex", alignItems: "center", gap: 6 }}>
-                  {f.icon} {f.label}
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Card style={{ marginBottom: 14 }}>
-          <Row label={t.yourFreq} value={freqObj?.label || "—"} />
-          <Row label={t.yourDays} value={(profile?.days || []).map(i => dayNames[i]).join(" · ") || "—"} />
-          <Row label={t.subscription} value={isTrial ? "Free trial" : "Active"} />
-        </Card>
-
-        <Card style={{ marginBottom: 16 }}>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.language}</div>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {LANGUAGES.map(l => (
-              <button key={l.id} onClick={() => setLang(l.id)} style={{ background: lang === l.id ? T.primary : "#F0EBE0", color: lang === l.id ? "white" : T.text, borderRadius: 10, padding: "6px 12px", fontSize: 13, fontWeight: 700, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s" }}>
-                {l.flag} {l.id.toUpperCase()}
-              </button>
-            ))}
-          </div>
-        </Card>
-
-        <PrimaryBtn onClick={onEdit} style={{ background: `linear-gradient(135deg, ${T.primary}, #5aa0bc)`, boxShadow: "0 4px 20px rgba(122,184,212,0.4)", marginBottom: 10 }}>
-          {t.editPrefs}
-        </PrimaryBtn>
-        <button onClick={onManageSubscription} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "14px", background: "white", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 14, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.amber, boxShadow: T.shadowSm }}>
-          ✨ {t.manageSubscription}
-        </button>
-
-        <button onClick={onSignOut} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", padding: "14px", marginTop: 10, background: "none", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 13, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", color: T.muted }}>
-          Sign out
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ─── SCREEN: PAYWALL ─────────────────────────────────────────────────────────
-function PaywallScreen({ lang, onContinue }) {
-  const t = i18n[lang] || i18n.en;
-  const [plan, setPlan] = useState("annual");
-  const plans = [
-    { id: "monthly",  ...t.monthly  },
-    { id: "annual",   ...t.annual   },
-    { id: "lifetime", ...t.lifetime },
-  ];
-  return (
-    <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
-      <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
-        <div style={{ textAlign: "center", marginBottom: 28 }} className="fade-up">
-          <SunOrb size={70} style={{ margin: "0 auto 20px" }} />
-          <div style={{ display: "inline-block", fontSize: 11, fontWeight: 700, color: T.primary, background: "rgba(122,184,212,0.15)", borderRadius: 20, padding: "4px 14px", letterSpacing: "1px", textTransform: "uppercase", marginBottom: 14 }}>Free trial active</div>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 8, lineHeight: 1.25 }}>{t.paywallTitle}</div>
-          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.55 }}>{t.paywallSub}</div>
-        </div>
-
-        <div className="fade-up" style={{ animationDelay: "0.1s", marginBottom: 20 }}>
-          {plans.map(p => (
-            <button key={p.id} onClick={() => setPlan(p.id)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: plan === p.id ? "rgba(122,184,212,0.1)" : "white", border: `2px solid ${plan === p.id ? T.primary : T.border}`, borderRadius: 16, padding: "16px", marginBottom: 10, boxShadow: plan === p.id ? T.shadowSm : "none", transition: "all 0.2s" }}>
-              <div style={{ textAlign: "left" }}>
-                <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 15, fontWeight: 700, color: T.text }}>{p.label}</div>
-                <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{p.period}</div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {p.badge ? <Pill color={T.amber}>{p.badge}</Pill> : null}
-                <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>{p.price}</div>
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <div className="fade-up" style={{ animationDelay: "0.2s" }}>
-          <PrimaryBtn onClick={onContinue}>{t.unlockBtn}</PrimaryBtn>
-          <div style={{ height: 1, background: T.border, margin: "20px 0" }} />
-          <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
-            <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.restore}</button>
-            <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
-          </div>
-          <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 14, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center" }}>← Back</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── APP ──────────────────────────────────────────────────────────────────────
-// ─── INSTALL DETECTION ───────────────────────────────────────────────────────
-function isIOS() {
-  return /iphone|ipad|ipod/i.test(navigator.userAgent);
-}
-function isAndroid() {
-  return /android/i.test(navigator.userAgent);
-}
-function isStandalone() {
-  return window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
-}
-function needsInstall() {
-  return (isIOS() || isAndroid()) && !isStandalone();
-}
-
-// ─── SCREEN: INSTALL GUIDE ────────────────────────────────────────────────────
-function InstallScreen({ lang, onContinue }) {
-  const ios = isIOS();
-  const android = isAndroid();
-
-  const steps = ios ? [
-    { icon: "1️⃣", text: "Open wami.me in Safari", detail: "⚠️ Must use Safari — Chrome and other browsers on iPhone do not support installation" },
-    { icon: "2️⃣", text: "Tap the Share button in Safari", detail: "It looks like this 👇 — at the bottom or top of your screen" },
-    { icon: "3️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu to find it" },
-    { icon: "4️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an icon on your home screen" },
-    { icon: "5️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below" },
-  ] : [
-    { icon: "1️⃣", text: "Tap the menu button ⋮ in Chrome", detail: "Top right corner of your browser" },
-    { icon: "2️⃣", text: "Tap \"Add to Home screen\"", detail: "Or \"Install app\" if you see that option" },
-    { icon: "3️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an app on your home screen" },
-    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below" },
-  ];
-
-  return (
-    <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
-      <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
-
-        <div className="fade-up" style={{ textAlign: "center", marginBottom: 32 }}>
-          <WamiHero />
-          <SunOrb size={64} style={{ margin: "24px auto 24px" }} />
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 8, lineHeight: 1.3 }}>
-            Install Wami for the best experience
-          </div>
-          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-            Installing takes 30 seconds and enables nudge notifications throughout your day.
-          </div>
-        </div>
-
-        {/* Platform badge */}
-        <div className="fade-up" style={{ animationDelay: "0.1s", display: "flex", justifyContent: "center", marginBottom: 24 }}>
-          <div style={{ background: ios ? "#1D1D1F" : "#4285F4", color: "white", borderRadius: 20, padding: "6px 16px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", display: "flex", alignItems: "center", gap: 6 }}>
-            {ios ? "🍎 iPhone / iPad" : "🤖 Android"} — {ios ? "Safari" : "Chrome"}
-          </div>
-        </div>
-
-        {/* Steps */}
-        <div className="fade-up" style={{ animationDelay: "0.15s", marginBottom: 28 }}>
-          {steps.map((s, i) => (
-            <div key={i} style={{ background: "white", borderRadius: 16, padding: "16px", marginBottom: 10, display: "flex", alignItems: "flex-start", gap: 14, boxShadow: T.shadowSm }}>
-              <div style={{ fontSize: 22, flexShrink: 0 }}>{s.icon}</div>
-              <div>
-                <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 3 }}>{s.text}</div>
-                <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{s.detail}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Visual hint for iOS */}
-        {ios && (
-          <div className="fade-up" style={{ animationDelay: "0.2s", background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 16, padding: "16px", marginBottom: 24, textAlign: "center" }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: "'Nunito', sans-serif", marginBottom: 12 }}>
-              The Share button looks like this:
-            </div>
-            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ margin: "0 auto 12px", display: "block" }}>
-              <rect x="1" y="1" width="42" height="42" rx="10" stroke="#F2A74B" strokeWidth="2" fill="rgba(242,167,75,0.1)"/>
-              <path d="M22 26V14M22 14L16 20M22 14L28 20" stroke="#F2A74B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M13 28V32H31V28" stroke="#F2A74B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <div style={{ fontSize: 12, color: "#D04000", fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
-              ⚠️ You must use Safari — other browsers on iPhone do not support installation.
-            </div>
-          </div>
-        )}
-
-        <div className="fade-up" style={{ animationDelay: "0.25s" }}>
-          <PrimaryBtn onClick={onContinue}>
-            I've installed Wami — Continue →
-          </PrimaryBtn>
-          <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 12, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center", padding: "8px" }}>
-            Skip for now (notifications may not work)
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function App() {
-  const [lang, setLang] = useState(detectLang);
-  const [screen, setScreen] = useState("landing");
-  const [profile, setProfile] = useState(null);
-  const [activeNav, setActiveNav] = useState("home");
-  const [showWelcome, setShowWelcome] = useState(false);
-  const [isTrial, setIsTrial] = useState(true);
-  const [user, setUser] = useState(null);
-
-  // Check for existing session on app load
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        setScreen("main");
-      }
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-      } else {
-        setUser(null);
-        setScreen("landing");
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const t = i18n[lang] || i18n.en;
-
-  const handleStart = () => {
-    // Show install guide for mobile users not yet in standalone mode
-    if (needsInstall()) {
-      setScreen("install");
-    } else {
-      setScreen("onboarding");
-    }
-  };
-
-  return (
-    <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
-      {screen === "landing" && (
-        <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} />
-      )}
-      {screen === "install" && (
-        <InstallScreen lang={lang} onContinue={() => setScreen("onboarding")} />
-      )}
-      {screen === "onboarding" && (
-        <OnboardingScreen lang={lang} onComplete={async (data) => {
-          setProfile(data);
-          // Save profile to Supabase if logged in
-          if (user) {
-            await supabase.from('profiles').upsert({
-              id: user.id,
-              email: user.email,
-              age_group: data.age,
-              kids: data.kids,
-              work_types: data.workTypes,
-              focuses: data.focuses,
-              frequency: data.freq,
-              active_days: data.days,
-              language: lang,
-              updated_at: new Date().toISOString(),
-            });
-          }
-          setScreen("signup");
-        }} />
-      )}
-      {screen === "signup" && (
-        <SignUpScreen lang={lang} onComplete={() => { setScreen("main"); setShowWelcome(true); }} />
-      )}
-      {screen === "paywall" && (
-        <PaywallScreen lang={lang} onContinue={() => { setIsTrial(false); setScreen("main"); setActiveNav("home"); }} />
-      )}
-      {screen === "main" && (
-        <>
-          <div className="screen">
-            {activeNav === "home" && (
-              <HomeScreen lang={lang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />
-            )}
-            {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
-            {activeNav === "profile" && (
-              <ProfileScreen
-                lang={lang}
-                setLang={setLang}
-                profile={profile}
-                isTrial={isTrial}
-                onEdit={() => setScreen("onboarding")}
-                onManageSubscription={() => setScreen("paywall")}
-                onSignOut={async () => {
-                  await supabase.auth.signOut();
-                  setProfile(null);
-                  setScreen("landing");
-                }}
-              />
-            )}
-          </div>
-          <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
-        </>
-      )}
-    </div>
-  );
-}
+        {profile?.focuses?.length > 0 &&
