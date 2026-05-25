@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { supabase } from './lib/supabase.js';
 
 // ─── FONTS & STYLES ───────────────────────────────────────────────────────────
 const fontLink = document.createElement("link");
@@ -792,27 +793,6 @@ function LandingScreen({ lang, setLang, onStart }) {
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #FFE8A0 20%, #D4EDF8 70%, #C0E4F5 100%)" }}>
       <div style={{ position: "fixed", inset: 0, background: "linear-gradient(180deg, #FFF3D0 0%, #FFE8A0 20%, #D4EDF8 70%, #C0E4F5 100%)", zIndex: 0 }} />
       <div style={{ position: "relative", zIndex: 1, maxWidth: 420, margin: "0 auto", padding: "20px 20px 48px" }}>
-        {/* Install banner */}
-        <div style={{
-          background: "rgba(255,255,255,0.7)",
-          backdropFilter: "blur(8px)",
-          borderRadius: 12,
-          padding: "10px 14px",
-          marginBottom: 12,
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          boxShadow: T.shadowSm,
-          border: `1px solid rgba(242,167,75,0.2)`,
-        }}>
-          <span style={{ fontSize: 16 }}>📲</span>
-          <div style={{ fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
-            <span style={{ fontWeight: 600, color: T.text }}>Install as app: </span>
-            iPhone: tap <span style={{ fontWeight: 600 }}>Share →</span> <span style={{ fontWeight: 600 }}>Add to Home Screen.</span>{" "}
-            Android: tap <span style={{ fontWeight: 600 }}>⋮ → Add to Home Screen.</span>
-          </div>
-        </div>
-
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
           <LangPicker lang={lang} onSelect={setLang} />
         </div>
@@ -868,7 +848,7 @@ function LandingScreen({ lang, setLang, onStart }) {
 }
 
 // ─── SCREEN: ONBOARDING ───────────────────────────────────────────────────────
-function OnboardingScreen({ lang, onComplete }) {
+function OnboardingScreen({ lang, setLang, onComplete }) {
   const t = i18n[lang] || i18n.en;
   const [age, setAge] = useState(null);
   const [kids, setKids] = useState(null);
@@ -883,50 +863,64 @@ function OnboardingScreen({ lang, onComplete }) {
 
   const ready = focuses.length > 0 && days.length > 0;
 
-  const Section = ({ label, sub, children }) => (
-    <div style={{ marginBottom: 22 }}>
-      <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: sub ? 2 : 10 }}>{label}</div>
-      {sub && <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 10 }}>{sub}</div>}
-      <div style={{ display: "flex", flexWrap: "wrap" }}>{children}</div>
-    </div>
-  );
-
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
       <div style={{ maxWidth: 420, margin: "0 auto", padding: "24px 20px 48px" }}>
+
+        {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <WamiLogo />
-          <LangPicker lang={lang} onSelect={() => {}} />
+          <LangPicker lang={lang} onSelect={setLang} />
         </div>
+
         <div className="fade-up">
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>{t.onboardTitle}</div>
           <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 24, lineHeight: 1.5 }}>{t.onboardSub}</div>
 
+          {/* Profile card */}
           <Card style={{ marginBottom: 16 }}>
-            <Section label={t.ageLabel}>
-              {t.ages.map((a, i) => <SelectPill key={i} label={a} selected={age === i} onClick={() => setAge(i)} />)}
-            </Section>
-            <Section label={t.kidsLabel}>
-              {t.kids.map((k, i) => <SelectPill key={i} label={k} selected={kids === i} onClick={() => setKids(i)} />)}
-            </Section>
-            <Section label={t.workTypeLabel}>
-              {t.workTypes.map((w, i) => <SelectPill key={i} label={w} selected={workTypes.includes(i)} onClick={() => toggleWorkType(i)} />)}
-            </Section>
-          </Card>
 
-          <Card style={{ marginBottom: 16 }}>
-            <Section label={t.focusLabel} sub={t.focusSub}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, width: "100%" }}>
-                {t.focusAreas.map(f => (
-                  <button key={f.id} onClick={() => toggleFocus(f.id)} style={{ background: focuses.includes(f.id) ? "rgba(242,167,75,0.12)" : "#F9F5EF", border: `2px solid ${focuses.includes(f.id) ? T.amber : "transparent"}`, borderRadius: 14, padding: "12px 10px", textAlign: "left", transition: "all 0.2s" }}>
-                    <div style={{ fontSize: 18, marginBottom: 4 }}>{f.icon}</div>
-                    <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, fontWeight: 700, color: T.text, lineHeight: 1.3 }}>{f.label}</div>
-                  </button>
-                ))}
+            {/* Age */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.ageLabel}</div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.ages.map((a, i) => <SelectPill key={i} label={a} selected={age === i} onClick={() => setAge(i)} />)}
               </div>
-            </Section>
+            </div>
+
+            {/* Kids */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.kidsLabel}</div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.kids.map((k, i) => <SelectPill key={i} label={k} selected={kids === i} onClick={() => setKids(i)} />)}
+              </div>
+            </div>
+
+            {/* Work type */}
+            <div style={{ marginBottom: 4 }}>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.workTypeLabel}</div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {t.workTypes.map((w, i) => <SelectPill key={i} label={w} selected={workTypes.includes(i)} onClick={() => toggleWorkType(i)} />)}
+              </div>
+            </div>
+
           </Card>
 
+          {/* Focus areas */}
+          <Card style={{ marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 4 }}>{t.focusLabel}</div>
+            <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 14 }}>{t.focusSub}</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {t.focusAreas.map(f => (
+                <button key={f.id} onClick={() => toggleFocus(f.id)} style={{ background: focuses.includes(f.id) ? "rgba(242,167,75,0.12)" : "#F9F5EF", border: `2px solid ${focuses.includes(f.id) ? T.amber : "transparent"}`, borderRadius: 14, padding: "12px 10px", textAlign: "left", transition: "all 0.2s" }}>
+                  <div style={{ fontSize: 18, marginBottom: 4 }}>{f.icon}</div>
+                  <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 12, fontWeight: 700, color: T.text, lineHeight: 1.3 }}>{f.label}</div>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          {/* Frequency */}
           <Card style={{ marginBottom: 16 }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 14 }}>{t.freqLabel}</div>
             {t.freqs.map(f => (
@@ -940,6 +934,7 @@ function OnboardingScreen({ lang, onComplete }) {
             ))}
           </Card>
 
+          {/* Days */}
           <Card style={{ marginBottom: 28 }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 14 }}>{t.daysLabel}</div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -963,10 +958,17 @@ function SignUpScreen({ lang, onComplete }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!email.includes("@")) { setError("Please enter a valid email."); return; }
     if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
-    onComplete();
+    setError("");
+    try {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) { setError(error.message); return; }
+      onComplete();
+    } catch (e) {
+      setError("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -1007,7 +1009,7 @@ function SignUpScreen({ lang, onComplete }) {
 }
 
 // ─── SCREEN: HOME ─────────────────────────────────────────────────────────────
-function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
+function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
   const t = i18n[lang] || i18n.en;
 
   // Build focus-aware trial pool once
@@ -1065,7 +1067,7 @@ function HomeScreen({ lang, profile, showWelcome, onDismissWelcome, onUnlock, is
         <div style={{ position: "absolute", top: -30, right: -30, width: 140, height: 140, borderRadius: "50%", background: "radial-gradient(circle, rgba(242,167,75,0.2), transparent)" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, position: "relative" }}>
           <WamiLogo />
-          <LangPicker lang={lang} onSelect={() => {}} />
+          <LangPicker lang={lang} onSelect={setLang} />
         </div>
         <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 20, fontWeight: 800, color: T.text, marginBottom: 2 }}>{greeting}</div>
         <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
@@ -1198,7 +1200,7 @@ function ExploreScreen({ lang, profile }) {
 }
 
 // ─── SCREEN: PROFILE ──────────────────────────────────────────────────────────
-function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, isTrial }) {
+function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, isTrial, onSignOut }) {
   const t = i18n[lang] || i18n.en;
   const freqObj = t.freqs?.find(f => f.id === profile?.freq);
   const dayNames = t.dayNames || [];
@@ -1247,7 +1249,15 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.language}</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {LANGUAGES.map(l => (
-              <button key={l.id} onClick={() => setLang(l.id)} style={{ background: lang === l.id ? T.primary : "#F0EBE0", color: lang === l.id ? "white" : T.text, borderRadius: 10, padding: "6px 12px", fontSize: 13, fontWeight: 700, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s" }}>
+              <button key={l.id} onClick={async () => {
+                setLang(l.id);
+                if (typeof supabase !== 'undefined') {
+                  const { data: { session } } = await supabase.auth.getSession();
+                  if (session?.user) {
+                    await supabase.from('profiles').update({ language: l.id }).eq('id', session.user.id);
+                  }
+                }
+              }} style={{ background: lang === l.id ? T.primary : "#F0EBE0", color: lang === l.id ? "white" : T.text, borderRadius: 10, padding: "6px 12px", fontSize: 13, fontWeight: 700, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s" }}>
                 {l.flag} {l.id.toUpperCase()}
               </button>
             ))}
@@ -1259,6 +1269,10 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
         </PrimaryBtn>
         <button onClick={onManageSubscription} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "14px", background: "white", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 14, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.amber, boxShadow: T.shadowSm }}>
           ✨ {t.manageSubscription}
+        </button>
+
+        <button onClick={onSignOut} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", padding: "14px", marginTop: 10, background: "none", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 13, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", color: T.muted }}>
+          Sign out
         </button>
       </div>
     </div>
@@ -1335,15 +1349,16 @@ function InstallScreen({ lang, onContinue }) {
   const android = isAndroid();
 
   const steps = ios ? [
-    { icon: "1️⃣", text: "Tap the Share button at the bottom of your browser", detail: "It looks like a box with an arrow pointing up ↑" },
-    { icon: "2️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu" },
-    { icon: "3️⃣", text: "Tap \"Add\" in the top right corner", detail: "Wami will appear as an icon on your home screen" },
-    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue" },
+    { icon: "1️⃣", text: "Open wami.me in Safari", detail: "⚠️ Must use Safari — Chrome and other browsers on iPhone do not support installation" },
+    { icon: "2️⃣", text: "Tap the Share button in Safari", detail: "It looks like this 👇 — at the bottom or top of your screen" },
+    { icon: "3️⃣", text: "Scroll down and tap \"Add to Home Screen\"", detail: "You may need to scroll the share menu to find it" },
+    { icon: "4️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an icon on your home screen" },
+    { icon: "5️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below" },
   ] : [
-    { icon: "1️⃣", text: "Tap the menu button ⋮ in your browser", detail: "Top right corner of Chrome" },
+    { icon: "1️⃣", text: "Tap the menu button ⋮ in Chrome", detail: "Top right corner of your browser" },
     { icon: "2️⃣", text: "Tap \"Add to Home screen\"", detail: "Or \"Install app\" if you see that option" },
     { icon: "3️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an app on your home screen" },
-    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue" },
+    { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below" },
   ];
 
   return (
@@ -1383,10 +1398,12 @@ function InstallScreen({ lang, onContinue }) {
 
         {/* Visual hint for iOS */}
         {ios && (
-          <div className="fade-up" style={{ animationDelay: "0.2s", background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 16, padding: "14px 16px", marginBottom: 24, textAlign: "center" }}>
-            <div style={{ fontSize: 28, marginBottom: 6 }}>⬆️</div>
-            <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
-              Look for the <strong>Share button</strong> at the bottom of Safari — it's the square with an arrow pointing up.
+          <div className="fade-up" style={{ animationDelay: "0.2s", background: "rgba(242,167,75,0.1)", border: `1.5px solid ${T.amber}`, borderRadius: 16, padding: "16px", marginBottom: 24, textAlign: "center" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.text, fontFamily: "'Nunito', sans-serif", marginBottom: 8 }}>
+              The Share button is a square with an arrow pointing upward ↑
+            </div>
+            <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
+              You'll find it in the Safari toolbar at the top or bottom of your screen.
             </div>
           </div>
         )}
@@ -1411,6 +1428,26 @@ export default function App() {
   const [activeNav, setActiveNav] = useState("home");
   const [showWelcome, setShowWelcome] = useState(false);
   const [isTrial, setIsTrial] = useState(true);
+  const [user, setUser] = useState(null);
+
+  // Check for existing session on app load
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        setScreen("main");
+      }
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+        setScreen("landing");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const t = i18n[lang] || i18n.en;
 
@@ -1432,7 +1469,25 @@ export default function App() {
         <InstallScreen lang={lang} onContinue={() => setScreen("onboarding")} />
       )}
       {screen === "onboarding" && (
-        <OnboardingScreen lang={lang} onComplete={data => { setProfile(data); setScreen("signup"); }} />
+        <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
+          setProfile(data);
+          // Save profile to Supabase if logged in
+          if (user) {
+            await supabase.from('profiles').upsert({
+              id: user.id,
+              email: user.email,
+              age_group: data.age,
+              kids: data.kids,
+              work_types: data.workTypes,
+              focuses: data.focuses,
+              frequency: data.freq,
+              active_days: data.days,
+              language: lang,
+              updated_at: new Date().toISOString(),
+            });
+          }
+          setScreen("signup");
+        }} />
       )}
       {screen === "signup" && (
         <SignUpScreen lang={lang} onComplete={() => { setScreen("main"); setShowWelcome(true); }} />
@@ -1444,11 +1499,23 @@ export default function App() {
         <>
           <div className="screen">
             {activeNav === "home" && (
-              <HomeScreen lang={lang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />
+              <HomeScreen lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />
             )}
             {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
             {activeNav === "profile" && (
-              <ProfileScreen lang={lang} setLang={setLang} profile={profile} isTrial={isTrial} onEdit={() => setScreen("onboarding")} onManageSubscription={() => setScreen("paywall")} />
+              <ProfileScreen
+                lang={lang}
+                setLang={setLang}
+                profile={profile}
+                isTrial={isTrial}
+                onEdit={() => setScreen("onboarding")}
+                onManageSubscription={() => setScreen("paywall")}
+                onSignOut={async () => {
+                  await supabase.auth.signOut();
+                  setProfile(null);
+                  setScreen("landing");
+                }}
+              />
             )}
           </div>
           <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
