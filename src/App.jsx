@@ -427,7 +427,42 @@ function LangPicker({ lang, onSelect }) {
     </div>
   );
 }
+function TermsModal({ onClose, lang }) {
+  const t = i18n[lang] || i18n.en;
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 200, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div style={{ background: "white", borderRadius: "24px 24px 0 0", padding: "28px 24px 48px", maxWidth: 420, width: "100%", maxHeight: "80vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>Terms & Privacy</div>
+          <button onClick={onClose} style={{ fontSize: 22, color: T.muted, fontWeight: 700 }}>×</button>
+        </div>
+        <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.8 }}>
 
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>1. Service</div>
+          <p style={{ marginBottom: 16 }}>Wami provides daily wellness prompts via a web application. Access requires account creation and, after a 14-day free trial, a paid subscription.</p>
+
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>2. Subscriptions & Payments</div>
+          <p style={{ marginBottom: 16 }}>Monthly and annual subscriptions renew automatically. Lifetime subscriptions grant access for the duration of service operation. Payments are processed securely via Stripe.</p>
+
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>3. Service Discontinuation</div>
+          <p style={{ marginBottom: 16 }}>In the event that Wami discontinues its service, users will receive a minimum of 14 days notice by email. Lifetime subscriptions grant access for the duration of service operation and do not guarantee perpetual service. Pro-rated refunds will be issued for annual subscriptions based on unused time remaining at the date of discontinuation.</p>
+
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>4. Free Trial</div>
+          <p style={{ marginBottom: 16 }}>A 14-day free trial is available to new users. One trial per email address. No payment is required during the trial period.</p>
+
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>5. Privacy</div>
+          <p style={{ marginBottom: 16 }}>We collect only your email address and app preferences. We do not sell your data. Prompt content and usage data are stored securely via Supabase. You may request deletion of your account and data at any time by contacting us.</p>
+
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>6. Content</div>
+          <p style={{ marginBottom: 16 }}>All prompts and content within Wami are original creative works and remain the exclusive intellectual property of Wami. Reproduction or redistribution in any form is strictly prohibited.</p>
+
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>7. Contact</div>
+          <p style={{ marginBottom: 0 }}>For questions or data requests, contact us at hello@wami.me</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 function BottomNav({ active, onNav, t }) {
   const tabs = [{ id:"home", icon:"🏠", label:t.home }, { id:"explore", icon:"🔍", label:t.explore }, { id:"profile", icon:"👤", label:t.profile }];
   return (
@@ -942,8 +977,8 @@ function PaywallScreen({ lang, onContinue }) {
           <PrimaryBtn onClick={onContinue}>{t.unlockBtn}</PrimaryBtn>
           <div style={{ height: 1, background: T.border, margin: "20px 0" }} />
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
-            <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.restore}</button>
-            <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
+            <button onClick={() => setShowTerms(true)} style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
+            <button onClick={() => setShowTerms(true)} style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
           </div>
           <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 14, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center" }}>← Back</button>
         </div>
@@ -961,8 +996,9 @@ export default function App() {
   const [profile, setProfile] = useState(null);
   const [activeNav, setActiveNav] = useState("home");
   const [showWelcome, setShowWelcome] = useState(false);
-  const [isTrial, setIsTrial] = useState(true);
-  const [user, setUser] = useState(null);
+const [isTrial, setIsTrial] = useState(true);
+const [user, setUser] = useState(null);
+const [showTerms, setShowTerms] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("wami_lang", lang);
@@ -1009,9 +1045,10 @@ export default function App() {
               />
             )}
           </div>
-          <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
+         <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
         </>
       )}
+      {showTerms && <TermsModal onClose={() => setShowTerms(false)} lang={lang} />}
     </div>
   );
 }
