@@ -1015,12 +1015,19 @@ export default function App() {
     localStorage.setItem("wami_lang", lang);
   }, [lang]);
 
+  const [intentionalSignOut, setIntentionalSignOut] = useState(false);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) { setUser(session.user); setScreen("main"); }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) { setUser(session.user); } else { setUser(null); setScreen("landing"); }
+      if (session?.user) {
+        setUser(session.user);
+      } else if (!intentionalSignOut) {
+        setUser(null);
+        setScreen("landing");
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -1040,8 +1047,27 @@ export default function App() {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
-      {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} onSignIn={async () => { await supabase.auth.signOut(); setScreen("signin"); }} />}
-      {screen === "signin" && <SignInScreen lang={lang} onComplete={() => setScreen("main")} />}
+      {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} onSignIn={async () => { setIntentionalSignOut(true); await supabase.auth.signOut(); setUser(null); setIntentionalSignOut(false); setScreen("signin"); }} />}
+      {screen === "signin" && <SignInScreen lang={lang} onComplete={async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setUser(session.user);
+          // Load saved profile
+          const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+          if (data) {
+            setProfile({
+              age: data.age_group,
+              kids: data.kids,
+              workTypes: data.work_types || [],
+              focuses: data.focuses || [],
+              freq: data.frequency || 'steady',
+              days: data.active_days || [0,1,2,3,4],
+            });
+            if (data.language) setLang(data.language);
+          }
+        }
+        setScreen("main");
+      }} />}
       {screen === "install" && <InstallScreen onContinue={() => setScreen("onboarding")} />}
       {screen === "onboarding" && (
         <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
@@ -1063,7 +1089,7 @@ export default function App() {
               <ProfileScreen lang={lang} setLang={setLang} profile={profile} isTrial={isTrial}
                 onEdit={() => setScreen("onboarding")}
                 onManageSubscription={() => setScreen("paywall")}
-                onSignOut={async () => { await supabase.auth.signOut(); setProfile(null); setScreen("landing"); }}
+                onSignOut={async () => { await supabase.auth.signOut(); setProfile(null); setUser(null); setScreen("landing"); }}
               />
             )}
           </div>
