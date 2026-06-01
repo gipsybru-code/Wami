@@ -1040,7 +1040,7 @@ export default function App() {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
-      {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} onSignIn={() => setScreen("signin")} />}
+      {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} onSignIn={async () => { await supabase.auth.signOut(); setScreen("signin"); }} />}
       {screen === "signin" && <SignInScreen lang={lang} onComplete={() => setScreen("main")} />}
       {screen === "install" && <InstallScreen onContinue={() => setScreen("onboarding")} />}
       {screen === "onboarding" && (
