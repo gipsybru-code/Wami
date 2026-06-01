@@ -478,7 +478,7 @@ function BottomNav({ active, onNav, t }) {
 }
 
 // ─── SCREEN: LANDING ──────────────────────────────────────────────────────────
-function LandingScreen({ lang, setLang, onStart }) {
+function LandingScreen({ lang, setLang, onStart, onSignIn }) {
   const t = i18n[lang] || i18n.en;
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #FFE8A0 20%, #D4EDF8 70%, #C0E4F5 100%)" }}>
@@ -524,7 +524,7 @@ function LandingScreen({ lang, setLang, onStart }) {
         </div>
         <div className="fade-up" style={{ animationDelay: "0.2s" }}>
           <PrimaryBtn onClick={onStart}>{t.trial}</PrimaryBtn>
-          <button onClick={onStart} style={{ color: T.muted, fontSize: 13, fontWeight: 400, fontFamily: "'DM Sans', sans-serif", width: "100%", padding: "10px", marginTop: 8 }}>{t.signin}</button>
+          <button onClick={onSignIn} style={{ color: T.muted, fontSize: 13, fontWeight: 400, fontFamily: "'DM Sans', sans-serif", width: "100%", padding: "10px", marginTop: 8 }}>{t.signin}</button>
           <div style={{ textAlign: "center", marginTop: 12, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</div>
         </div>
       </div>
@@ -684,6 +684,52 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
 }
 
 // ─── SCREEN: SIGN UP ──────────────────────────────────────────────────────────
+function SignInScreen({ lang, onComplete }) {
+  const t = i18n[lang] || i18n.en;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignIn = async () => {
+    if (!email.includes("@")) { setError("Please enter a valid email."); return; }
+    if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
+    setError("");
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) { setError(error.message); setLoading(false); return; }
+      onComplete();
+    } catch (e) {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
+      <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
+        <div className="fade-up" style={{ textAlign: "center", marginBottom: 36 }}>
+          <WamiHero />
+          <SunOrb size={60} style={{ margin: "24px auto 24px" }} />
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 20, fontWeight: 700, color: "#4A4A4A", marginBottom: 8 }}>Welcome back.</div>
+          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>Sign in to continue your journey.</div>
+        </div>
+        <div className="fade-up" style={{ animationDelay: "0.1s" }}>
+          <input type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
+          <input type="password" placeholder={t.passwordPlaceholder} value={password} onChange={e => setPassword(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
+          {error && <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
+          <PrimaryBtn onClick={handleSignIn} disabled={loading}>
+            {loading ? "Signing in..." : "Sign in"}
+          </PrimaryBtn>
+          <div style={{ textAlign: "center", marginTop: 20, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
+            {t.terms}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 function SignUpScreen({ lang, onComplete }) {
   const t = i18n[lang] || i18n.en;
   const [email, setEmail] = useState("");
@@ -737,8 +783,11 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t.homeGreeting : hour < 17 ? t.goodAfternoon : t.goodEvening;
 
+const freqLimits = { light: 4, steady: 14, present: 42 };
+  const maxTrialPrompts = freqLimits[profile?.freq] || 14;
+
   const nextTrialPrompt = () => {
-    if (trialIdx >= trialPool.length - 1) return;
+    if (trialIdx >= Math.min(maxTrialPrompts, trialPool.length) - 1) return;
     setVisible(false);
     setTimeout(() => { setTrialIdx(i => i + 1); setVisible(true); }, 300);
   };
@@ -763,7 +812,7 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
   };
 
   const promptText = isTrial ? trialPool[trialIdx]?.text : currentPrompt?.text;
-  const promptsRemaining = trialPool.length - trialIdx - 1;
+  const promptsRemaining = Math.min(maxTrialPrompts, trialPool.length) - trialIdx - 1;
 
   return (
     <div style={{ paddingBottom: 80 }}>
@@ -820,7 +869,7 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
             <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
               {isTrial ? `${promptsRemaining} trial prompts remaining` : `${t.nextPrompt}: later today`}
             </div>
-            {(isTrial ? trialIdx < trialPool.length - 1 : true) && (
+            {(isTrial ? trialIdx < Math.min(maxTrialPrompts, trialPool.length) - 1 : true) && (
               <button onClick={isTrial ? nextTrialPrompt : nextMainPrompt} style={{ background: `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 20, padding: "8px 16px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", boxShadow: "0 2px 12px rgba(242,167,75,0.3)" }}>Next ›</button>
             )}
           </div>
@@ -1024,6 +1073,7 @@ export default function App() {
 const [isTrial, setIsTrial] = useState(true);
 const [user, setUser] = useState(null);
 const [showTerms, setShowTerms] = useState(false);
+const [signingIn, setSigningIn] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("wami_lang", lang);
@@ -1053,7 +1103,8 @@ const [showTerms, setShowTerms] = useState(false);
   }, []);
   return (
     <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
-      {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} />}
+      {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} onSignIn={() => setScreen("signin")} />}
+{screen === "signin" && <SignInScreen lang={lang} onComplete={() => { setScreen("main"); }} />}
       {screen === "install" && <InstallScreen onContinue={() => setScreen("onboarding")} />}
       {screen === "onboarding" && (
         <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
