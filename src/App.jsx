@@ -427,42 +427,7 @@ function LangPicker({ lang, onSelect }) {
     </div>
   );
 }
-function TermsModal({ onClose, lang }) {
-  const t = i18n[lang] || i18n.en;
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 200, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-      <div style={{ background: "white", borderRadius: "24px 24px 0 0", padding: "28px 24px 48px", maxWidth: 420, width: "100%", maxHeight: "80vh", overflowY: "auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>Terms & Privacy</div>
-          <button onClick={onClose} style={{ fontSize: 22, color: T.muted, fontWeight: 700 }}>×</button>
-        </div>
-        <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.8 }}>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>1. Service</div>
-          <p style={{ marginBottom: 16 }}>Wami provides daily wellness prompts via a web application. Access requires account creation and, after a 14-day free trial, a paid subscription.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>2. Subscriptions & Payments</div>
-          <p style={{ marginBottom: 16 }}>Monthly and annual subscriptions renew automatically. Lifetime subscriptions grant access for the duration of service operation. Payments are processed securely via Stripe.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>3. Service Discontinuation</div>
-          <p style={{ marginBottom: 16 }}>In the event that Wami discontinues its service, users will receive a minimum of 14 days notice by email. Lifetime subscriptions grant access for the duration of service operation and do not guarantee perpetual service. Pro-rated refunds will be issued for annual subscriptions based on unused time remaining at the date of discontinuation.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>4. Free Trial</div>
-          <p style={{ marginBottom: 16 }}>A 14-day free trial is available to new users. One trial per email address. No payment is required during the trial period.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>5. Privacy</div>
-          <p style={{ marginBottom: 16 }}>We collect only your email address and app preferences. We do not sell your data. Prompt content and usage data are stored securely via Supabase. You may request deletion of your account and data at any time by contacting us.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>6. Content</div>
-          <p style={{ marginBottom: 16 }}>All prompts and content within Wami are original creative works and remain the exclusive intellectual property of Wami. Reproduction or redistribution in any form is strictly prohibited.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>7. Contact</div>
-          <p style={{ marginBottom: 0 }}>For questions or data requests, contact us at hello@wami.me</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 function BottomNav({ active, onNav, t }) {
   const tabs = [{ id:"home", icon:"🏠", label:t.home }, { id:"explore", icon:"🔍", label:t.explore }, { id:"profile", icon:"👤", label:t.profile }];
   return (
@@ -719,17 +684,14 @@ function SignInScreen({ lang, onComplete }) {
           <input type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
           <input type="password" placeholder={t.passwordPlaceholder} value={password} onChange={e => setPassword(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
           {error && <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
-          <PrimaryBtn onClick={handleSignIn} disabled={loading}>
-            {loading ? "Signing in..." : "Sign in"}
-          </PrimaryBtn>
-          <div style={{ textAlign: "center", marginTop: 20, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
-            {t.terms}
-          </div>
+          <PrimaryBtn onClick={handleSignIn} disabled={loading}>{loading ? "Signing in..." : "Sign in"}</PrimaryBtn>
+          <div style={{ textAlign: "center", marginTop: 20, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</div>
         </div>
       </div>
     </div>
   );
 }
+
 function SignUpScreen({ lang, onComplete }) {
   const t = i18n[lang] || i18n.en;
   const [email, setEmail] = useState("");
@@ -774,33 +736,12 @@ function SignUpScreen({ lang, onComplete }) {
 function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
   const t = i18n[lang] || i18n.en;
   const trialPool = useState(() => getTrialPrompts(profile?.focuses))[0];
-  const [trialIdx, setTrialIdx] = useState(0);
   const [shownIds, setShownIds] = useState([]);
-  const [currentPrompt, setCurrentPrompt] = useState(() => !isTrial ? getPrompt(profile, profile?.focuses, []) : null);
-  const [visible, setVisible] = useState(true);
+  const [currentPrompt] = useState(() => !isTrial ? getPrompt(profile, profile?.focuses, []) : null);
   const [notifStatus, setNotifStatus] = useState("default");
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t.homeGreeting : hour < 17 ? t.goodAfternoon : t.goodEvening;
-
-const freqLimits = { light: 4, steady: 14, present: 42 };
-  const maxTrialPrompts = freqLimits[profile?.freq] || 14;
-
-  const nextTrialPrompt = () => {
-    if (trialIdx >= Math.min(maxTrialPrompts, trialPool.length) - 1) return;
-    setVisible(false);
-    setTimeout(() => { setTrialIdx(i => i + 1); setVisible(true); }, 300);
-  };
-
-  const nextMainPrompt = () => {
-    setVisible(false);
-    setTimeout(() => {
-      const p = getPrompt(profile, profile?.focuses, shownIds);
-      setCurrentPrompt(p);
-      setShownIds(s => [...s, p.id]);
-      setVisible(true);
-    }, 300);
-  };
 
   const requestNotifications = async () => {
     try {
@@ -811,8 +752,7 @@ const freqLimits = { light: 4, steady: 14, present: 42 };
     } catch(e) { setNotifStatus("unsupported"); }
   };
 
-  const promptText = isTrial ? trialPool[trialIdx]?.text : currentPrompt?.text;
-  const promptsRemaining = Math.min(maxTrialPrompts, trialPool.length) - trialIdx - 1;
+  const promptText = isTrial ? trialPool[0]?.text : currentPrompt?.text;
 
   return (
     <div style={{ paddingBottom: 80 }}>
@@ -859,19 +799,16 @@ const freqLimits = { light: 4, steady: 14, present: 42 };
           <div style={{ position: "absolute", top: 0, right: 0, width: 80, height: 80, background: "radial-gradient(circle, rgba(242,167,75,0.1), transparent)", borderRadius: "0 24px 0 80px" }} />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <Pill color={isTrial ? T.primary : T.amber}>
-              {isTrial ? `Free trial · ${trialIdx + 1} of ${trialPool.length}` : t.todayPrompt}
+              {isTrial ? `Free trial` : t.todayPrompt}
             </Pill>
           </div>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 17, fontStyle: "italic", fontWeight: 600, color: T.text, lineHeight: 1.55, marginBottom: 20, opacity: visible ? 1 : 0, transition: "opacity 0.3s ease", minHeight: 80 }}>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 17, fontStyle: "italic", fontWeight: 600, color: T.text, lineHeight: 1.55, marginBottom: 20, minHeight: 80 }}>
             "{promptText}"
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
             <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
-              {isTrial ? `${promptsRemaining} trial prompts remaining` : `${t.nextPrompt}: later today`}
+              {isTrial ? `Free trial prompt` : `${t.nextPrompt}: later today`}
             </div>
-            {(isTrial ? trialIdx < Math.min(maxTrialPrompts, trialPool.length) - 1 : true) && (
-              <button onClick={isTrial ? nextTrialPrompt : nextMainPrompt} style={{ background: `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 20, padding: "8px 16px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", boxShadow: "0 2px 12px rgba(242,167,75,0.3)" }}>Next ›</button>
-            )}
           </div>
         </Card>
 
@@ -995,27 +932,9 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
 }
 
 // ─── SCREEN: PAYWALL ──────────────────────────────────────────────────────────
-async function startCheckout(plan, userEmail) {
-  try {
-    const res = await fetch(
-      'https://clqsqzydhsvgupacqfnj.supabase.co/functions/v1/create-checkout',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, email: userEmail }),
-      }
-    )
-    const data = await res.json()
-    if (data.url) window.location.href = data.url
-    else alert('Payment error. Please try again.')
-  } catch (e) {
-    alert('Something went wrong. Please try again.')
-  }
-}
 function PaywallScreen({ lang, onContinue }) {
   const t = i18n[lang] || i18n.en;
   const [plan, setPlan] = useState("annual");
-  const [loading, setLoading] = useState(false);
   const plans = [{ id:"monthly",...t.monthly },{ id:"annual",...t.annual },{ id:"lifetime",...t.lifetime }];
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
@@ -1041,18 +960,11 @@ function PaywallScreen({ lang, onContinue }) {
           ))}
         </div>
         <div className="fade-up" style={{ animationDelay: "0.2s" }}>
-        <PrimaryBtn onClick={async () => {
-           setLoading(true);
-           const { data: { session } } = await supabase.auth.getSession();
-           await startCheckout(plan, session?.user?.email);
-           setLoading(false);
-           }}>
-          {loading ? "Loading..." : t.unlockBtn}
-      </PrimaryBtn>
+          <PrimaryBtn onClick={onContinue}>{t.unlockBtn}</PrimaryBtn>
           <div style={{ height: 1, background: T.border, margin: "20px 0" }} />
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
-            <button onClick={() => setShowTerms(true)} style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
-            <button onClick={() => setShowTerms(true)} style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
+            <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.restore}</button>
+            <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
           </div>
           <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 14, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center" }}>← Back</button>
         </div>
@@ -1070,10 +982,8 @@ export default function App() {
   const [profile, setProfile] = useState(null);
   const [activeNav, setActiveNav] = useState("home");
   const [showWelcome, setShowWelcome] = useState(false);
-const [isTrial, setIsTrial] = useState(true);
-const [user, setUser] = useState(null);
-const [showTerms, setShowTerms] = useState(false);
-const [signingIn, setSigningIn] = useState(false);
+  const [isTrial, setIsTrial] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("wami_lang", lang);
@@ -1091,20 +1001,11 @@ const [signingIn, setSigningIn] = useState(false);
 
   const t = i18n[lang] || i18n.en;
   const handleStart = () => needsInstall() ? setScreen("install") : setScreen("onboarding");
-// Handle Stripe return
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      setIsTrial(false);
-      setScreen("main");
-      setShowWelcome(true);
-      window.history.replaceState({}, '', '/');
-    }
-  }, []);
+
   return (
     <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
       {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} onSignIn={() => setScreen("signin")} />}
-{screen === "signin" && <SignInScreen lang={lang} onComplete={() => { setScreen("main"); }} />}
+      {screen === "signin" && <SignInScreen lang={lang} onComplete={() => setScreen("main")} />}
       {screen === "install" && <InstallScreen onContinue={() => setScreen("onboarding")} />}
       {screen === "onboarding" && (
         <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
@@ -1130,10 +1031,9 @@ const [signingIn, setSigningIn] = useState(false);
               />
             )}
           </div>
-         <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
+          <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
         </>
       )}
-      {showTerms && <TermsModal onClose={() => setShowTerms(false)} lang={lang} />}
     </div>
   );
 }
