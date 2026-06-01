@@ -946,9 +946,27 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
 }
 
 // ─── SCREEN: PAYWALL ──────────────────────────────────────────────────────────
+async function startCheckout(plan, userEmail) {
+  try {
+    const res = await fetch(
+      'https://clqsqzydhsvgupacqfnj.supabase.co/functions/v1/create-checkout',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, email: userEmail }),
+      }
+    )
+    const data = await res.json()
+    if (data.url) window.location.href = data.url
+    else alert('Payment error. Please try again.')
+  } catch (e) {
+    alert('Something went wrong. Please try again.')
+  }
+}
 function PaywallScreen({ lang, onContinue }) {
   const t = i18n[lang] || i18n.en;
   const [plan, setPlan] = useState("annual");
+  const [loading, setLoading] = useState(false);
   const plans = [{ id:"monthly",...t.monthly },{ id:"annual",...t.annual },{ id:"lifetime",...t.lifetime }];
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
@@ -974,7 +992,14 @@ function PaywallScreen({ lang, onContinue }) {
           ))}
         </div>
         <div className="fade-up" style={{ animationDelay: "0.2s" }}>
-          <PrimaryBtn onClick={onContinue}>{t.unlockBtn}</PrimaryBtn>
+        <PrimaryBtn onClick={async () => {
+           setLoading(true);
+           const { data: { session } } = await supabase.auth.getSession();
+           await startCheckout(plan, session?.user?.email);
+           setLoading(false);
+           }}>
+          {loading ? "Loading..." : t.unlockBtn}
+      </PrimaryBtn>
           <div style={{ height: 1, background: T.border, margin: "20px 0" }} />
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
             <button onClick={() => setShowTerms(true)} style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</button>
@@ -1016,7 +1041,16 @@ const [showTerms, setShowTerms] = useState(false);
 
   const t = i18n[lang] || i18n.en;
   const handleStart = () => needsInstall() ? setScreen("install") : setScreen("onboarding");
-
+// Handle Stripe return
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setIsTrial(false);
+      setScreen("main");
+      setShowWelcome(true);
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
   return (
     <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
       {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} />}
