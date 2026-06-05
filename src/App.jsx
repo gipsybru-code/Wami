@@ -480,7 +480,8 @@ function LandingScreen({ lang, setLang, onStart, onSignIn }) {
           <div style={{ background: "linear-gradient(135deg, rgba(122,184,212,0.1), rgba(242,167,75,0.08))", border: `1.5px solid ${T.border}`, borderRadius: 20, padding: "20px" }}>
             <Pill color={T.primary}>Sample nudge</Pill>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 16, fontStyle: "italic", fontWeight: 600, color: T.text, lineHeight: 1.55, marginTop: 12 }}>
-              "Before your next thing, pause for a glass of water. A soft reset."
+             "Before your next thing, pause for a glass of water. A soft reset.\nAvant la prochaine chose, faites une pause pour un verre d'eau. Une douce remise à zéro."
+tvb
             </div>
           </div>
         </div>
