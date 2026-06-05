@@ -109,7 +109,7 @@ const LANGUAGES = [
 
 function detectLang() {
   const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
-  return ["en","it","pt","es","fr"].includes(nav) ? nav : "en";
+  return ["en","fr"].includes(nav) ? nav : "en";
 }
 
 const i18n = {
