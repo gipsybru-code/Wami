@@ -101,10 +101,7 @@ function getPrompt(profile, focuses, shownIds = []) {
 
 const LANGUAGES = [
   { id: "en", flag: "🇺🇸", name: "English" },
-  { id: "it", flag: "🇮🇹", name: "Italiano" },
-  { id: "pt", flag: "🇧🇷", name: "Português" },
-  { id: "es", flag: "🇲🇽", name: "Español" },
-  { id: "fr", flag: "🇫🇷", name: "Français" },
+    { id: "fr", flag: "🇫🇷", name: "Français" },
 ];
 
 function detectLang() {
