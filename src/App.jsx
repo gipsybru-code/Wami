@@ -124,7 +124,7 @@ const i18n = {
     freqLabel: "How often would you like a nudge?", daysLabel: "Which days?", letsgo: "Let's go →",
     signupTitle: "Your profile is ready.", signupSub: "Create your account to save it and start exploring.",
     emailPlaceholder: "Your email", passwordPlaceholder: "Choose a password", createAccount: "Create account",
-    paywallTitle: "Unlock the full experience.", paywallSub: "hundreds of prompts across 12 focus areas. New every day.",
+    paywallTitle: "Unlock the full experience.", paywallSub: "Hundreds of carefully crafted prompts across 12 focus areas. New every day.",
     unlockBtn: "Unlock all prompts", restore: "Restore purchase", terms: "Terms · Privacy",
     homeGreeting: "Good morning 🌅", todayPrompt: "Today's nudge", nextPrompt: "Next prompt",
     tunein: "Before your next prompt — take one breath and notice how you feel right now.",
@@ -175,7 +175,7 @@ const i18n = {
     freqLabel: "À quelle fréquence souhaitez-vous une suggestion ?", daysLabel: "Quels jours ?", letsgo: "C'est parti →",
     signupTitle: "Votre profil est prêt.", signupSub: "Créez votre compte pour le sauvegarder et commencer.",
     emailPlaceholder: "Votre email", passwordPlaceholder: "Choisissez un mot de passe", createAccount: "Créer un compte",
-    paywallTitle: "Débloquez l'expérience complète.", paywallSub: "des centaines de suggestions dans 12 domaines. Nouvelles chaque jour.",
+    paywallTitle: "Débloquez l'expérience complète.", paywallSub: "Des centaines de suggestions soigneusement créées dans 12 domaines. Nouvelles chaque jour.",
     unlockBtn: "Débloquer toutes les suggestions", restore: "Restaurer l'achat", terms: "Conditions · Confidentialité",
     homeGreeting: "Bonjour 🌅", todayPrompt: "Votre suggestion", nextPrompt: "Prochaine suggestion",
     tunein: "Avant votre prochaine suggestion — respirez profondément et remarquez comment vous vous sentez.",
@@ -289,7 +289,7 @@ function TermsModal({ onClose, onAccept, mustAccept = false }) {
           <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>1. Service</div>
           <p style={{ marginBottom: 16 }}>Wami provides daily wellness prompts via a web application operated by an individual business based in Denmark. Access requires account creation and, after a 14-day free trial, a paid subscription. Wami is a general wellness tool and is not a medical service, therapeutic service, or substitute for professional medical or psychological advice.</p>
           <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>2. No Medical Advice — Important Disclaimer</div>
-          <p style={{ marginBottom: 16 }}>The content provided by Wami, including all prompts, suggestions and nudges, is for general wellbeing and informational purposes only. Nothing in Wami constitutes medical advice, diagnosis, or treatment. Wami does not accept any responsibility for any physical, psychological, emotional or other consequences arising from the use of or reliance on any content delivered through the service. By using Wami, you acknowledge that you do so entirely at your own risk. If you are experiencing a medical or mental health condition, please consult a qualified professional.</p>
+          <p style={{ marginBottom: 16 }}>The content provided by Wami, including all prompts, suggestions and nudges, is for general wellbeing and informational purposes only. Nothing in Wami constitutes medical advice, diagnosis, or treatment. Wami does not accept any responsibility for any consequences arising from the use of or reliance on any content delivered through the service. This includes but is not limited to any impact on your physical health, mental health, emotional wellbeing, social relationships, professional life, financial decisions, or any other sphere of life whatsoever. By using Wami, you acknowledge that you do so entirely at your own risk. If you are experiencing a medical or mental health condition, please consult a qualified professional.</p>
           <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>3. Limitation of Liability</div>
           <p style={{ marginBottom: 16 }}>To the maximum extent permitted by applicable law, Wami's total liability to you for any claim arising out of or in connection with these terms or the use of the service shall not exceed the amount you have paid for your current subscription period. Wami shall not be liable for any indirect, incidental, special, consequential or punitive damages, including but not limited to loss of data, loss of profits, personal injury, or any other damages, even if Wami has been advised of the possibility of such damages.</p>
           <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>4. Subscriptions & Payments</div>
@@ -383,7 +383,7 @@ function LandingScreen({ lang, setLang, onStart, onSignIn, onShowTerms }) {
               style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
               <span style={{ fontSize: 16 }}>📸</span> @joinwami.me
             </a>
-            <a href="https://www.facebook.com/share/1JqFp6qbhK/?mibextid=XIfr" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.facebook.com/wami.me" target="_blank" rel="noopener noreferrer"
               style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
               <span style={{ fontSize: 16 }}>👥</span> wami.me
             </a>
@@ -530,6 +530,9 @@ function SignInScreen({ lang, onComplete }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetMode, setResetMode] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
   const handleSignIn = async () => {
     if (!email.includes("@")) { setError("Please enter a valid email."); return; }
     if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
@@ -540,22 +543,68 @@ function SignInScreen({ lang, onComplete }) {
       onComplete();
     } catch (e) { setError("Something went wrong. Please try again."); setLoading(false); }
   };
+
+  const handleReset = async () => {
+    if (!email.includes("@")) { setError("Please enter your email address first."); return; }
+    setError(""); setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'https://www.wami.me',
+      });
+      if (error) { setError(error.message); setLoading(false); return; }
+      setResetSent(true); setLoading(false);
+    } catch (e) { setError("Something went wrong. Please try again."); setLoading(false); }
+  };
+
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
       <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
         <div className="fade-up" style={{ textAlign: "center", marginBottom: 36 }}>
           <WamiHero />
           <SunOrb size={60} style={{ margin: "24px auto 24px" }} />
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 20, fontWeight: 700, color: "#4A4A4A", marginBottom: 8 }}>Welcome back.</div>
-          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>Sign in to continue your journey.</div>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 20, fontWeight: 700, color: "#4A4A4A", marginBottom: 8 }}>
+            {resetMode ? "Reset your password" : "Welcome back."}
+          </div>
+          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+            {resetMode ? "Enter your email and we'll send you a reset link." : "Sign in to continue your journey."}
+          </div>
         </div>
-        <div className="fade-up" style={{ animationDelay: "0.1s" }}>
-          <input type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
-          <input type="password" placeholder={t.passwordPlaceholder} value={password} onChange={e => setPassword(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
-          {error && <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
-          <PrimaryBtn onClick={handleSignIn} disabled={loading}>{loading ? "Signing in..." : "Sign in"}</PrimaryBtn>
-          <div style={{ textAlign: "center", marginTop: 20, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</div>
-        </div>
+
+        {resetSent ? (
+          <div className="fade-up" style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 40, marginBottom: 16 }}>📬</div>
+            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 16, fontWeight: 700, color: T.text, marginBottom: 8 }}>Check your inbox</div>
+            <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7, marginBottom: 20 }}>
+              A password reset link has been sent to <strong>{email}</strong>. Follow the link to set a new password.
+            </div>
+            <div style={{ fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7, padding: "12px 16px", background: "#F9F5EF", borderRadius: 12, marginBottom: 20, textAlign: "left" }}>
+              This is an automated message — please do not reply. To get in touch, find us on Instagram and Facebook at wami.me
+            </div>
+            <button onClick={() => { setResetMode(false); setResetSent(false); }}
+              style={{ fontSize: 13, color: T.primary, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>
+              Back to sign in
+            </button>
+          </div>
+        ) : (
+          <div className="fade-up" style={{ animationDelay: "0.1s" }}>
+            <input type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)}
+              style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
+            {!resetMode && (
+              <input type="password" placeholder={t.passwordPlaceholder} value={password} onChange={e => setPassword(e.target.value)}
+                style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
+            )}
+            {error && <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
+            <PrimaryBtn onClick={resetMode ? handleReset : handleSignIn} disabled={loading}>
+              {loading ? "Please wait..." : resetMode ? "Send reset link" : "Sign in"}
+            </PrimaryBtn>
+            <div style={{ textAlign: "center", marginTop: 16 }}>
+              <button onClick={() => { setResetMode(!resetMode); setError(""); }}
+                style={{ fontSize: 12, color: T.primary, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>
+                {resetMode ? "Back to sign in" : "Forgot password?"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -793,7 +842,21 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
           </div>
         </Card>
         <PrimaryBtn onClick={onEdit} style={{ background: `linear-gradient(135deg, ${T.primary}, #5aa0bc)`, boxShadow: "0 4px 20px rgba(122,184,212,0.4)", marginBottom: 10 }}>{t.editPrefs}</PrimaryBtn>
-        <button onClick={onManageSubscription} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "14px", background: "white", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 14, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.amber, boxShadow: T.shadowSm }}>✨ {t.manageSubscription}</button>
+        <button onClick={async () => {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!isTrial && session?.access_token) {
+            try {
+              const res = await fetch('https://clqsqzydhsvgupacqfnj.supabase.co/functions/v1/customer-portal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+                body: JSON.stringify({ email: session.user.email }),
+              });
+              const data = await res.json();
+              if (data.url) window.location.href = data.url;
+              else onManageSubscription();
+            } catch(e) { onManageSubscription(); }
+          } else { onManageSubscription(); }
+        }} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "14px", background: "white", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 14, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.amber, boxShadow: T.shadowSm }}>✨ {t.manageSubscription}</button>
         <button onClick={onSignOut} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", padding: "14px", marginTop: 10, background: "none", borderRadius: 16, border: `1.5px solid ${T.border}`, fontSize: 13, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", color: T.muted }}>Sign out</button>
       </div>
     </div>
