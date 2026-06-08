@@ -738,7 +738,7 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
           <button onClick={onUnlock} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(242,167,75,0.12), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "16px 20px", marginBottom: 16, textAlign: "left" }}>
             <div>
               <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 3 }}>✨ Unlock hundreds of prompts</div>
-              <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>Across 12 focus areas. </div>Personal to you.</div> New every day.</div>
+              <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>Across 12 focus areas. Personal to you. New every day.</div>
             </div>
             <div style={{ background: `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 12, padding: "8px 14px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", boxShadow: "0 2px 12px rgba(242,167,75,0.3)", whiteSpace: "nowrap" }}>See plans →</div>
           </button>
