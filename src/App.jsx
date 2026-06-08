@@ -124,7 +124,7 @@ const i18n = {
     freqLabel: "How often would you like a nudge?", daysLabel: "Which days?", letsgo: "Let's go →",
     signupTitle: "Your profile is ready.", signupSub: "Create your account to save it and start exploring.",
     emailPlaceholder: "Your email", passwordPlaceholder: "Choose a password", createAccount: "Create account",
-    paywallTitle: "Unlock the full experience.", paywallSub: "686 prompts across 12 focus areas. New every day.",
+    paywallTitle: "Unlock the full experience.", paywallSub: "hundreds of prompts across 12 focus areas. New every day.",
     unlockBtn: "Unlock all prompts", restore: "Restore purchase", terms: "Terms · Privacy",
     homeGreeting: "Good morning 🌅", todayPrompt: "Today's nudge", nextPrompt: "Next prompt",
     tunein: "Before your next prompt — take one breath and notice how you feel right now.",
@@ -175,7 +175,7 @@ const i18n = {
     freqLabel: "À quelle fréquence souhaitez-vous une suggestion ?", daysLabel: "Quels jours ?", letsgo: "C'est parti →",
     signupTitle: "Votre profil est prêt.", signupSub: "Créez votre compte pour le sauvegarder et commencer.",
     emailPlaceholder: "Votre email", passwordPlaceholder: "Choisissez un mot de passe", createAccount: "Créer un compte",
-    paywallTitle: "Débloquez l'expérience complète.", paywallSub: "686 suggestions dans 12 domaines. Nouvelles chaque jour.",
+    paywallTitle: "Débloquez l'expérience complète.", paywallSub: "des centaines de suggestions dans 12 domaines. Nouvelles chaque jour.",
     unlockBtn: "Débloquer toutes les suggestions", restore: "Restaurer l'achat", terms: "Conditions · Confidentialité",
     homeGreeting: "Bonjour 🌅", todayPrompt: "Votre suggestion", nextPrompt: "Prochaine suggestion",
     tunein: "Avant votre prochaine suggestion — respirez profondément et remarquez comment vous vous sentez.",
@@ -688,7 +688,7 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
         {isTrial && (
           <button onClick={onUnlock} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(242,167,75,0.12), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "16px 20px", marginBottom: 16, textAlign: "left" }}>
             <div>
-              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 3 }}>✨ Unlock 686 prompts</div>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 3 }}>✨ Unlock hundreds of prompts</div>
               <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>Across 12 focus areas. Personal to you. New every day.</div>
             </div>
             <div style={{ background: `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 12, padding: "8px 14px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", boxShadow: "0 2px 12px rgba(242,167,75,0.3)", whiteSpace: "nowrap" }}>See plans →</div>
