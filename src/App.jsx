@@ -383,7 +383,7 @@ function LandingScreen({ lang, setLang, onStart, onSignIn, onShowTerms }) {
               style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
               <span style={{ fontSize: 16 }}>📸</span> @joinwami.me
             </a>
-            <a href="https://www.facebook.com/wami.me" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.facebook.com/share/1JqFp6qbhK/?mibextid=XIfr" target="_blank" rel="noopener noreferrer"
               style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
               <span style={{ fontSize: 16 }}>👥</span> wami.me
             </a>
