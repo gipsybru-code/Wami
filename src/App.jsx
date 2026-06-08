@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from './lib/supabase.js';
 
 const fontLink = document.createElement("link");
@@ -101,7 +101,7 @@ function getPrompt(profile, focuses, shownIds = []) {
 
 const LANGUAGES = [
   { id: "en", flag: "🇺🇸", name: "English" },
-    { id: "fr", flag: "🇫🇷", name: "Français" },
+  { id: "fr", flag: "🇫🇷", name: "Français" },
 ];
 
 function detectLang() {
@@ -161,163 +161,6 @@ const i18n = {
     annual:   { label: "Annual",   period: "/year",  price: "€19",   badge: "Best value" },
     lifetime: { label: "Lifetime", period: "once",   price: "€59",   badge: "Forever" },
   },
-
-  it: {
-    tagline: "Cresci con gentilezza.", sub: "Piccoli spunti per un cambiamento significativo e il benessere.",
-    hero1: "Non hai bisogno di motivazione.", hero2: "Hai bisogno di un'interruzione.",
-    goodAfternoon: "Buon pomeriggio 🌤️", goodEvening: "Buonasera 🌙",
-    desc: "Wami invia suggerimenti gentili e specifici durante la tua giornata — per aiutarti a muoverti, respirare, concentrarti, connetterti e crescere.",
-    focus12: "12 aree di focus", focusDesc: "Stress · Energia · Focus · Movimento · Alimentazione · Relazioni · Sonno · Calma · Digitale · Gioia · Fiducia · Creatività",
-    frequency: "3 livelli di frequenza", freqDesc: "Leggero (2×/settimana) · Regolare (1×/giorno) · Presente (3×/giorno)",
-    trial: "Inizia gratis — 14 giorni", signin: "Hai già un account? Accedi",
-    onboardTitle: "Personalizzalo", onboardSub: "Alcune scelte rapide per rendere i tuoi suggerimenti personali.",
-    ageLabel: "Come ti vedi?", kidsLabel: "Bambini", workTypeLabel: "Tipo di lavoro",
-    focusLabel: "Di cosa vorresti di più?", focusSub: "Scegli fino a 5 aree di focus.",
-    freqLabel: "Con quale frequenza vorresti un suggerimento?", daysLabel: "Quali giorni?", letsgo: "Iniziamo →",
-    signupTitle: "Il tuo profilo è pronto.", signupSub: "Crea il tuo account per salvarlo e iniziare.",
-    emailPlaceholder: "La tua email", passwordPlaceholder: "Scegli una password", createAccount: "Crea account",
-    paywallTitle: "Sblocca l'esperienza completa.", paywallSub: "686 suggerimenti in 12 aree di focus. Nuovi ogni giorno.",
-    unlockBtn: "Sblocca tutti i suggerimenti", restore: "Ripristina acquisto", terms: "Termini · Privacy",
-    homeGreeting: "Buongiorno 🌅", todayPrompt: "Il tuo suggerimento", nextPrompt: "Prossimo suggerimento",
-    tunein: "Prima del prossimo suggerimento — fai un respiro e nota come ti senti.",
-    explore: "Esplora", profile: "Profilo", home: "Home",
-    exploreTitle: "12 Aree di Focus", exploreSub: "Tocca un'area per saperne di più.",
-    profileTitle: "Il tuo Wami", profileWorking: "Wami sta lavorando per te in silenzio.",
-    editPrefs: "Modifica preferenze", yourFocus: "Le tue aree di focus", yourFreq: "Frequenza",
-    yourDays: "Giorni attivi", language: "Lingua", subscription: "Abbonamento",
-    manageSubscription: "Gestisci abbonamento",
-    ages: ["Giovane", "Adulto", "Senior"],
-    kids: ["Nessun figlio", "Bambini piccoli", "Adolescenti", "Figli grandi"],
-    workTypes: ["Ufficio", "Fisicamente impegnativo", "Altro"],
-    freqs: [
-      { id: "light",   label: "Leggero",  desc: "2 suggerimenti a settimana", interval: 240 },
-      { id: "steady",  label: "Regolare", desc: "1 suggerimento al giorno",   interval: 120 },
-      { id: "present", label: "Presente", desc: "3 suggerimenti al giorno",   interval: 60  },
-    ],
-    dayNames: ["L","M","M","G","V","S","D"],
-    focusAreas: [
-      { id:"stress",        icon:"🌬️", label:"Meno stress",           desc:"Respira, rilasciati, trova equilibrio" },
-      { id:"energy",        icon:"⚡",  label:"Più energia",           desc:"Svegliati dall'interno" },
-      { id:"focus",         icon:"🎯",  label:"Migliore focus",        desc:"Trova il tuo filo e seguilo" },
-      { id:"movement",      icon:"🏃",  label:"Muoviti di più",        desc:"Piccoli inviti a muoversi" },
-      { id:"eating",        icon:"🥑",  label:"Mangia meglio",         desc:"Un rapporto più gentile con il cibo" },
-      { id:"relationships", icon:"🤝",  label:"Relazioni migliori",    desc:"Piccoli gesti che avvicinano" },
-      { id:"sleep",         icon:"🌙",  label:"Dormi meglio",          desc:"Riposo più profondo e ristoratore" },
-      { id:"calm",          icon:"🌊",  label:"Calma e presenza",      desc:"Rallenta, nota, arriva" },
-      { id:"digital",       icon:"📵",  label:"Equilibrio digitale",   desc:"Riprendi la tua attenzione" },
-      { id:"joy",           icon:"✨",  label:"Gioia e spirito",       desc:"Meraviglia, bellezza, significato" },
-      { id:"confidence",    icon:"🦋",  label:"Più fiducia in te",     desc:"Fidati di te stesso un po' di più" },
-      { id:"creativity",    icon:"🎨",  label:"Più creatività",        desc:"Crea, immagina, esprimi" },
-    ],
-    monthly:  { label: "Mensile",  period: "/mese",          price: "€3,99", badge: "" },
-    annual:   { label: "Annuale",  period: "/anno",          price: "€19",   badge: "Miglior offerta" },
-    lifetime: { label: "A vita",   period: "pagamento unico", price: "€59",  badge: "Per sempre" },
-  },
-
-  es: {
-    tagline: "Crece con amabilidad.", sub: "Pequeños recordatorios para un cambio significativo y bienestar.",
-    hero1: "No necesitas motivación.", hero2: "Necesitas una interrupción.",
-    goodAfternoon: "Buenas tardes 🌤️", goodEvening: "Buenas noches 🌙",
-    desc: "Wami envía recordatorios gentiles y específicos a lo largo del día — ayudándote a moverte, respirar, concentrarte, conectar y crecer.",
-    focus12: "12 áreas de enfoque", focusDesc: "Estrés · Energía · Enfoque · Movimiento · Alimentación · Relaciones · Sueño · Calma · Digital · Alegría · Confianza · Creatividad",
-    frequency: "3 niveles de frecuencia", freqDesc: "Suave (2×/semana) · Regular (1×/día) · Presente (3×/día)",
-    trial: "Empieza gratis — 14 días", signin: "¿Ya tienes cuenta? Inicia sesión",
-    onboardTitle: "Hazlo tuyo", onboardSub: "Unas pocas elecciones para que tus recordatorios sean personales.",
-    ageLabel: "¿Cómo te ves?", kidsLabel: "Hijos", workTypeLabel: "Tipo de trabajo",
-    focusLabel: "¿Qué te gustaría tener más?", focusSub: "Elige hasta 5 áreas de enfoque.",
-    freqLabel: "¿Con qué frecuencia quieres un recordatorio?", daysLabel: "¿Qué días?", letsgo: "¡Vamos! →",
-    signupTitle: "Tu perfil está listo.", signupSub: "Crea tu cuenta para guardarlo y empezar.",
-    emailPlaceholder: "Tu email", passwordPlaceholder: "Elige una contraseña", createAccount: "Crear cuenta",
-    paywallTitle: "Desbloquea la experiencia completa.", paywallSub: "686 recordatorios en 12 áreas de enfoque. Nuevos cada día.",
-    unlockBtn: "Desbloquear todos", restore: "Restaurar compra", terms: "Términos · Privacidad",
-    homeGreeting: "Buenos días 🌅", todayPrompt: "Tu recordatorio", nextPrompt: "Próximo recordatorio",
-    tunein: "Antes del próximo recordatorio — respira hondo y nota cómo te sientes.",
-    explore: "Explorar", profile: "Perfil", home: "Inicio",
-    exploreTitle: "12 Áreas de Enfoque", exploreSub: "Toca cualquier área para saber más.",
-    profileTitle: "Tu Wami", profileWorking: "Wami está trabajando silenciosamente para ti.",
-    editPrefs: "Editar preferencias", yourFocus: "Tus áreas de enfoque", yourFreq: "Frecuencia",
-    yourDays: "Días activos", language: "Idioma", subscription: "Suscripción",
-    manageSubscription: "Gestionar suscripción",
-    ages: ["Joven", "Adulto", "Senior"],
-    kids: ["Sin hijos", "Hijos pequeños", "Adolescentes", "Hijos adultos"],
-    workTypes: ["Oficina", "Físicamente exigente", "Otro"],
-    freqs: [
-      { id: "light",   label: "Suave",    desc: "2 recordatorios por semana", interval: 240 },
-      { id: "steady",  label: "Regular",  desc: "1 recordatorio por día",     interval: 120 },
-      { id: "present", label: "Presente", desc: "3 recordatorios por día",    interval: 60  },
-    ],
-    dayNames: ["L","M","X","J","V","S","D"],
-    focusAreas: [
-      { id:"stress",        icon:"🌬️", label:"Menos estrés",          desc:"Respira, suelta, encuentra equilibrio" },
-      { id:"energy",        icon:"⚡",  label:"Más energía",           desc:"Despierta desde adentro" },
-      { id:"focus",         icon:"🎯",  label:"Mejor enfoque",         desc:"Encuentra tu hilo y síguelo" },
-      { id:"movement",      icon:"🏃",  label:"Muévete más",           desc:"Pequeñas invitaciones a moverse" },
-      { id:"eating",        icon:"🥑",  label:"Comer mejor",           desc:"Una relación más gentil con la comida" },
-      { id:"relationships", icon:"🤝",  label:"Mejores relaciones",    desc:"Pequeños gestos que acercan" },
-      { id:"sleep",         icon:"🌙",  label:"Dormir mejor",          desc:"Descanso más profundo" },
-      { id:"calm",          icon:"🌊",  label:"Calma y presencia",     desc:"Desacelera, nota, llega" },
-      { id:"digital",       icon:"📵",  label:"Equilibrio digital",    desc:"Recupera tu atención" },
-      { id:"joy",           icon:"✨",  label:"Alegría y espíritu",    desc:"Asombro, belleza, significado" },
-      { id:"confidence",    icon:"🦋",  label:"Más confianza",         desc:"Confía en ti mismo un poco más" },
-      { id:"creativity",    icon:"🎨",  label:"Más creatividad",       desc:"Crea, imagina, expresa" },
-    ],
-    monthly:  { label: "Mensual",     period: "/mes",       price: "€3,99", badge: "" },
-    annual:   { label: "Anual",       period: "/año",       price: "€19",   badge: "Mejor oferta" },
-    lifetime: { label: "De por vida", period: "pago único", price: "€59",   badge: "Para siempre" },
-  },
-
-  pt: {
-    tagline: "Cresça com gentileza.", sub: "Pequenos lembretes para mudanças significativas e bem-estar.",
-    hero1: "Você não precisa de motivação.", hero2: "Você precisa de uma interrupção.",
-    goodAfternoon: "Boa tarde 🌤️", goodEvening: "Boa noite 🌙",
-    desc: "Wami envia lembretes gentis e específicos ao longo do dia — ajudando você a se mover, respirar, focar, conectar e crescer.",
-    focus12: "12 áreas de foco", focusDesc: "Estresse · Energia · Foco · Movimento · Alimentação · Relacionamentos · Sono · Calma · Digital · Alegria · Confiança · Criatividade",
-    frequency: "3 níveis de frequência", freqDesc: "Leve (2×/semana) · Regular (1×/dia) · Presente (3×/dia)",
-    trial: "Comece grátis — 14 dias", signin: "Já tem conta? Entre",
-    onboardTitle: "Personalize", onboardSub: "Algumas escolhas rápidas para tornar seus lembretes pessoais.",
-    ageLabel: "Como você se vê?", kidsLabel: "Filhos", workTypeLabel: "Tipo de trabalho",
-    focusLabel: "O que você gostaria de ter mais?", focusSub: "Escolha até 5 áreas de foco.",
-    freqLabel: "Com que frequência quer um lembrete?", daysLabel: "Quais dias?", letsgo: "Vamos lá →",
-    signupTitle: "Seu perfil está pronto.", signupSub: "Crie sua conta para salvar e começar.",
-    emailPlaceholder: "Seu email", passwordPlaceholder: "Escolha uma senha", createAccount: "Criar conta",
-    paywallTitle: "Desbloqueie a experiência completa.", paywallSub: "686 lembretes em 12 áreas de foco. Novos todo dia.",
-    unlockBtn: "Desbloquear todos", restore: "Restaurar compra", terms: "Termos · Privacidade",
-    homeGreeting: "Bom dia 🌅", todayPrompt: "Seu lembrete", nextPrompt: "Próximo lembrete",
-    tunein: "Antes do próximo lembrete — respire fundo e note como você se sente.",
-    explore: "Explorar", profile: "Perfil", home: "Início",
-    exploreTitle: "12 Áreas de Foco", exploreSub: "Toque em qualquer área para saber mais.",
-    profileTitle: "Seu Wami", profileWorking: "Wami está trabalhando silenciosamente para você.",
-    editPrefs: "Editar preferências", yourFocus: "Suas áreas de foco", yourFreq: "Frequência",
-    yourDays: "Dias ativos", language: "Idioma", subscription: "Assinatura",
-    manageSubscription: "Gerenciar assinatura",
-    ages: ["Jovem", "Adulto", "Senior"],
-    kids: ["Sem filhos", "Filhos pequenos", "Adolescentes", "Filhos adultos"],
-    workTypes: ["Escritório", "Fisicamente exigente", "Outro"],
-    freqs: [
-      { id: "light",   label: "Leve",     desc: "2 lembretes por semana",  interval: 240 },
-      { id: "steady",  label: "Regular",  desc: "1 lembrete por dia",      interval: 120 },
-      { id: "present", label: "Presente", desc: "3 lembretes por dia",     interval: 60  },
-    ],
-    dayNames: ["S","T","Q","Q","S","S","D"],
-    focusAreas: [
-      { id:"stress",        icon:"🌬️", label:"Menos estresse",        desc:"Respire, solte, encontre equilíbrio" },
-      { id:"energy",        icon:"⚡",  label:"Mais energia",          desc:"Desperte por dentro" },
-      { id:"focus",         icon:"🎯",  label:"Melhor foco",           desc:"Encontre seu fio e siga" },
-      { id:"movement",      icon:"🏃",  label:"Mova-se mais",          desc:"Pequenos convites para se mover" },
-      { id:"eating",        icon:"🥑",  label:"Comer melhor",          desc:"Uma relação mais gentil com a comida" },
-      { id:"relationships", icon:"🤝",  label:"Melhores relacionamentos", desc:"Pequenos gestos que aproximam" },
-      { id:"sleep",         icon:"🌙",  label:"Dormir melhor",         desc:"Descanso mais profundo" },
-      { id:"calm",          icon:"🌊",  label:"Calma e presença",      desc:"Desacelere, perceba, chegue" },
-      { id:"digital",       icon:"📵",  label:"Equilíbrio digital",    desc:"Recupere sua atenção" },
-      { id:"joy",           icon:"✨",  label:"Alegria e espírito",    desc:"Maravilha, beleza, significado" },
-      { id:"confidence",    icon:"🦋",  label:"Mais confiança",        desc:"Confie em si mesmo um pouco mais" },
-      { id:"creativity",    icon:"🎨",  label:"Mais criatividade",     desc:"Crie, imagine, expresse" },
-    ],
-    monthly:  { label: "Mensal",    period: "/mês",   price: "R$21,90", badge: "" },
-    annual:   { label: "Anual",     period: "/ano",   price: "R$104",   badge: "Melhor oferta" },
-    lifetime: { label: "Vitalício", period: "único",  price: "R$319",   badge: "Para sempre" },
-  },
-
   fr: {
     tagline: "Grandissez avec bienveillance.", sub: "De petites suggestions pour un changement significatif et le bien-être.",
     hero1: "Vous n'avez pas besoin de motivation.", hero2: "Vous avez besoin d'une interruption.",
@@ -370,11 +213,11 @@ const i18n = {
     lifetime: { label: "À vie",    period: "paiement unique", price: "59 €",  badge: "Pour toujours" },
   },
 };
+
 // ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
 function WamiLogo({ size = 38 }) {
   return <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: size, fontWeight: 800, color: T.amber, letterSpacing: "-1px", lineHeight: 1, textShadow: "0 2px 8px rgba(242,167,75,0.25)" }}>wami</div>;
 }
-
 function WamiHero() {
   return (
     <div style={{ textAlign: "center" }}>
@@ -383,27 +226,21 @@ function WamiHero() {
     </div>
   );
 }
-
 function SunOrb({ size = 80, style: s = {} }) {
   return <div className="float" style={{ width: size, height: size, borderRadius: "50%", background: "radial-gradient(circle at 35% 30%, #FFE4A0, #F2A74B 60%, #F28B6E)", boxShadow: "0 8px 32px rgba(242,167,75,0.4)", flexShrink: 0, ...s }} />;
 }
-
 function Pill({ children, color = T.amber }) {
   return <span style={{ display: "inline-block", fontSize: 10, fontWeight: 700, color: "white", background: color, borderRadius: 20, padding: "3px 10px", letterSpacing: "0.5px", textTransform: "uppercase" }}>{children}</span>;
 }
-
 function PrimaryBtn({ children, onClick, disabled, style: s = {} }) {
   return <button onClick={onClick} disabled={disabled} style={{ background: disabled ? "#ccc" : `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 16, padding: "15px 24px", fontSize: 15, fontWeight: 700, fontFamily: "'Nunito', sans-serif", width: "100%", boxShadow: disabled ? "none" : "0 4px 20px rgba(242,167,75,0.4)", cursor: disabled ? "not-allowed" : "pointer", ...s }}>{children}</button>;
 }
-
 function Card({ children, style: s = {} }) {
   return <div style={{ background: T.card, borderRadius: 24, padding: "24px 20px", boxShadow: T.shadow, ...s }}>{children}</div>;
 }
-
 function SelectPill({ label, selected, onClick }) {
   return <button onClick={onClick} style={{ background: selected ? T.amber : "#F5F0E8", color: selected ? "white" : T.text, border: `2px solid ${selected ? T.amber : "transparent"}`, borderRadius: 12, padding: "8px 14px", fontSize: 13, fontWeight: 600, fontFamily: "'Nunito', sans-serif", transition: "all 0.2s", marginBottom: 6, marginRight: 6 }}>{label}</button>;
 }
-
 function LangPicker({ lang, onSelect }) {
   const [open, setOpen] = useState(false);
   const current = LANGUAGES.find(l => l.id === lang) || LANGUAGES[0];
@@ -424,7 +261,6 @@ function LangPicker({ lang, onSelect }) {
     </div>
   );
 }
-
 function BottomNav({ active, onNav, t }) {
   const tabs = [{ id:"home", icon:"🏠", label:t.home }, { id:"explore", icon:"🔍", label:t.explore }, { id:"profile", icon:"👤", label:t.profile }];
   return (
@@ -439,8 +275,59 @@ function BottomNav({ active, onNav, t }) {
   );
 }
 
+// ─── TERMS MODAL ──────────────────────────────────────────────────────────────
+function TermsModal({ onClose, onAccept, mustAccept = false }) {
+  const [accepted, setAccepted] = useState(false);
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 200, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div style={{ background: "white", borderRadius: "24px 24px 0 0", padding: "28px 24px 48px", maxWidth: 420, width: "100%", maxHeight: "85vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>Terms & Privacy</div>
+          {!mustAccept && <button onClick={onClose} style={{ fontSize: 22, color: T.muted, fontWeight: 700 }}>×</button>}
+        </div>
+        <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.8 }}>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>1. Service</div>
+          <p style={{ marginBottom: 16 }}>Wami provides daily wellness prompts via a web application operated by an individual business based in Denmark. Access requires account creation and, after a 14-day free trial, a paid subscription. Wami is a general wellness tool and is not a medical service, therapeutic service, or substitute for professional medical or psychological advice.</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>2. No Medical Advice — Important Disclaimer</div>
+          <p style={{ marginBottom: 16 }}>The content provided by Wami, including all prompts, suggestions and nudges, is for general wellbeing and informational purposes only. Nothing in Wami constitutes medical advice, diagnosis, or treatment. Wami does not accept any responsibility for any physical, psychological, emotional or other consequences arising from the use of or reliance on any content delivered through the service. By using Wami, you acknowledge that you do so entirely at your own risk. If you are experiencing a medical or mental health condition, please consult a qualified professional.</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>3. Limitation of Liability</div>
+          <p style={{ marginBottom: 16 }}>To the maximum extent permitted by applicable law, Wami's total liability to you for any claim arising out of or in connection with these terms or the use of the service shall not exceed the amount you have paid for your current subscription period. Wami shall not be liable for any indirect, incidental, special, consequential or punitive damages, including but not limited to loss of data, loss of profits, personal injury, or any other damages, even if Wami has been advised of the possibility of such damages.</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>4. Subscriptions & Payments</div>
+          <p style={{ marginBottom: 16 }}>Monthly and annual subscriptions renew automatically until cancelled. Lifetime subscriptions grant access for the duration of service operation. Payments are processed securely via Stripe. You may cancel your subscription at any time through your profile settings.</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>5. Service Discontinuation</div>
+          <p style={{ marginBottom: 16 }}>In the event that Wami discontinues its service, users will receive a minimum of 14 days notice by email. Lifetime subscriptions grant access for the duration of service operation and do not guarantee perpetual service. Pro-rated refunds will be issued for annual subscriptions based on unused time remaining at the date of discontinuation.</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>6. Free Trial</div>
+          <p style={{ marginBottom: 16 }}>A 14-day free trial is available to new users. One trial per email address. No payment is required during the trial period.</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>7. Privacy & Data</div>
+          <p style={{ marginBottom: 16 }}>We collect only your email address and app preferences. We do not sell your data to third parties. Data is stored securely via Supabase. You may request complete deletion of your account and all associated data at any time by contacting hello@wami.me. We comply with the General Data Protection Regulation (GDPR).</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>8. Intellectual Property</div>
+          <p style={{ marginBottom: 16 }}>All prompts, content, and materials within Wami are original creative works and remain the exclusive intellectual property of Wami. Reproduction, redistribution, or commercial use of any content in any form is strictly prohibited without prior written consent.</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>9. Governing Law & Jurisdiction</div>
+          <p style={{ marginBottom: 16 }}>These terms are governed by and construed in accordance with the laws of Denmark. Any dispute arising out of or in connection with these terms or the use of the service shall be subject to the exclusive jurisdiction of the courts of Denmark. By using Wami, you consent to this jurisdiction.</p>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>10. Contact</div>
+          <p style={{ marginBottom: 16 }}>For questions, data requests or support, contact us at hello@wami.me</p>
+        </div>
+        {mustAccept && (
+          <div style={{ marginTop: 20 }}>
+            <label style={{ display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer", marginBottom: 20 }}>
+              <input type="checkbox" checked={accepted} onChange={e => setAccepted(e.target.checked)} style={{ width: 18, height: 18, marginTop: 2, flexShrink: 0, accentColor: T.amber }} />
+              <span style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
+                I have read and agree to the Terms & Conditions and Privacy Policy. I understand that Wami is not a medical service and I use it at my own risk.
+              </span>
+            </label>
+            <button onClick={() => { if (accepted) { onAccept(); onClose(); } }}
+              style={{ background: accepted ? `linear-gradient(135deg, ${T.amber}, ${T.coral})` : "#ccc", color: "white", borderRadius: 16, padding: "15px 24px", fontSize: 15, fontWeight: 700, fontFamily: "'Nunito', sans-serif", width: "100%", cursor: accepted ? "pointer" : "not-allowed" }}>
+              I agree — Continue
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── SCREEN: LANDING ──────────────────────────────────────────────────────────
-function LandingScreen({ lang, setLang, onStart, onSignIn }) {
+function LandingScreen({ lang, setLang, onStart, onSignIn, onShowTerms }) {
   const t = i18n[lang] || i18n.en;
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #FFE8A0 20%, #D4EDF8 70%, #C0E4F5 100%)" }}>
@@ -479,16 +366,28 @@ function LandingScreen({ lang, setLang, onStart, onSignIn }) {
         <div className="fade-up" style={{ animationDelay: "0.15s", marginBottom: 28 }}>
           <div style={{ background: "linear-gradient(135deg, rgba(122,184,212,0.1), rgba(242,167,75,0.08))", border: `1.5px solid ${T.border}`, borderRadius: 20, padding: "20px" }}>
             <Pill color={T.primary}>Sample nudge</Pill>
-            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 16, fontStyle: "italic", fontWeight: 600, color: T.text, lineHeight: 1.55, marginTop: 12 }}>
-             "Before your next thing, pause for a glass of water. A soft reset."
-             <br/><br/>"Avant la prochaine chose, faites une pause pour un verre d'eau. Une douce remise à zéro."
+            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 16, fontStyle: "italic", fontWeight: 600, color: T.text, lineHeight: 1.55, marginTop: 12, whiteSpace: "pre-line" }}>
+              {"Before your next thing, pause for a glass of water. A soft reset.\nAvant la prochaine chose, faites une pause pour un verre d'eau. Une douce remise à zéro."}
             </div>
           </div>
         </div>
         <div className="fade-up" style={{ animationDelay: "0.2s" }}>
           <PrimaryBtn onClick={onStart}>{t.trial}</PrimaryBtn>
           <button onClick={onSignIn} style={{ color: T.muted, fontSize: 13, fontWeight: 400, fontFamily: "'DM Sans', sans-serif", width: "100%", padding: "10px", marginTop: 8 }}>{t.signin}</button>
-          <div style={{ textAlign: "center", marginTop: 12, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.terms}</div>
+          <div style={{ textAlign: "center", marginTop: 12, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
+            <button onClick={onShowTerms} style={{ color: T.muted, fontSize: 11, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>{t.terms}</button>
+          </div>
+          {/* Social links */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 20 }}>
+            <a href="https://www.instagram.com/joinwami.me" target="_blank" rel="noopener noreferrer"
+              style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
+              <span style={{ fontSize: 16 }}>📸</span> @joinwami.me
+            </a>
+            <a href="https://www.facebook.com/wami.me" target="_blank" rel="noopener noreferrer"
+              style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
+              <span style={{ fontSize: 16 }}>👥</span> wami.me
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -516,19 +415,14 @@ function InstallScreen({ onContinue }) {
     { icon: "3️⃣", text: "Tap \"Add\" to confirm", detail: "Wami will appear as an app on your home screen." },
     { icon: "4️⃣", text: "Open Wami from your home screen", detail: "Then come back here and tap Continue below." },
   ];
-
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
       <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
         <div className="fade-up" style={{ textAlign: "center", marginBottom: 32 }}>
           <WamiHero />
           <SunOrb size={64} style={{ margin: "24px auto 24px" }} />
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 8, lineHeight: 1.3 }}>
-            Install Wami for the best experience
-          </div>
-          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-            Installing takes 30 seconds and enables nudge notifications throughout your day.
-          </div>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 8, lineHeight: 1.3 }}>Install Wami for the best experience</div>
+          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>Installing takes 30 seconds and enables nudge notifications throughout your day.</div>
         </div>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
           <div style={{ background: ios ? "#1D1D1F" : "#4285F4", color: "white", borderRadius: 20, padding: "6px 16px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif" }}>
@@ -547,9 +441,7 @@ function InstallScreen({ onContinue }) {
           ))}
         </div>
         <PrimaryBtn onClick={onContinue}>I've installed Wami — Continue →</PrimaryBtn>
-        <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 12, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center", padding: "8px" }}>
-          Skip for now (notifications may not work)
-        </button>
+        <button onClick={onContinue} style={{ display: "block", width: "100%", marginTop: 12, fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", textAlign: "center", padding: "8px" }}>Skip for now (notifications may not work)</button>
       </div>
     </div>
   );
@@ -564,46 +456,34 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
   const [focuses, setFocuses] = useState([]);
   const [freq, setFreq] = useState("steady");
   const [days, setDays] = useState([0,1,2,3,4]);
-
   const toggleWorkType = (i) => setWorkTypes(w => w.includes(i) ? w.filter(x => x !== i) : [...w, i]);
   const toggleFocus = (id) => setFocuses(f => f.includes(id) ? f.filter(x => x !== id) : f.length < 5 ? [...f, id] : f);
   const toggleDay = (i) => setDays(d => d.includes(i) ? d.filter(x => x !== i) : [...d, i]);
   const ready = focuses.length > 0 && days.length > 0;
-
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
       <div style={{ maxWidth: 420, margin: "0 auto", padding: "24px 20px 48px" }}>
-
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <WamiLogo />
           <LangPicker lang={lang} onSelect={setLang} />
         </div>
-
         <div className="fade-up">
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 4 }}>{t.onboardTitle}</div>
           <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 24, lineHeight: 1.5 }}>{t.onboardSub}</div>
-
           <Card style={{ marginBottom: 16 }}>
             <div style={{ marginBottom: 20 }}>
               <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.ageLabel}</div>
-              <div style={{ display: "flex", flexWrap: "wrap" }}>
-                {t.ages.map((a, i) => <SelectPill key={i} label={a} selected={age === i} onClick={() => setAge(i)} />)}
-              </div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>{t.ages.map((a, i) => <SelectPill key={i} label={a} selected={age === i} onClick={() => setAge(i)} />)}</div>
             </div>
             <div style={{ marginBottom: 20 }}>
               <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.kidsLabel}</div>
-              <div style={{ display: "flex", flexWrap: "wrap" }}>
-                {t.kids.map((k, i) => <SelectPill key={i} label={k} selected={kids === i} onClick={() => setKids(i)} />)}
-              </div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>{t.kids.map((k, i) => <SelectPill key={i} label={k} selected={kids === i} onClick={() => setKids(i)} />)}</div>
             </div>
             <div>
               <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 10 }}>{t.workTypeLabel}</div>
-              <div style={{ display: "flex", flexWrap: "wrap" }}>
-                {t.workTypes.map((w, i) => <SelectPill key={i} label={w} selected={workTypes.includes(i)} onClick={() => toggleWorkType(i)} />)}
-              </div>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>{t.workTypes.map((w, i) => <SelectPill key={i} label={w} selected={workTypes.includes(i)} onClick={() => toggleWorkType(i)} />)}</div>
             </div>
           </Card>
-
           <Card style={{ marginBottom: 16 }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 4 }}>{t.focusLabel}</div>
             <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", marginBottom: 14 }}>{t.focusSub}</div>
@@ -616,7 +496,6 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
               ))}
             </div>
           </Card>
-
           <Card style={{ marginBottom: 16 }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 14 }}>{t.freqLabel}</div>
             {t.freqs.map(f => (
@@ -629,7 +508,6 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
               </button>
             ))}
           </Card>
-
           <Card style={{ marginBottom: 28 }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 700, color: T.text, marginBottom: 14 }}>{t.daysLabel}</div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -638,7 +516,6 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
               ))}
             </div>
           </Card>
-
           <PrimaryBtn onClick={() => onComplete({ age, kids, workTypes, focuses, freq, days })} disabled={!ready}>{t.letsgo}</PrimaryBtn>
         </div>
       </div>
@@ -646,29 +523,23 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
   );
 }
 
-// ─── SCREEN: SIGN UP ──────────────────────────────────────────────────────────
+// ─── SCREEN: SIGN IN ──────────────────────────────────────────────────────────
 function SignInScreen({ lang, onComplete }) {
   const t = i18n[lang] || i18n.en;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const handleSignIn = async () => {
     if (!email.includes("@")) { setError("Please enter a valid email."); return; }
     if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
-    setError("");
-    setLoading(true);
+    setError(""); setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) { setError(error.message); setLoading(false); return; }
       onComplete();
-    } catch (e) {
-      setError("Something went wrong. Please try again.");
-      setLoading(false);
-    }
+    } catch (e) { setError("Something went wrong. Please try again."); setLoading(false); }
   };
-
   return (
     <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
       <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px 48px" }}>
@@ -690,18 +561,21 @@ function SignInScreen({ lang, onComplete }) {
   );
 }
 
+// ─── SCREEN: SIGN UP ──────────────────────────────────────────────────────────
 function SignUpScreen({ lang, onComplete }) {
   const t = i18n[lang] || i18n.en;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showTerms, setShowTerms] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const handleCreate = async () => {
     if (!email.includes("@")) { setError("Please enter a valid email."); return; }
     if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
     setError("");
     try {
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { error } = await supabase.auth.signUp({ email, password });
       if (error) { setError(error.message); return; }
       onComplete();
     } catch (e) { setError("Something went wrong. Please try again."); }
@@ -720,12 +594,26 @@ function SignUpScreen({ lang, onComplete }) {
           <input type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
           <input type="password" placeholder={t.passwordPlaceholder} value={password} onChange={e => setPassword(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
           {error && <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
-          <PrimaryBtn onClick={handleCreate}>{t.createAccount}</PrimaryBtn>
-          <div style={{ textAlign: "center", marginTop: 20, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-            One account per email. 14-day free trial included. {t.terms}
+          {!termsAccepted ? (
+            <PrimaryBtn onClick={() => setShowTerms(true)}>Review & Accept Terms</PrimaryBtn>
+          ) : (
+            <PrimaryBtn onClick={handleCreate}>{t.createAccount}</PrimaryBtn>
+          )}
+          {termsAccepted && (
+            <div style={{ textAlign: "center", marginTop: 8, fontSize: 12, color: T.primary, fontFamily: "'DM Sans', sans-serif" }}>✓ Terms accepted</div>
+          )}
+          <div style={{ textAlign: "center", marginTop: 16, fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+            One account per email. 14-day free trial included.
           </div>
         </div>
       </div>
+      {showTerms && (
+        <TermsModal
+          mustAccept={true}
+          onAccept={() => setTermsAccepted(true)}
+          onClose={() => setShowTerms(false)}
+        />
+      )}
     </div>
   );
 }
@@ -734,13 +622,10 @@ function SignUpScreen({ lang, onComplete }) {
 function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
   const t = i18n[lang] || i18n.en;
   const trialPool = useState(() => getTrialPrompts(profile?.focuses))[0];
-  const [shownIds, setShownIds] = useState([]);
   const [currentPrompt] = useState(() => !isTrial ? getPrompt(profile, profile?.focuses, []) : null);
   const [notifStatus, setNotifStatus] = useState("default");
-
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t.homeGreeting : hour < 17 ? t.goodAfternoon : t.goodEvening;
-
   const requestNotifications = async () => {
     try {
       if (!("Notification" in window)) { setNotifStatus("unsupported"); return; }
@@ -749,9 +634,7 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
       if (perm === "granted") { try { new Notification("Wami 🌿", { body: "Gentle nudges are on their way. Grow kindly." }); } catch(e) {} }
     } catch(e) { setNotifStatus("unsupported"); }
   };
-
   const promptText = isTrial ? trialPool[0]?.text : currentPrompt?.text;
-
   return (
     <div style={{ paddingBottom: 80 }}>
       <div style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #D4EDF8 100%)", padding: "28px 20px 32px", position: "relative", overflow: "hidden" }}>
@@ -765,7 +648,6 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
           {profile?.focuses?.length || 0} focus {profile?.focuses?.length === 1 ? "area" : "areas"} · {t.freqs?.find(f => f.id === profile?.freq)?.label || "Steady"}
         </div>
       </div>
-
       <div style={{ padding: "20px" }}>
         {showWelcome && (
           <div className="fade-up" style={{ background: "linear-gradient(135deg, rgba(242,167,75,0.15), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "18px 20px", marginBottom: 16, position: "relative" }}>
@@ -777,7 +659,6 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
             </div>
           </div>
         )}
-
         {notifStatus === "default" && (
           <button onClick={requestNotifications} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.4)`, borderRadius: 20, padding: "14px 18px", marginBottom: 12, textAlign: "left" }}>
             <div>
@@ -792,24 +673,18 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
             ✓ Notifications enabled — nudges are on their way
           </div>
         )}
-
         <Card style={{ marginBottom: 16, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, right: 0, width: 80, height: 80, background: "radial-gradient(circle, rgba(242,167,75,0.1), transparent)", borderRadius: "0 24px 0 80px" }} />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <Pill color={isTrial ? T.primary : T.amber}>
-              {isTrial ? `Free trial` : t.todayPrompt}
-            </Pill>
+            <Pill color={isTrial ? T.primary : T.amber}>{isTrial ? "Free trial" : t.todayPrompt}</Pill>
           </div>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 17, fontStyle: "italic", fontWeight: 600, color: T.text, lineHeight: 1.55, marginBottom: 20, minHeight: 80 }}>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 17, fontStyle: "italic", fontWeight: 600, color: T.text, lineHeight: 1.7, marginBottom: 20, minHeight: 80, whiteSpace: "pre-line" }}>
             "{promptText}"
           </div>
-          <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
-            <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
-              {isTrial ? `Free trial prompt` : `${t.nextPrompt}: later today`}
-            </div>
+          <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
+            {isTrial ? "Free trial prompt" : `${t.nextPrompt}: later today`}
           </div>
         </Card>
-
         {isTrial && (
           <button onClick={onUnlock} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(242,167,75,0.12), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "16px 20px", marginBottom: 16, textAlign: "left" }}>
             <div>
@@ -819,12 +694,10 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
             <div style={{ background: `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 12, padding: "8px 14px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", boxShadow: "0 2px 12px rgba(242,167,75,0.3)", whiteSpace: "nowrap" }}>See plans →</div>
           </button>
         )}
-
         <div style={{ background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.3)`, borderRadius: 20, padding: "18px", marginBottom: 16 }}>
           <div style={{ fontSize: 18, marginBottom: 8 }}>🫧</div>
           <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, fontStyle: "italic" }}>{t.tunein}</div>
         </div>
-
         {profile?.focuses?.length > 0 && (
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 11, fontWeight: 700, color: T.muted, marginBottom: 10, letterSpacing: "0.5px", textTransform: "uppercase" }}>Your focus</div>
@@ -878,14 +751,12 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
   const t = i18n[lang] || i18n.en;
   const freqObj = t.freqs?.find(f => f.id === profile?.freq);
   const dayNames = t.dayNames || [];
-
   const Row = ({ label, value }) => (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", borderBottom: `1px solid ${T.border}` }}>
       <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{label}</div>
       <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "'Nunito', sans-serif", color: T.text }}>{value}</div>
     </div>
   );
-
   return (
     <div style={{ paddingBottom: 80 }}>
       <div style={{ padding: "28px 20px 20px" }}>
@@ -930,22 +801,20 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
 }
 
 // ─── SCREEN: PAYWALL ──────────────────────────────────────────────────────────
-async function startCheckout(plan, userEmail) {
+async function startCheckout(plan, userEmail, accessToken) {
   try {
-    const res = await fetch(
-      'https://clqsqzydhsvgupacqfnj.supabase.co/functions/v1/create-checkout',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, email: userEmail }),
-      }
-    )
-    const data = await res.json()
-    if (data.url) window.location.href = data.url
-    else alert('Payment error. Please try again.')
-  } catch (e) {
-    alert('Something went wrong. Please try again.')
-  }
+    const res = await fetch('https://clqsqzydhsvgupacqfnj.supabase.co/functions/v1/create-checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ plan, email: userEmail }),
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else alert('Payment error. Please try again.');
+  } catch (e) { alert('Something went wrong. Please try again.'); }
 }
 
 function PaywallScreen({ lang, onContinue }) {
@@ -980,11 +849,9 @@ function PaywallScreen({ lang, onContinue }) {
           <PrimaryBtn onClick={async () => {
             setLoading(true);
             const { data: { session } } = await supabase.auth.getSession();
-            await startCheckout(plan, session?.user?.email);
+            await startCheckout(plan, session?.user?.email, session?.access_token);
             setLoading(false);
-          }}>
-            {loading ? "Loading..." : t.unlockBtn}
-          </PrimaryBtn>
+          }}>{loading ? "Loading..." : t.unlockBtn}</PrimaryBtn>
           <div style={{ height: 1, background: T.border, margin: "20px 0" }} />
           <div style={{ display: "flex", justifyContent: "center", gap: 20 }}>
             <button style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.restore}</button>
@@ -1010,49 +877,27 @@ export default function App() {
 
   useEffect(() => { localStorage.setItem("wami_lang", lang); }, [lang]);
 
-  // Load profile from Supabase for a logged-in user
   const loadProfile = async (userId) => {
     const { data } = await supabase.from('profiles').select('*').eq('id', userId).single();
     if (data) {
-      setProfile({
-        age: data.age_group,
-        kids: data.kids,
-        workTypes: data.work_types || [],
-        focuses: data.focuses || [],
-        freq: data.frequency || 'steady',
-        days: data.active_days || [0,1,2,3,4],
-      });
+      setProfile({ age: data.age_group, kids: data.kids, workTypes: data.work_types || [], focuses: data.focuses || [], freq: data.frequency || 'steady', days: data.active_days || [0,1,2,3,4] });
       if (data.language) setLang(data.language);
       if (data.subscription_status === 'active') setIsTrial(false);
     }
   };
 
-  // On app load — check for existing session or payment return
   useEffect(() => {
-    // Handle Stripe payment return
     const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      setIsTrial(false);
-      setShowWelcome(true);
-      window.history.replaceState({}, '', '/');
-    }
-
-    // Check existing session
+    if (params.get('payment') === 'success') { setIsTrial(false); setShowWelcome(true); window.history.replaceState({}, '', '/'); }
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        await loadProfile(session.user.id);
-        setScreen("main");
-      } else {
-        setScreen("landing");
-      }
+      if (session?.user) { setUser(session.user); await loadProfile(session.user.id); setScreen("main"); }
+      else { setScreen("landing"); }
     });
   }, []);
 
   const t = i18n[lang] || i18n.en;
   const handleStart = () => needsInstall() ? setScreen("install") : setScreen("onboarding");
 
-  // Show blank screen while checking session
   if (screen === "loading") {
     return (
       <div style={{ position: "fixed", inset: 0, background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1063,94 +908,45 @@ export default function App() {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
-
-      {/* Landing — shown to logged-out users */}
-      {screen === "landing" && (
-        <LandingScreen
-          lang={lang} setLang={setLang}
-          onStart={handleStart}
-          onSignIn={() => setScreen("signin")}
-        />
-      )}
-
-      {/* Sign in — email + password */}
-      {screen === "signin" && (
-        <SignInScreen lang={lang} onComplete={async () => {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user) {
-            setUser(session.user);
-            await loadProfile(session.user.id);
-          }
-          setScreen("main");
-        }} />
-      )}
-
-      {/* Install guide — mobile only */}
+      {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} onSignIn={() => setScreen("signin")} onShowTerms={() => setShowTerms(true)} />}
+      {screen === "signin" && <SignInScreen lang={lang} onComplete={async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) { setUser(session.user); await loadProfile(session.user.id); }
+        setScreen("main");
+      }} />}
       {screen === "install" && <InstallScreen onContinue={() => setScreen("onboarding")} />}
-
-      {/* Onboarding — new users only */}
       {screen === "onboarding" && (
         <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
           setProfile(data);
           if (user) {
-            await supabase.from('profiles').upsert({
-              id: user.id, email: user.email,
-              age_group: data.age, kids: data.kids,
-              work_types: data.workTypes, focuses: data.focuses,
-              frequency: data.freq, active_days: data.days,
-              language: lang, updated_at: new Date().toISOString()
-            });
+            await supabase.from('profiles').upsert({ id: user.id, email: user.email, age_group: data.age, kids: data.kids, work_types: data.workTypes, focuses: data.focuses, frequency: data.freq, active_days: data.days, language: lang, updated_at: new Date().toISOString() });
           }
           setScreen("signup");
         }} />
       )}
-
-      {/* Sign up — new users create account */}
-      {screen === "signup" && (
-        <SignUpScreen lang={lang} onComplete={async () => {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user) setUser(session.user);
-          setScreen("main");
-          setShowWelcome(true);
-        }} />
-      )}
-
-      {/* Paywall */}
-      {screen === "paywall" && (
-        <PaywallScreen lang={lang} onContinue={() => { setIsTrial(false); setScreen("main"); setActiveNav("home"); }} />
-      )}
-
-      {/* Main app */}
+      {screen === "signup" && <SignUpScreen lang={lang} onComplete={async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) setUser(session.user);
+        setScreen("main"); setShowWelcome(true);
+      }} />}
+      {screen === "paywall" && <PaywallScreen lang={lang} onContinue={() => { setIsTrial(false); setScreen("main"); setActiveNav("home"); }} />}
       {screen === "main" && (
         <>
           <div className="screen">
-            {activeNav === "home" && (
-              <HomeScreen
-                lang={lang} setLang={setLang} profile={profile}
-                showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)}
-                isTrial={isTrial} onUnlock={() => setScreen("paywall")}
-              />
-            )}
+            {activeNav === "home" && <HomeScreen lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />}
             {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
             {activeNav === "profile" && (
-              <ProfileScreen
-                lang={lang} setLang={setLang} profile={profile} isTrial={isTrial}
+              <ProfileScreen lang={lang} setLang={setLang} profile={profile} isTrial={isTrial}
                 onEdit={() => setScreen("onboarding")}
                 onManageSubscription={() => setScreen("paywall")}
-                onSignOut={async () => {
-                  await supabase.auth.signOut();
-                  setProfile(null);
-                  setUser(null);
-                  setScreen("landing");
-                }}
+                onSignOut={async () => { await supabase.auth.signOut(); setProfile(null); setUser(null); setScreen("landing"); }}
               />
             )}
           </div>
           <BottomNav active={activeNav} onNav={setActiveNav} t={t} />
         </>
       )}
-
-      {showTerms && <TermsModal onClose={() => setShowTerms(false)} lang={lang} />}
+      {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
     </div>
   );
 }
