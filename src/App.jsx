@@ -378,16 +378,16 @@ function LandingScreen({ lang, setLang, onStart, onSignIn, onShowTerms }) {
             <button onClick={onShowTerms} style={{ color: T.muted, fontSize: 11, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>{t.terms}</button>
           </div>
           {/* Social links */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 20 }}>
-            <a href="https://www.instagram.com/joinwami.me" target="_blank" rel="noopener noreferrer"
-              style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
-              <span style={{ fontSize: 16 }}>📸</span> @joinwami.me
-            </a>
-            <a href="https://www.facebook.com/wami.me" target="_blank" rel="noopener noreferrer"
-              style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
-              <span style={{ fontSize: 16 }}>👥</span> wami.me
-            </a>
-          </div>
+         <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 20 }}>
+  <a href="https://www.instagram.com/joinwami.me" target="_blank" rel="noopener noreferrer"
+    style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>
+    Instagram
+  </a>
+  <a href="https://www.facebook.com/share/1JqFp6qbhK/?mibextid=XIfr" target="_blank" rel="noopener noreferrer"
+    style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>
+    Facebook
+  </a>
+</div>
         </div>
       </div>
     </div>
