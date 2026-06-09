@@ -546,7 +546,7 @@ function SignInScreen({ lang, onComplete }) {
 }
 
 // ─── SCREEN: SIGN UP ──────────────────────────────────────────────────────────
-function SignUpScreen({ lang, onComplete }) {
+function SignUpScreen({ lang, onComplete, onSignIn }) {
   const t = i18n[lang] || i18n.en;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -588,7 +588,14 @@ function SignUpScreen({ lang, onComplete }) {
         <div className="fade-up" style={{ animationDelay: "0.1s" }}>
           <input type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
           <input type="password" placeholder={t.passwordPlaceholder} value={password} onChange={e => setPassword(e.target.value)} style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
-          {error && <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
+          {error && (
+            <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>
+              {error}
+              {error.includes("already exists") && (
+                <button onClick={onSignIn} style={{ display: "block", marginTop: 6, fontSize: 12, color: T.primary, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>Sign in</button>
+              )}
+            </div>
+          )}
           {!termsAccepted ? (
             <PrimaryBtn onClick={() => setShowTerms(true)}>Review & Accept Terms</PrimaryBtn>
           ) : (
@@ -938,7 +945,7 @@ export default function App() {
           setScreen("signup");
         }} />
       )}
-      {screen === "signup" && <SignUpScreen lang={lang} onComplete={async () => {
+      {screen === "signup" && <SignUpScreen lang={lang} onSignIn={() => setScreen("signin")} onComplete={async () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) setUser(session.user);
         setScreen("main"); setShowWelcome(true);
