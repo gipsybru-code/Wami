@@ -683,6 +683,13 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
             </div>
           </div>
         )}
+        {!isStandalone() && (
+          <div className="fade-up" style={{ background: "rgba(242,167,75,0.08)", border: `1.5px solid rgba(242,167,75,0.3)`, borderRadius: 16, padding: "12px 16px", marginBottom: 12, fontSize: 12, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+            {lang === "fr"
+              ? "📲 Pour recevoir des notifications, ajoutez Wami à votre écran d'accueil via Safari (iPhone) ou Chrome (Android)."
+              : "📲 To receive notifications, add Wami to your home screen via Safari (iPhone) or Chrome (Android)."}
+          </div>
+        )}
         {notifStatus === "default" && (
           <button onClick={requestNotifications} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.4)`, borderRadius: 20, padding: "14px 18px", marginBottom: 12, textAlign: "left" }}>
             <div>
