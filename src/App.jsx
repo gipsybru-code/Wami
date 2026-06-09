@@ -799,12 +799,11 @@ function ProfileScreen({ lang, setLang, profile, onEdit, onManageSubscription, i
 // ─── SCREEN: PAYWALL ──────────────────────────────────────────────────────────
 async function startCheckout(plan, userEmail, accessToken) {
   try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
     const res = await fetch('https://clqsqzydhsvgupacqfnj.supabase.co/functions/v1/create-checkout', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-      },
+      headers,
       body: JSON.stringify({ plan, email: userEmail }),
     });
     const data = await res.json();
@@ -846,6 +845,11 @@ function PaywallScreen({ lang, onContinue }) {
           <PrimaryBtn onClick={async () => {
             setLoading(true);
             const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.access_token) {
+              alert('Please sign in to your account before upgrading.');
+              setLoading(false);
+              return;
+            }
             await startCheckout(plan, session?.user?.email, session?.access_token);
             setLoading(false);
           }}>{loading ? "Loading..." : t.unlockBtn}</PrimaryBtn>
