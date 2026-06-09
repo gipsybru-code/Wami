@@ -1004,14 +1004,20 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') { setIsTrial(false); setShowWelcome(true); window.history.replaceState({}, '', '/'); }
 
-    // Detect password recovery link
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         setScreen("setpassword");
+        return;
       }
     });
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      // Check if this is a recovery session — don't auto-login
+      const hash = window.location.hash;
+      if (hash.includes('type=recovery')) {
+        setScreen("setpassword");
+        return;
+      }
       if (session?.user) { setUser(session.user); await loadProfile(session.user.id); setScreen("main"); }
       else { setScreen("landing"); }
     });
