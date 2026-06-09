@@ -134,6 +134,11 @@ const i18n = {
     editPrefs: "Edit preferences", yourFocus: "Your focus areas", yourFreq: "Frequency",
     yourDays: "Active days", language: "Language", subscription: "Subscription",
     manageSubscription: "Manage subscription",
+    enableNotif: "🔔 Enable nudge notifications", enableNotifSub: "Receive prompts through your day",
+    notifAllow: "Allow", notifEnabled: "✓ Notifications enabled — nudges are on their way",
+    trialPill: "Free trial", trialPromptLabel: "Free trial prompt",
+    unlockCta: "✨ Unlock hundreds of prompts", unlockCtaSub: "Across 12 focus areas. Personal to you. New every day.",
+    seePlans: "See plans →",
     ages: ["Young", "Adult", "Senior"],
     kids: ["No kids", "Small kids", "Teenagers", "Grown-up kids"],
     workTypes: ["Office", "Physically demanding", "Other"],
@@ -185,6 +190,11 @@ const i18n = {
     editPrefs: "Modifier les préférences", yourFocus: "Vos domaines de focus", yourFreq: "Fréquence",
     yourDays: "Jours actifs", language: "Langue", subscription: "Abonnement",
     manageSubscription: "Gérer l'abonnement",
+    enableNotif: "🔔 Activer les notifications", enableNotifSub: "Recevez des suggestions tout au long de la journée",
+    notifAllow: "Autoriser", notifEnabled: "✓ Notifications activées — vos suggestions arrivent",
+    trialPill: "Essai gratuit", trialPromptLabel: "Suggestion d'essai gratuit",
+    unlockCta: "✨ Débloquer des centaines de suggestions", unlockCtaSub: "Dans 12 domaines. Personnalisées. Nouvelles chaque jour.",
+    seePlans: "Voir les offres →",
     ages: ["Jeune", "Adulte", "Senior"],
     kids: ["Sans enfants", "Petits enfants", "Adolescents", "Grands enfants"],
     workTypes: ["Bureau", "Physiquement exigeant", "Autre"],
@@ -378,16 +388,16 @@ function LandingScreen({ lang, setLang, onStart, onSignIn, onShowTerms }) {
             <button onClick={onShowTerms} style={{ color: T.muted, fontSize: 11, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>{t.terms}</button>
           </div>
           {/* Social links */}
-         <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 20 }}>
-  <a href="https://www.instagram.com/joinwami.me" target="_blank" rel="noopener noreferrer"
-    style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>
-    Instagram
-  </a>
-  <a href="https://www.facebook.com/share/1JqFp6qbhK/?mibextid=XIfr" target="_blank" rel="noopener noreferrer"
-    style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>
-    Facebook
-  </a>
-</div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 20 }}>
+            <a href="https://www.instagram.com/joinwami.me" target="_blank" rel="noopener noreferrer"
+              style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
+              <span style={{ fontSize: 16 }}>📸</span> @joinwami.me
+            </a>
+            <a href="https://www.facebook.com/wami.me" target="_blank" rel="noopener noreferrer"
+              style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif", textDecoration: "none" }}>
+              <span style={{ fontSize: 16 }}>👥</span> wami.me
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -711,36 +721,36 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
         {notifStatus === "default" && (
           <button onClick={requestNotifications} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.4)`, borderRadius: 20, padding: "14px 18px", marginBottom: 12, textAlign: "left" }}>
             <div>
-              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 13, fontWeight: 700, color: T.text, marginBottom: 2 }}>🔔 Enable nudge notifications</div>
-              <div style={{ fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>Receive prompts through your day</div>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 13, fontWeight: 700, color: T.text, marginBottom: 2 }}>{t.enableNotif}</div>
+              <div style={{ fontSize: 11, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.enableNotifSub}</div>
             </div>
-            <div style={{ background: T.primary, color: "white", borderRadius: 10, padding: "6px 12px", fontSize: 11, fontWeight: 700, fontFamily: "'Nunito', sans-serif" }}>Allow</div>
+            <div style={{ background: T.primary, color: "white", borderRadius: 10, padding: "6px 12px", fontSize: 11, fontWeight: 700, fontFamily: "'Nunito', sans-serif" }}>{t.notifAllow}</div>
           </button>
         )}
         {notifStatus === "granted" && (
           <div className="fade-up" style={{ background: "rgba(122,184,212,0.1)", border: `1.5px solid rgba(122,184,212,0.3)`, borderRadius: 16, padding: "12px 16px", marginBottom: 12, fontSize: 12, color: T.primary, fontFamily: "'DM Sans', sans-serif" }}>
-            ✓ Notifications enabled — nudges are on their way
+            {t.notifEnabled}
           </div>
         )}
         <Card style={{ marginBottom: 16, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, right: 0, width: 80, height: 80, background: "radial-gradient(circle, rgba(242,167,75,0.1), transparent)", borderRadius: "0 24px 0 80px" }} />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-            <Pill color={isTrial ? T.primary : T.amber}>{isTrial ? "Free trial" : t.todayPrompt}</Pill>
+            <Pill color={isTrial ? T.primary : T.amber}>{isTrial ? t.trialPill : t.todayPrompt}</Pill>
           </div>
           <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 17, fontStyle: "italic", fontWeight: 600, color: T.text, lineHeight: 1.7, marginBottom: 20, minHeight: 80, whiteSpace: "pre-line" }}>
             "{promptText}"
           </div>
           <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
-            {isTrial ? "Free trial prompt" : `${t.nextPrompt}: later today`}
+            {isTrial ? t.trialPromptLabel : `${t.nextPrompt}: later today`}
           </div>
         </Card>
         {isTrial && (
           <button onClick={onUnlock} className="fade-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: "linear-gradient(135deg, rgba(242,167,75,0.12), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "16px 20px", marginBottom: 16, textAlign: "left" }}>
             <div>
-              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 3 }}>✨ Unlock hundreds of prompts</div>
-              <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>Across 12 focus areas. Personal to you. New every day.</div>
+              <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 3 }}>{t.unlockCta}</div>
+              <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.unlockCtaSub}</div>
             </div>
-            <div style={{ background: `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 12, padding: "8px 14px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", boxShadow: "0 2px 12px rgba(242,167,75,0.3)", whiteSpace: "nowrap" }}>See plans →</div>
+            <div style={{ background: `linear-gradient(135deg, ${T.amber}, ${T.coral})`, color: "white", borderRadius: 12, padding: "8px 14px", fontSize: 12, fontWeight: 700, fontFamily: "'Nunito', sans-serif", boxShadow: "0 2px 12px rgba(242,167,75,0.3)", whiteSpace: "nowrap" }}>{t.seePlans}</div>
           </button>
         )}
         <div style={{ background: "linear-gradient(135deg, rgba(184,169,201,0.15), rgba(122,184,212,0.1))", border: `1.5px solid rgba(184,169,201,0.3)`, borderRadius: 20, padding: "18px", marginBottom: 16 }}>
