@@ -986,15 +986,18 @@ export default function App() {
       {screen === "onboarding" && (
         <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
           setProfile(data);
-          if (user) {
-            await supabase.from('profiles').upsert({ id: user.id, email: user.email, age_group: data.age, kids: data.kids, work_types: data.workTypes, focuses: data.focuses, frequency: data.freq, active_days: data.days, language: lang, trial_started_at: new Date().toISOString(), updated_at: new Date().toISOString() });
-          }
           setScreen("signup");
         }} />
       )}
       {screen === "signup" && <SignUpScreen lang={lang} onSignIn={() => setScreen("signin")} onComplete={async () => {
         const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) setUser(session.user);
+        if (session?.user) {
+          setUser(session.user);
+          const p = profile;
+          if (p) {
+            await supabase.from('profiles').upsert({ id: session.user.id, email: session.user.email, age_group: p.age, kids: p.kids, work_types: p.workTypes, focuses: p.focuses, frequency: p.freq, active_days: p.days, language: lang, trial_started_at: new Date().toISOString(), updated_at: new Date().toISOString() });
+          }
+        }
         setScreen("main"); setShowWelcome(true);
       }} />}
       {screen === "paywall" && <PaywallScreen lang={lang} onContinue={() => { setIsTrial(false); setScreen("main"); setActiveNav("home"); }} />}
