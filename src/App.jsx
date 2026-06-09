@@ -377,76 +377,67 @@ function BottomNav({ active, onNav, t }) {
 // ─── TERMS MODAL ──────────────────────────────────────────────────────────────
 function TermsModal({ onClose, onAccept, mustAccept = false, lang = "en" }) {
   const [accepted, setAccepted] = useState(false);
-  const isFr = lang === "fr";
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 200, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
       <div style={{ background: "white", borderRadius: "24px 24px 0 0", padding: "28px 24px 48px", maxWidth: 420, width: "100%", maxHeight: "85vh", overflowY: "auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>{isFr ? "Conditions & Confidentialité" : "Terms & Privacy"}</div>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 18, fontWeight: 800, color: T.text }}>Terms & Privacy · Conditions & Confidentialité</div>
           {!mustAccept && <button onClick={onClose} style={{ fontSize: 22, color: T.muted, fontWeight: 700 }}>×</button>}
         </div>
         <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.8 }}>
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>1. {isFr ? "Service" : "Service"}</div>
+
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>1. Service</div>
           <p style={{ marginBottom: 4 }}>Wami provides daily wellness prompts via a web application operated by an individual business based in Denmark. Access requires account creation and, after a 14-day free trial, a paid subscription. Wami is a general wellness tool and is not a medical service, therapeutic service, or substitute for professional medical or psychological advice.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Wami fournit des suggestions de bien-être quotidiennes via une application web exploitée par une entreprise individuelle basée au Danemark. L'accès nécessite la création d'un compte et, après un essai gratuit de 14 jours, un abonnement payant. Wami est un outil de bien-être général et ne constitue pas un service médical ou thérapeutique.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Wami fournit des suggestions de bien-être quotidiennes via une application web exploitée par une entreprise individuelle basée au Danemark. L'accès nécessite la création d'un compte et, après un essai gratuit de 14 jours, un abonnement payant. Wami est un outil de bien-être général et ne constitue pas un service médical ou thérapeutique.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>2. {isFr ? "Avis de non-responsabilité" : "No Medical Advice — Important Disclaimer"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>2. No Medical Advice — Important Disclaimer · Avis de non-responsabilité</div>
           <p style={{ marginBottom: 4 }}>The content provided by Wami is for general wellbeing and informational purposes only. Nothing in Wami constitutes medical advice, diagnosis, or treatment. Wami does not accept any responsibility for any consequences arising from the use of or reliance on any content delivered through the service. This includes any impact on your physical health, mental health, emotional wellbeing, social relationships, professional life, financial decisions, or any other sphere of life whatsoever. By using Wami, you acknowledge that you do so entirely at your own risk.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Le contenu fourni par Wami est uniquement à des fins de bien-être général. Rien dans Wami ne constitue un conseil médical. Wami n'accepte aucune responsabilité pour toute conséquence découlant de l'utilisation du service, y compris tout impact sur votre santé physique, mentale, vos relations sociales, votre vie professionnelle ou tout autre domaine. En utilisant Wami, vous reconnaissez le faire entièrement à vos propres risques.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Le contenu fourni par Wami est uniquement à des fins de bien-être général. Rien dans Wami ne constitue un conseil médical. Wami n'accepte aucune responsabilité pour toute conséquence découlant de l'utilisation du service, y compris tout impact sur votre santé physique, mentale, vos relations sociales, votre vie professionnelle ou tout autre domaine. En utilisant Wami, vous reconnaissez le faire entièrement à vos propres risques.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>3. {isFr ? "Limitation de responsabilité" : "Limitation of Liability"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>3. Limitation of Liability · Limitation de responsabilité</div>
           <p style={{ marginBottom: 4 }}>To the maximum extent permitted by applicable law, Wami's total liability shall not exceed the amount you have paid for your current subscription period. Wami accepts no liability for decisions made or actions taken based on content delivered through the service.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Dans toute la mesure permise par la loi, la responsabilité totale de Wami ne dépassera pas le montant payé pour votre période d'abonnement en cours. Wami n'accepte aucune responsabilité pour les décisions prises sur la base du contenu du service.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Dans toute la mesure permise par la loi, la responsabilité totale de Wami ne dépassera pas le montant payé pour votre période d'abonnement en cours. Wami n'accepte aucune responsabilité pour les décisions prises sur la base du contenu du service.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>4. {isFr ? "Abonnements et paiements" : "Subscriptions & Payments"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>4. Subscriptions & Payments · Abonnements et paiements</div>
           <p style={{ marginBottom: 4 }}>Monthly and annual subscriptions renew automatically until cancelled. Lifetime subscriptions grant access for the duration of service operation. Payments are processed securely via Stripe.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Les abonnements mensuels et annuels se renouvellent automatiquement jusqu'à annulation. Les abonnements à vie accordent l'accès pendant la durée de fonctionnement du service. Les paiements sont traités de manière sécurisée via Stripe.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Les abonnements mensuels et annuels se renouvellent automatiquement jusqu'à annulation. Les abonnements à vie accordent l'accès pendant la durée de fonctionnement du service. Les paiements sont traités de manière sécurisée via Stripe.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>5. {isFr ? "Arrêt du service" : "Service Discontinuation"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>5. Service Discontinuation · Arrêt du service</div>
           <p style={{ marginBottom: 4 }}>In the event that Wami discontinues its service, users will receive a minimum of 14 days notice by email. Pro-rated refunds will be issued for annual subscriptions based on unused time remaining.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>En cas d'arrêt du service, les utilisateurs recevront un préavis d'au moins 14 jours par e-mail. Des remboursements au prorata seront émis pour les abonnements annuels.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>En cas d'arrêt du service, les utilisateurs recevront un préavis d'au moins 14 jours par e-mail. Des remboursements au prorata seront émis pour les abonnements annuels.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>6. {isFr ? "Essai gratuit" : "Free Trial"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>6. Free Trial · Essai gratuit</div>
           <p style={{ marginBottom: 4 }}>A 14-day free trial is available to new users. One trial per email address. No payment is required during the trial period.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Un essai gratuit de 14 jours est disponible pour les nouveaux utilisateurs. Un essai par adresse e-mail. Aucun paiement n'est requis pendant la période d'essai.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Un essai gratuit de 14 jours est disponible pour les nouveaux utilisateurs. Un essai par adresse e-mail. Aucun paiement n'est requis pendant la période d'essai.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>7. {isFr ? "Confidentialité et données" : "Privacy & Data"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>7. Privacy & Data · Confidentialité et données</div>
           <p style={{ marginBottom: 4 }}>We collect only your email address and app preferences. We do not sell your data to third parties. Data is stored securely via Supabase. You may request complete deletion of your account at any time by contacting us via our social media pages. We comply with the GDPR.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Nous collectons uniquement votre adresse e-mail et vos préférences d'application. Nous ne vendons pas vos données. Vous pouvez demander la suppression de votre compte à tout moment via nos pages de réseaux sociaux. Nous respectons le RGPD.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Nous collectons uniquement votre adresse e-mail et vos préférences d'application. Nous ne vendons pas vos données. Vous pouvez demander la suppression de votre compte à tout moment via nos pages de réseaux sociaux. Nous respectons le RGPD.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>8. {isFr ? "Propriété intellectuelle" : "Intellectual Property"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>8. Intellectual Property · Propriété intellectuelle</div>
           <p style={{ marginBottom: 4 }}>All prompts, content, and materials within Wami are original creative works and remain the exclusive intellectual property of Wami. Reproduction or redistribution in any form is strictly prohibited.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Toutes les suggestions, contenus et matériaux dans Wami sont des œuvres originales et restent la propriété intellectuelle exclusive de Wami. Toute reproduction ou redistribution est strictement interdite.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Toutes les suggestions, contenus et matériaux dans Wami sont des œuvres originales et restent la propriété intellectuelle exclusive de Wami. Toute reproduction ou redistribution est strictement interdite.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>9. {isFr ? "Droit applicable et juridiction" : "Governing Law & Jurisdiction"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>9. Governing Law & Jurisdiction · Droit applicable et juridiction</div>
           <p style={{ marginBottom: 4 }}>These terms are governed by the laws of Denmark. Any dispute shall be subject to the exclusive jurisdiction of the courts of Denmark.</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Ces conditions sont régies par les lois du Danemark. Tout litige sera soumis à la juridiction exclusive des tribunaux danois.</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Ces conditions sont régies par les lois du Danemark. Tout litige sera soumis à la juridiction exclusive des tribunaux danois.</p>
 
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>10. {isFr ? "Contact" : "Contact"}</div>
+          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>10. Contact</div>
           <p style={{ marginBottom: 4 }}>For questions, data requests or support, please reach out via our social media pages — Instagram and Facebook — linked at wami.me</p>
-          {isFr && <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Pour toute question, demande de données ou assistance, contactez-nous via nos pages de réseaux sociaux — Instagram et Facebook — accessibles sur wami.me</p>}
-          {!isFr && <p style={{ marginBottom: 16 }}></p>}
+          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Pour toute question, demande de données ou assistance, contactez-nous via nos pages de réseaux sociaux — Instagram et Facebook — accessibles sur wami.me</p>
+
         </div>
         {mustAccept && (
           <div style={{ marginTop: 20 }}>
             <label style={{ display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer", marginBottom: 20 }}>
               <input type="checkbox" checked={accepted} onChange={e => setAccepted(e.target.checked)} style={{ width: 18, height: 18, marginTop: 2, flexShrink: 0, accentColor: T.amber }} />
               <span style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.5 }}>
-                {isFr ? "J'ai lu et j'accepte les Conditions Générales et la Politique de Confidentialité. Je comprends que Wami n'est pas un service médical et que je l'utilise à mes propres risques." : "I have read and agree to the Terms & Conditions and Privacy Policy. I understand that Wami is not a medical service and I use it at my own risk."}
+                I have read and agree to the Terms & Conditions. · J'ai lu et j'accepte les Conditions Générales. I understand that Wami is not a medical service and I use it at my own risk. · Je comprends que Wami n'est pas un service médical et que je l'utilise à mes propres risques.
               </span>
             </label>
             <button onClick={() => { if (accepted) { onAccept(); onClose(); } }}
               style={{ background: accepted ? `linear-gradient(135deg, ${T.amber}, ${T.coral})` : "#ccc", color: "white", borderRadius: 16, padding: "15px 24px", fontSize: 15, fontWeight: 700, fontFamily: "'Nunito', sans-serif", width: "100%", cursor: accepted ? "pointer" : "not-allowed" }}>
-              {isFr ? "J'accepte — Continuer" : "I agree — Continue"}
+              I agree · J'accepte
             </button>
           </div>
         )}
@@ -793,10 +784,9 @@ function SignUpScreen({ lang, onComplete }) {
 }
 
 // ─── SCREEN: HOME ─────────────────────────────────────────────────────────────
-function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial }) {
+function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial, dailyPrompt }) {
   const t = i18n[lang] || i18n.en;
   const trialPool = useState(() => getTrialPrompts(profile?.focuses))[0];
-  const [currentPrompt] = useState(() => !isTrial ? getPrompt(profile, profile?.focuses, []) : null);
   const [notifStatus, setNotifStatus] = useState("default");
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t.homeGreeting : hour < 17 ? t.goodAfternoon : t.goodEvening;
@@ -808,7 +798,7 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
       if (perm === "granted") { try { new Notification("Wami 🌿", { body: "Gentle nudges are on their way. Grow kindly." }); } catch(e) {} }
     } catch(e) { setNotifStatus("unsupported"); }
   };
-  const promptText = isTrial ? trialPool[0]?.text : currentPrompt?.text;
+  const promptText = isTrial ? trialPool[0]?.text : dailyPrompt?.text;
   return (
     <div style={{ paddingBottom: 80 }}>
       <div style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #D4EDF8 100%)", padding: "28px 20px 32px", position: "relative", overflow: "hidden" }}>
@@ -827,9 +817,12 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
           <div className="fade-up" style={{ background: "linear-gradient(135deg, rgba(242,167,75,0.15), rgba(122,184,212,0.1))", border: `1.5px solid ${T.amber}`, borderRadius: 20, padding: "18px 20px", marginBottom: 16, position: "relative" }}>
             <button onClick={onDismissWelcome} style={{ position: "absolute", top: 12, right: 14, fontSize: 18, color: T.muted, fontWeight: 700 }}>×</button>
             <div style={{ fontSize: 22, marginBottom: 8 }}>🌅</div>
-            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 16, fontWeight: 800, color: T.text, marginBottom: 4 }}>Welcome to Wami.</div>
+            <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 16, fontWeight: 800, color: T.text, marginBottom: 4 }}>{lang === "fr" ? "Bienvenue sur Wami." : "Welcome to Wami."}</div>
             <div style={{ fontSize: 13, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-              {isTrial ? `Your free trial has started. You have ${trialPool.length} curated prompts to explore.` : "Your full prompt library is unlocked. Grow kindly. 🌿"}
+              {isTrial
+                ? (lang === "fr" ? `Votre essai gratuit a commencé. Vous avez ${trialPool.length} suggestions à explorer.` : `Your free trial has started. You have ${trialPool.length} curated prompts to explore.`)
+                : (lang === "fr" ? "Votre bibliothèque complète est débloquée. Grandissez avec bienveillance. 🌿" : "Your full prompt library is unlocked. Grow kindly. 🌿")
+              }
             </div>
           </div>
         )}
@@ -1063,6 +1056,7 @@ export default function App() {
   const [isTrial, setIsTrial] = useState(true);
   const [user, setUser] = useState(null);
   const [showTerms, setShowTerms] = useState(false);
+  const [dailyPrompt, setDailyPrompt] = useState(() => getPrompt(null, [], []));
 
   useEffect(() => { localStorage.setItem("wami_lang", lang); }, [lang]);
 
@@ -1072,6 +1066,7 @@ export default function App() {
       setProfile({ age: data.age_group, kids: data.kids, workTypes: data.work_types || [], focuses: data.focuses || [], freq: data.frequency || 'steady', days: data.active_days || [0,1,2,3,4] });
       if (data.language) setLang(data.language);
       if (data.subscription_status === 'active') setIsTrial(false);
+      setDailyPrompt(getPrompt({ age: data.age_group, kids: data.kids, workTypes: data.work_types || [] }, data.focuses || [], []));
     }
   };
 
@@ -1122,7 +1117,7 @@ export default function App() {
       {screen === "main" && (
         <>
           <div className="screen">
-            {activeNav === "home" && <HomeScreen key={lang} lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} />}
+            {activeNav === "home" && <HomeScreen key={lang} lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} dailyPrompt={dailyPrompt} />}
             {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
             {activeNav === "profile" && (
               <ProfileScreen lang={lang} setLang={setLang} profile={profile} isTrial={isTrial}
