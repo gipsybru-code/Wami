@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from './lib/supabase.js';
+import { TERMS } from './data/terms.js';
 
 const fontLink = document.createElement("link");
 fontLink.rel = "stylesheet";
@@ -385,47 +386,15 @@ function TermsModal({ onClose, onAccept, mustAccept = false, lang = "en" }) {
           {!mustAccept && <button onClick={onClose} style={{ fontSize: 22, color: T.muted, fontWeight: 700 }}>×</button>}
         </div>
         <div style={{ fontSize: 13, color: T.text, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.8 }}>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>1. Service</div>
-          <p style={{ marginBottom: 4 }}>Wami provides daily wellness prompts via a web application operated by an individual business based in Denmark. Access requires account creation and, after a 14-day free trial, a paid subscription. Wami is a general wellness tool and is not a medical service, therapeutic service, or substitute for professional medical or psychological advice.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Wami fournit des suggestions de bien-être quotidiennes via une application web exploitée par une entreprise individuelle basée au Danemark. L'accès nécessite la création d'un compte et, après un essai gratuit de 14 jours, un abonnement payant. Wami est un outil de bien-être général et ne constitue pas un service médical ou thérapeutique.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>2. No Medical Advice — Important Disclaimer · Avis de non-responsabilité</div>
-          <p style={{ marginBottom: 4 }}>The content provided by Wami is for general wellbeing and informational purposes only. Nothing in Wami constitutes medical advice, diagnosis, or treatment. Wami does not accept any responsibility for any consequences arising from the use of or reliance on any content delivered through the service. This includes any impact on your physical health, mental health, emotional wellbeing, social relationships, professional life, financial decisions, or any other sphere of life whatsoever. By using Wami, you acknowledge that you do so entirely at your own risk.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Le contenu fourni par Wami est uniquement à des fins de bien-être général. Rien dans Wami ne constitue un conseil médical. Wami n'accepte aucune responsabilité pour toute conséquence découlant de l'utilisation du service, y compris tout impact sur votre santé physique, mentale, vos relations sociales, votre vie professionnelle ou tout autre domaine. En utilisant Wami, vous reconnaissez le faire entièrement à vos propres risques.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>3. Limitation of Liability · Limitation de responsabilité</div>
-          <p style={{ marginBottom: 4 }}>To the maximum extent permitted by applicable law, Wami's total liability shall not exceed the amount you have paid for your current subscription period. Wami accepts no liability for decisions made or actions taken based on content delivered through the service.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Dans toute la mesure permise par la loi, la responsabilité totale de Wami ne dépassera pas le montant payé pour votre période d'abonnement en cours. Wami n'accepte aucune responsabilité pour les décisions prises sur la base du contenu du service.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>4. Subscriptions & Payments · Abonnements et paiements</div>
-          <p style={{ marginBottom: 4 }}>Monthly and annual subscriptions renew automatically until cancelled. Lifetime subscriptions grant access for the duration of service operation. Payments are processed securely via Stripe.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Les abonnements mensuels et annuels se renouvellent automatiquement jusqu'à annulation. Les abonnements à vie accordent l'accès pendant la durée de fonctionnement du service. Les paiements sont traités de manière sécurisée via Stripe.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>5. Service Discontinuation · Arrêt du service</div>
-          <p style={{ marginBottom: 4 }}>In the event that Wami discontinues its service, users will receive a minimum of 14 days notice by email. Pro-rated refunds will be issued for annual subscriptions based on unused time remaining.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>En cas d'arrêt du service, les utilisateurs recevront un préavis d'au moins 14 jours par e-mail. Des remboursements au prorata seront émis pour les abonnements annuels.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>6. Free Trial · Essai gratuit</div>
-          <p style={{ marginBottom: 4 }}>A 14-day free trial is available to new users. One trial per email address. No payment is required during the trial period.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Un essai gratuit de 14 jours est disponible pour les nouveaux utilisateurs. Un essai par adresse e-mail. Aucun paiement n'est requis pendant la période d'essai.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>7. Privacy & Data · Confidentialité et données</div>
-          <p style={{ marginBottom: 4 }}>We collect only your email address and app preferences. We do not sell your data to third parties. Data is stored securely via Supabase. You may request complete deletion of your account at any time by contacting us via our social media pages. We comply with the GDPR.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Nous collectons uniquement votre adresse e-mail et vos préférences d'application. Nous ne vendons pas vos données. Vous pouvez demander la suppression de votre compte à tout moment via nos pages de réseaux sociaux. Nous respectons le RGPD.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>8. Intellectual Property · Propriété intellectuelle</div>
-          <p style={{ marginBottom: 4 }}>All prompts, content, and materials within Wami are original creative works and remain the exclusive intellectual property of Wami. Reproduction or redistribution in any form is strictly prohibited.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Toutes les suggestions, contenus et matériaux dans Wami sont des œuvres originales et restent la propriété intellectuelle exclusive de Wami. Toute reproduction ou redistribution est strictement interdite.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>9. Governing Law & Jurisdiction · Droit applicable et juridiction</div>
-          <p style={{ marginBottom: 4 }}>These terms are governed by the laws of Denmark. Any dispute shall be subject to the exclusive jurisdiction of the courts of Denmark.</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Ces conditions sont régies par les lois du Danemark. Tout litige sera soumis à la juridiction exclusive des tribunaux danois.</p>
-
-          <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>10. Contact</div>
-          <p style={{ marginBottom: 4 }}>For questions, data requests or support, please reach out via our social media pages — Instagram and Facebook — linked at wami.me</p>
-          <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>Pour toute question, demande de données ou assistance, contactez-nous via nos pages de réseaux sociaux — Instagram et Facebook — accessibles sur wami.me</p>
-
+          {TERMS.map(clause => (
+            <div key={clause.id}>
+              <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "'Nunito', sans-serif" }}>
+                {clause.id}. {clause.title} · {clause.titleFr}
+              </div>
+              <p style={{ marginBottom: 4 }}>{clause.en}</p>
+              <p style={{ marginBottom: 16, fontStyle: "italic", color: T.muted }}>{clause.fr}</p>
+            </div>
+          ))}
         </div>
         {mustAccept && (
           <div style={{ marginTop: 20 }}>
