@@ -616,7 +616,53 @@ function SignUpScreen({ lang, onComplete, onSignIn }) {
   );
 }
 
-// ─── SCREEN: TRIAL EXPIRED ────────────────────────────────────────────────────
+// ─── SCREEN: SET NEW PASSWORD ─────────────────────────────────────────────────
+function SetPasswordScreen({ onComplete }) {
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const handleSave = async () => {
+    if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
+    if (password !== confirm) { setError("Passwords do not match."); return; }
+    setError(""); setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) { setError(error.message); setLoading(false); return; }
+      setDone(true);
+      setTimeout(() => onComplete(), 2000);
+    } catch (e) { setError("Something went wrong. Please try again."); setLoading(false); }
+  };
+
+  return (
+    <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
+      <div style={{ maxWidth: 420, margin: "0 auto", padding: "48px 20px 48px" }}>
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <WamiHero />
+          <SunOrb size={60} style={{ margin: "24px auto 24px" }} />
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 20, fontWeight: 700, color: T.text, marginBottom: 8 }}>
+            {done ? "Password updated ✓" : "Set a new password"}
+          </div>
+          <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+            {done ? "Taking you back to Wami..." : "Choose a new password for your account."}
+          </div>
+        </div>
+        {!done && (
+          <div>
+            <input type="password" placeholder="New password" value={password} onChange={e => setPassword(e.target.value)}
+              style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
+            <input type="password" placeholder="Confirm new password" value={confirm} onChange={e => setConfirm(e.target.value)}
+              style={{ display: "block", width: "100%", background: "white", border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 16px", fontSize: 14, color: T.text, marginBottom: 12, boxShadow: T.shadowSm }} />
+            {error && <div style={{ fontSize: 12, color: T.coral, marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>{error}</div>}
+            <PrimaryBtn onClick={handleSave} disabled={loading}>{loading ? "Saving..." : "Save new password"}</PrimaryBtn>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 function TrialExpiredScreen({ lang, onUnlock }) {
   const t = i18n[lang] || i18n.en;
   const isFr = lang === "fr";
@@ -957,6 +1003,14 @@ export default function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') { setIsTrial(false); setShowWelcome(true); window.history.replaceState({}, '', '/'); }
+
+    // Detect password recovery link
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setScreen("setpassword");
+      }
+    });
+
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) { setUser(session.user); await loadProfile(session.user.id); setScreen("main"); }
       else { setScreen("landing"); }
@@ -976,6 +1030,11 @@ export default function App() {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: T.bg, fontFamily: "'DM Sans', sans-serif", maxWidth: 420, margin: "0 auto", overflow: "hidden" }}>
+      {screen === "setpassword" && <SetPasswordScreen onComplete={async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) { setUser(session.user); await loadProfile(session.user.id); }
+        setScreen("main");
+      }} />}
       {screen === "landing" && <LandingScreen lang={lang} setLang={setLang} onStart={handleStart} onSignIn={() => setScreen("signin")} onShowTerms={() => setShowTerms(true)} />}
       {screen === "signin" && <SignInScreen lang={lang} onComplete={async () => {
         const { data: { session } } = await supabase.auth.getSession();
