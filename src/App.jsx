@@ -559,8 +559,19 @@ function SignUpScreen({ lang, onComplete }) {
     if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
     setError("");
     try {
-      const { error } = await supabase.auth.signUp({ email, password });
-      if (error) { setError(error.message); return; }
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        if (error.message.toLowerCase().includes("already registered") || error.message.toLowerCase().includes("already exists")) {
+          setError("An account with this email already exists. Please sign in instead.");
+        } else {
+          setError(error.message);
+        }
+        return;
+      }
+      if (data?.user?.identities?.length === 0) {
+        setError("An account with this email already exists. Please sign in instead.");
+        return;
+      }
       onComplete();
     } catch (e) { setError("Something went wrong. Please try again."); }
   };
