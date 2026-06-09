@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from './lib/supabase.js';
 import { TERMS } from './data/terms.js';
 import { getTrialPrompts } from './data/prompts-trial.js';
@@ -1000,24 +1000,30 @@ export default function App() {
     }
   };
 
+  const isRecovery = useRef(false);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') { setIsTrial(false); setShowWelcome(true); window.history.replaceState({}, '', '/'); }
 
+    // Check hash immediately before anything else
+    if (window.location.hash.includes('type=recovery')) {
+      isRecovery.current = true;
+      setScreen("setpassword");
+      return;
+    }
+
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
+        isRecovery.current = true;
         setScreen("setpassword");
         return;
       }
+      if (isRecovery.current) return; // block any auto-login during recovery
     });
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      // Check if this is a recovery session — don't auto-login
-      const hash = window.location.hash;
-      if (hash.includes('type=recovery')) {
-        setScreen("setpassword");
-        return;
-      }
+      if (isRecovery.current) return;
       if (session?.user) { setUser(session.user); await loadProfile(session.user.id); setScreen("main"); }
       else { setScreen("landing"); }
     });
