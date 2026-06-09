@@ -616,8 +616,32 @@ function SignUpScreen({ lang, onComplete, onSignIn }) {
   );
 }
 
+// ─── SCREEN: TRIAL EXPIRED ────────────────────────────────────────────────────
+function TrialExpiredScreen({ lang, onUnlock }) {
+  const t = i18n[lang] || i18n.en;
+  const isFr = lang === "fr";
+  return (
+    <div className="screen" style={{ background: "linear-gradient(180deg, #FFF3D0 0%, #E8F4FD 100%)" }}>
+      <div style={{ maxWidth: 420, margin: "0 auto", padding: "48px 20px 48px", textAlign: "center" }}>
+        <SunOrb size={70} style={{ margin: "0 auto 28px" }} />
+        <div style={{ fontFamily: "'Nunito', sans-serif", fontSize: 22, fontWeight: 800, color: T.text, marginBottom: 12 }}>
+          {isFr ? "Votre essai gratuit est terminé." : "Your free trial has ended."}
+        </div>
+        <div style={{ fontSize: 14, color: T.muted, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7, marginBottom: 32 }}>
+          {isFr
+            ? "Nous espérons que vous avez aimé Wami. Débloquez l'accès complet pour continuer à recevoir des suggestions quotidiennes."
+            : "We hope you enjoyed Wami. Unlock full access to keep receiving your daily nudges."}
+        </div>
+        <PrimaryBtn onClick={onUnlock}>
+          {isFr ? "Voir les offres" : "See plans"}
+        </PrimaryBtn>
+      </div>
+    </div>
+  );
+}
+
 // ─── SCREEN: HOME ─────────────────────────────────────────────────────────────
-function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial, dailyPrompt }) {
+function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onUnlock, isTrial, dailyPrompt, trialDaysLeft = 14 }) {
   const t = i18n[lang] || i18n.en;
   const trialPool = useState(() => getTrialPrompts(profile?.focuses))[0];
   const [notifStatus, setNotifStatus] = useState("default");
@@ -682,7 +706,11 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
             "{promptText}"
           </div>
           <div style={{ fontSize: 12, color: T.muted, fontFamily: "'DM Sans', sans-serif" }}>
-            {isTrial ? t.trialPromptLabel : `${t.nextPrompt}: later today`}
+            {isTrial
+              ? (lang === "fr"
+                  ? `Essai gratuit · ${trialDaysLeft} jour${trialDaysLeft !== 1 ? 's' : ''} restant${trialDaysLeft !== 1 ? 's' : ''}`
+                  : `Free trial · ${trialDaysLeft} day${trialDaysLeft !== 1 ? 's' : ''} left`)
+              : `${t.nextPrompt}: later today`}
           </div>
         </Card>
         {isTrial && (
@@ -891,6 +919,8 @@ export default function App() {
   const [activeNav, setActiveNav] = useState("home");
   const [showWelcome, setShowWelcome] = useState(false);
   const [isTrial, setIsTrial] = useState(true);
+  const [trialExpired, setTrialExpired] = useState(false);
+  const [trialDaysLeft, setTrialDaysLeft] = useState(14);
   const [user, setUser] = useState(null);
   const [showTerms, setShowTerms] = useState(false);
   const [dailyPrompt, setDailyPrompt] = useState(() => getPrompt(BONUS_PROMPTS, null, [], []));
@@ -902,7 +932,17 @@ export default function App() {
     if (data) {
       setProfile({ age: data.age_group, kids: data.kids, workTypes: data.work_types || [], focuses: data.focuses || [], freq: data.frequency || 'steady', days: data.active_days || [0,1,2,3,4] });
       if (data.language) setLang(data.language);
-      if (data.subscription_status === 'active') setIsTrial(false);
+      if (data.subscription_status === 'active') {
+        setIsTrial(false);
+        setTrialExpired(false);
+      } else if (data.trial_started_at) {
+        const started = new Date(data.trial_started_at);
+        const now = new Date();
+        const daysUsed = Math.floor((now - started) / (1000 * 60 * 60 * 24));
+        const daysLeft = Math.max(0, 14 - daysUsed);
+        setTrialDaysLeft(daysLeft);
+        if (daysLeft === 0) setTrialExpired(true);
+      }
       setDailyPrompt(getPrompt(BONUS_PROMPTS, { age: data.age_group, kids: data.kids, workTypes: data.work_types || [] }, data.focuses || [], []));
     }
   };
@@ -940,7 +980,7 @@ export default function App() {
         <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
           setProfile(data);
           if (user) {
-            await supabase.from('profiles').upsert({ id: user.id, email: user.email, age_group: data.age, kids: data.kids, work_types: data.workTypes, focuses: data.focuses, frequency: data.freq, active_days: data.days, language: lang, updated_at: new Date().toISOString() });
+            await supabase.from('profiles').upsert({ id: user.id, email: user.email, age_group: data.age, kids: data.kids, work_types: data.workTypes, focuses: data.focuses, frequency: data.freq, active_days: data.days, language: lang, trial_started_at: new Date().toISOString(), updated_at: new Date().toISOString() });
           }
           setScreen("signup");
         }} />
@@ -954,7 +994,10 @@ export default function App() {
       {screen === "main" && (
         <>
           <div className="screen">
-            {activeNav === "home" && <HomeScreen key={lang} lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} dailyPrompt={dailyPrompt} />}
+            {activeNav === "home" && (trialExpired
+              ? <TrialExpiredScreen lang={lang} onUnlock={() => setScreen("paywall")} />
+              : <HomeScreen key={lang} lang={lang} setLang={setLang} profile={profile} showWelcome={showWelcome} onDismissWelcome={() => setShowWelcome(false)} isTrial={isTrial} onUnlock={() => setScreen("paywall")} dailyPrompt={dailyPrompt} trialDaysLeft={trialDaysLeft} />
+            )}
             {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
             {activeNav === "profile" && (
               <ProfileScreen lang={lang} setLang={setLang} profile={profile} isTrial={isTrial}
