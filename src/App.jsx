@@ -383,14 +383,14 @@ function InstallScreen({ onContinue }) {
 }
 
 // ─── SCREEN: ONBOARDING ───────────────────────────────────────────────────────
-function OnboardingScreen({ lang, setLang, onComplete }) {
+function OnboardingScreen({ lang, setLang, onComplete, initialProfile = null }) {
   const t = i18n[lang] || i18n.en;
-  const [age, setAge] = useState(null);
-  const [kids, setKids] = useState(null);
-  const [workTypes, setWorkTypes] = useState([]);
-  const [focuses, setFocuses] = useState([]);
-  const [freq, setFreq] = useState("steady");
-  const [days, setDays] = useState([0,1,2,3,4]);
+  const [age, setAge] = useState(initialProfile?.age ?? null);
+  const [kids, setKids] = useState(initialProfile?.kids ?? null);
+  const [workTypes, setWorkTypes] = useState(initialProfile?.workTypes ?? []);
+  const [focuses, setFocuses] = useState(initialProfile?.focuses ?? []);
+  const [freq, setFreq] = useState(initialProfile?.freq ?? "steady");
+  const [days, setDays] = useState(initialProfile?.days ?? [0,1,2,3,4]);
   const toggleWorkType = (i) => setWorkTypes(w => w.includes(i) ? w.filter(x => x !== i) : [...w, i]);
   const toggleFocus = (id) => setFocuses(f => f.includes(id) ? f.filter(x => x !== id) : f.length < 5 ? [...f, id] : f);
   const toggleDay = (i) => setDays(d => d.includes(i) ? d.filter(x => x !== i) : [...d, i]);
@@ -451,7 +451,7 @@ function OnboardingScreen({ lang, setLang, onComplete }) {
               ))}
             </div>
           </Card>
-          <PrimaryBtn onClick={() => onComplete({ age, kids, workTypes, focuses, freq, days })} disabled={!ready}>{t.letsgo}</PrimaryBtn>
+          <PrimaryBtn onClick={() => onComplete({ age, kids, workTypes, focuses, freq, days })} disabled={!ready}>{initialProfile ? (lang === "fr" ? "Sauvegarder →" : "Save changes →") : t.letsgo}</PrimaryBtn>
         </div>
       </div>
     </div>
@@ -976,6 +976,7 @@ export default function App() {
   const [trialDaysLeft, setTrialDaysLeft] = useState(14);
   const [user, setUser] = useState(null);
   const [showTerms, setShowTerms] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [dailyPrompt, setDailyPrompt] = useState(() => getPrompt(BONUS_PROMPTS, null, [], []));
 
   useEffect(() => { localStorage.setItem("wami_lang", lang); }, [lang]);
@@ -1055,9 +1056,21 @@ export default function App() {
       }} />}
       {screen === "install" && <InstallScreen onContinue={() => setScreen("onboarding")} />}
       {screen === "onboarding" && (
-        <OnboardingScreen lang={lang} setLang={setLang} onComplete={async (data) => {
+        <OnboardingScreen lang={lang} setLang={setLang} initialProfile={editMode ? profile : null} onComplete={async (data) => {
           setProfile(data);
-          setScreen("signup");
+          if (editMode) {
+            // Existing user editing — just update profile and go back to main
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+              await supabase.from('profiles').upsert({ id: session.user.id, email: session.user.email, age_group: data.age, kids: data.kids, work_types: data.workTypes, focuses: data.focuses, frequency: data.freq, active_days: data.days, language: lang, updated_at: new Date().toISOString() });
+            }
+            setEditMode(false);
+            setScreen("main");
+            setActiveNav("profile");
+          } else {
+            // New user — proceed to signup
+            setScreen("signup");
+          }
         }} />
       )}
       {screen === "signup" && <SignUpScreen lang={lang} onSignIn={() => setScreen("signin")} onComplete={async () => {
@@ -1082,7 +1095,10 @@ export default function App() {
             {activeNav === "explore" && <ExploreScreen lang={lang} profile={profile} />}
             {activeNav === "profile" && (
               <ProfileScreen lang={lang} setLang={setLang} profile={profile} isTrial={isTrial}
-                onEdit={() => setScreen("onboarding")}
+                onEdit={async () => {
+                  setScreen("onboarding");
+                  setEditMode(true);
+                }}
                 onManageSubscription={() => setScreen("paywall")}
                 onSignOut={async () => { await supabase.auth.signOut(); setProfile(null); setUser(null); setScreen("landing"); }}
               />
