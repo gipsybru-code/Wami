@@ -691,15 +691,54 @@ function HomeScreen({ lang, setLang, profile, showWelcome, onDismissWelcome, onU
   const t = i18n[lang] || i18n.en;
   const trialPool = useState(() => getTrialPrompts(profile?.focuses))[0];
   const [notifStatus, setNotifStatus] = useState("default");
+  const VAPID_PUBLIC_KEY = "BE8KMQIA8M1Q987eAHLYiwfY3mGHlwfHrzjod2p_WuzwLPAbD2xCVUjvXuBbgq9eYkPCXxOFEMxbvIMa1FRrDV8";
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t.homeGreeting : hour < 17 ? t.goodAfternoon : t.goodEvening;
+
+  const urlBase64ToUint8Array = (base64String) => {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+    return outputArray;
+  };
+
   const requestNotifications = async () => {
     try {
       if (!("Notification" in window)) { setNotifStatus("unsupported"); return; }
+      if (!("serviceWorker" in navigator)) { setNotifStatus("unsupported"); return; }
+
       const perm = await Notification.requestPermission();
-      setNotifStatus(perm);
-      if (perm === "granted") { try { new Notification("Wami 🌿", { body: "Gentle nudges are on their way. Grow kindly." }); } catch(e) {} }
-    } catch(e) { setNotifStatus("unsupported"); }
+      if (perm !== "granted") { setNotifStatus("denied"); return; }
+
+      // Register service worker
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      await navigator.serviceWorker.ready;
+
+      // Subscribe to push
+      const subscription = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      });
+
+      const sub = subscription.toJSON();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from('push_subscriptions').upsert({
+          user_id: session.user.id,
+          endpoint: sub.endpoint,
+          p256dh: sub.keys.p256dh,
+          auth: sub.keys.auth,
+          active: true,
+        });
+      }
+
+      setNotifStatus("granted");
+    } catch(e) {
+      console.error("Push subscription error:", e);
+      setNotifStatus("unsupported");
+    }
   };
   const promptText = isTrial ? trialPool[0]?.text : dailyPrompt?.text;
   return (
