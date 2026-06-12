@@ -1016,6 +1016,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [showTerms, setShowTerms] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const pendingProfile = useRef(null);
   const [dailyPrompt, setDailyPrompt] = useState(() => getPrompt(BONUS_PROMPTS, null, [], []));
 
   useEffect(() => { localStorage.setItem("wami_lang", lang); }, [lang]);
@@ -1097,8 +1098,8 @@ export default function App() {
       {screen === "onboarding" && (
         <OnboardingScreen lang={lang} setLang={setLang} initialProfile={editMode ? profile : null} onComplete={async (data) => {
           setProfile(data);
+          pendingProfile.current = data;
           if (editMode) {
-            // Existing user editing — just update profile and go back to main
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
               await supabase.from('profiles').upsert({ id: session.user.id, email: session.user.email, age_group: data.age, kids: data.kids, work_types: data.workTypes, focuses: data.focuses, frequency: data.freq, active_days: data.days, language: lang, updated_at: new Date().toISOString() });
@@ -1107,7 +1108,6 @@ export default function App() {
             setScreen("main");
             setActiveNav("profile");
           } else {
-            // New user — proceed to signup
             setScreen("signup");
           }
         }} />
@@ -1116,7 +1116,7 @@ export default function App() {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           setUser(session.user);
-          const p = profile;
+          const p = pendingProfile.current;
           if (p) {
             await supabase.from('profiles').upsert({ id: session.user.id, email: session.user.email, age_group: p.age, kids: p.kids, work_types: p.workTypes, focuses: p.focuses, frequency: p.freq, active_days: p.days, language: lang, trial_started_at: new Date().toISOString(), updated_at: new Date().toISOString() });
           }
